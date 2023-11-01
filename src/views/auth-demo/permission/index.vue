@@ -47,7 +47,7 @@ const options: SelectOption[] = userRoleOptions;
 watch(
   () => auth.userInfo.userRole,
   async () => {
-    app.reloadPage();
+    await app.reloadPage();
   }
 );
 </script>

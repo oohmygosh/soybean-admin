@@ -15,8 +15,9 @@ import { useThemeStore } from '@/store';
 defineOptions({ name: 'GithubSite' });
 
 const theme = useThemeStore();
+
 function handleClickLink() {
-  window.open('https://github.com/honghuangdc/soybean-admin', '_blank');
+  window.open('https://github.com/oohmygosh/soybean-admin', '_blank');
 }
 </script>
 
