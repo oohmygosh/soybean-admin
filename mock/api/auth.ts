@@ -6,6 +6,8 @@ const ERROR_PARAM_CODE = 10000;
 
 const ERROR_PARAM_MSG = '参数校验失败！';
 
+export const superAdmin: Auth.SuperAdmin = 'super';
+
 const apis: MockMethod[] = [
   // 获取验证码
   {
@@ -72,7 +74,7 @@ const apis: MockMethod[] = [
       const userInfo: Auth.UserInfo = {
         userId: '',
         userName: '',
-        userRole: 'user'
+        userRole: ['user']
       };
       const isInUser = userModel.some(item => {
         const flag = item.token === authorization;

@@ -1,5 +1,5 @@
-import { ref } from 'vue';
 import type { Ref } from 'vue';
+import { ref } from 'vue';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { useBoolean, useLoading } from '@/hooks';
 import CustomAxiosInstance from './instance';
@@ -33,15 +33,13 @@ export function createRequest(axiosConfig: AxiosRequestConfig, backendConfig?: S
     const { url } = param;
     const method = param.method || 'get';
     const { instance } = customInstance;
-    const res = (await getRequestResponse({
+    return (await getRequestResponse({
       instance,
       method,
       url,
       data: param.data,
       config: param.axiosConfig
     })) as Service.RequestResult<T>;
-
-    return res;
   }
 
   /**
@@ -62,6 +60,7 @@ export function createRequest(axiosConfig: AxiosRequestConfig, backendConfig?: S
   function post<T>(url: string, data?: any, config?: AxiosRequestConfig) {
     return asyncRequest<T>({ url, method: 'post', data, axiosConfig: config });
   }
+
   /**
    * put请求
    * @param url - 请求地址
@@ -162,6 +161,7 @@ export function createHookRequest(axiosConfig: AxiosRequestConfig, backendConfig
   function post<T>(url: string, data?: any, config?: AxiosRequestConfig) {
     return useRequest<T>({ url, method: 'post', data, axiosConfig: config });
   }
+
   /**
    * put请求
    * @param url - 请求地址

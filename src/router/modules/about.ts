@@ -1,3 +1,5 @@
+import { superAdmin } from '~/mock/api/auth';
+
 const about: AuthRoute.Route = {
   name: 'about',
   path: '/about',
@@ -8,7 +10,7 @@ const about: AuthRoute.Route = {
     requiresAuth: true,
     keepAlive: true,
     singleLayout: 'basic',
-    permissions: ['super', 'admin', 'user'],
+    permissions: [superAdmin, 'admin', 'user'],
     icon: 'fluent:book-information-24-regular',
     order: 10
   }

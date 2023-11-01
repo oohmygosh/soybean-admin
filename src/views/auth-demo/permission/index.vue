@@ -15,7 +15,7 @@
         <n-gradient-text type="primary" :size="20">权限指令 v-permission</n-gradient-text>
       </div>
       <div>
-        <n-button v-permission="'super'" class="mr-12px">super可见</n-button>
+        <n-button v-permission="superAdmin" class="mr-12px">super可见</n-button>
         <n-button v-permission="'admin'" class="mr-12px">admin可见</n-button>
         <n-button v-permission="['admin', 'user']">admin和test可见</n-button>
       </div>
@@ -37,6 +37,7 @@ import type { SelectOption } from 'naive-ui';
 import { userRoleOptions } from '@/constants';
 import { useAppStore, useAuthStore } from '@/store';
 import { usePermission } from '@/composables';
+import { superAdmin } from '~/mock/api/auth';
 
 const app = useAppStore();
 const auth = useAuthStore();

@@ -58,8 +58,8 @@ const { toLoginModule } = useRouterPush();
 const formRef = ref<HTMLElement & FormInst>();
 
 const model = reactive({
-  userName: 'Soybean',
-  password: 'soybean123'
+  userName: 'admin',
+  password: 'SoybeanPassword1$'
 });
 
 const rules: FormRules = {
@@ -73,7 +73,7 @@ async function handleSubmit() {
 
   const { userName, password } = model;
 
-  login(userName, password);
+  await login(userName, password);
 }
 
 function handleLoginOtherAccount(param: { userName: string; password: string }) {

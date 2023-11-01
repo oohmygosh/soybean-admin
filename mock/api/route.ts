@@ -10,9 +10,11 @@ const apis: MockMethod[] = [
 
       const routeHomeName: AuthRoute.LastDegreeRouteKey = 'dashboard_analysis';
 
-      const role = userModel.find(item => item.userId === userId)?.userRole || 'user';
+      const roles = userModel.find(item => item.userId === userId)?.userRole || ['user'];
 
-      const filterRoutes = routeModel[role];
+      const filterRoutes: AuthRoute.Route[] = [];
+
+      roles.forEach(role => filterRoutes.push(...routeModel[role]));
 
       return {
         code: 200,

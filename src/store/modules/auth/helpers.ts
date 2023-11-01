@@ -10,11 +10,9 @@ export function getUserInfo() {
   const emptyInfo: Auth.UserInfo = {
     userId: '',
     userName: '',
-    userRole: 'user'
+    userRole: ['user']
   };
-  const userInfo: Auth.UserInfo = localStg.get('userInfo') || emptyInfo;
-
-  return userInfo;
+  return localStg.get('userInfo') || emptyInfo;
 }
 
 /** 去除用户相关缓存 */

@@ -1,3 +1,5 @@
+import { superAdmin } from '~/mock/api/auth';
+
 const authDemo: AuthRoute.Route = {
   name: 'auth-demo',
   path: '/auth-demo',
@@ -22,7 +24,7 @@ const authDemo: AuthRoute.Route = {
         title: '超级管理员可见',
         i18nTitle: 'routes.auth-demo.super',
         requiresAuth: true,
-        permissions: ['super'],
+        permissions: [superAdmin],
         icon: 'ic:round-supervisor-account'
       }
     }
