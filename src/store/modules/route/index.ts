@@ -116,16 +116,14 @@ export const useRouteStore = defineStore('route-store', {
       if (!userId) {
         throw new Error('userId 不能为空!');
       }
-
       const { error, data } = await fetchUserRoutes(userId);
 
       if (!error) {
-        this.handleAuthRoute(sortRoutes(data.routes));
+        this.handleAuthRoute(sortRoutes(data?.routes));
         // home相关处理需要在最后，否则会出现找不到主页404的情况
-        this.routeHomeName = data.home;
+        this.routeHomeName = data?.home ? 'dashboard_analysis' : data?.home;
         this.handleUpdateRootRedirect(data.home);
-
-        initHomeTab(data.home, router);
+        initHomeTab(data?.home, router);
 
         this.isInitAuthRoute = true;
       } else {

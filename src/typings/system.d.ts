@@ -123,6 +123,7 @@ declare namespace Theme {
     /** 页面样式 */
     page: Page;
   }
+
   /** 布局样式 */
   interface Layout {
     /** 最小宽度 */
@@ -154,6 +155,7 @@ declare namespace Theme {
     /** 面包屑样式 */
     crumb: Crumb;
   }
+
   /** 面包屑样式 */
   interface Crumb {
     /** 面包屑可见 */
@@ -480,7 +482,7 @@ declare namespace I18nType {
     page: {
       login: {
         common: {
-          userNamePlaceholder: string;
+          usernamePlaceholder: string;
           phonePlaceholder: string;
           codePlaceholder: string;
           passwordPlaceholder: string;

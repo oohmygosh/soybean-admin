@@ -1,7 +1,7 @@
 <template>
   <n-form ref="formRef" :model="model" :rules="rules" size="large" :show-label="false">
-    <n-form-item path="userName">
-      <n-input v-model:value="model.userName" :placeholder="$t('page.login.common.userNamePlaceholder')" />
+    <n-form-item path="username">
+      <n-input v-model:value="model.username" :placeholder="$t('page.login.common.usernamePlaceholder')" />
     </n-form-item>
     <n-form-item path="password">
       <n-input
@@ -58,7 +58,7 @@ const { toLoginModule } = useRouterPush();
 const formRef = ref<HTMLElement & FormInst>();
 
 const model = reactive({
-  userName: 'admin',
+  username: 'admin',
   password: 'SoybeanPassword1$'
 });
 
@@ -71,14 +71,14 @@ const rememberMe = ref(false);
 async function handleSubmit() {
   await formRef.value?.validate();
 
-  const { userName, password } = model;
+  const { username, password } = model;
 
-  await login(userName, password);
+  await login(username, password);
 }
 
-function handleLoginOtherAccount(param: { userName: string; password: string }) {
-  const { userName, password } = param;
-  login(userName, password);
+function handleLoginOtherAccount(param: { username: string; password: string }) {
+  const { username, password } = param;
+  login(username, password);
 }
 </script>
 

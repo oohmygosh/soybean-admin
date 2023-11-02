@@ -172,7 +172,7 @@ const locale: I18nType.Schema = {
   page: {
     login: {
       common: {
-        userNamePlaceholder: '请输入用户名',
+        usernamePlaceholder: '请输入用户名',
         phonePlaceholder: '请输入手机号',
         codePlaceholder: '请输入验证码',
         passwordPlaceholder: '请输入密码',
@@ -182,7 +182,7 @@ const locale: I18nType.Schema = {
         back: '返回',
         validateSuccess: '验证成功',
         loginSuccess: '登录成功',
-        welcomeBack: '欢迎回来，{userName}!'
+        welcomeBack: '欢迎回来，{username}!'
       },
       pwdLogin: {
         title: '密码登录',

@@ -4,9 +4,9 @@
     <n-space justify="center">
       <n-button
         v-for="item in accounts"
-        :key="item.userName"
+        :key="item.username"
         type="primary"
-        @click="login(item.userName, item.password)"
+        @click="login(item.username, item.password)"
       >
         {{ item.label }}
       </n-button>
@@ -19,7 +19,7 @@ import { userRoleLabels } from '@/constants';
 import { $t } from '@/locales';
 
 interface Emits {
-  (e: 'login', param: { userName: string; password: string }): void;
+  (e: 'login', param: { username: string; password: string }): void;
 }
 
 const emit = defineEmits<Emits>();
@@ -27,7 +27,7 @@ const emit = defineEmits<Emits>();
 interface Account {
   key: Auth.RoleType;
   label: string;
-  userName: string;
+  username: string;
   password: string;
 }
 
@@ -35,25 +35,25 @@ const accounts: Account[] = [
   {
     key: 'super',
     label: userRoleLabels.super,
-    userName: 'Super',
+    username: 'Super',
     password: 'super123'
   },
   {
     key: 'admin',
     label: userRoleLabels.admin,
-    userName: 'Admin',
+    username: 'Admin',
     password: 'admin123'
   },
   {
     key: 'user',
     label: userRoleLabels.user,
-    userName: 'User01',
+    username: 'User01',
     password: 'user01123'
   }
 ];
 
-function login(userName: string, password: string) {
-  emit('login', { userName, password });
+function login(username: string, password: string) {
+  emit('login', { username, password });
 }
 </script>
 

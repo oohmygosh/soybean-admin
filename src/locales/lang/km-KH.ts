@@ -172,7 +172,7 @@ const locale: I18nType.Schema = {
   page: {
     login: {
       common: {
-        userNamePlaceholder: 'ឈ្មោះអ្នកប្រើប្រាស់',
+        usernamePlaceholder: 'ឈ្មោះអ្នកប្រើប្រាស់',
         phonePlaceholder: 'លេខទូរស័ព្ទ',
         codePlaceholder: 'លេខកូដ',
         passwordPlaceholder: 'លេខសម្ងាត់',
@@ -182,7 +182,7 @@ const locale: I18nType.Schema = {
         back: 'ត្រឡប់ក្រោយ',
         validateSuccess: 'បញ្ជាក់ជោគជ័យ',
         loginSuccess: 'ចូលជោគជ័យ',
-        welcomeBack: 'សូមស្វាគមន៍ម្តងទៀត, {userName}!'
+        welcomeBack: 'សូមស្វាគមន៍ម្តងទៀត, {username}!'
       },
       pwdLogin: {
         title: 'ចូលគណនី',

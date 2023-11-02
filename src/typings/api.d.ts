@@ -7,6 +7,7 @@ declare namespace ApiAuth {
     token: string;
     refreshToken: string;
   }
+
   /** 返回的用户信息 */
   type UserInfo = Auth.UserInfo;
 }
@@ -27,7 +28,7 @@ declare namespace ApiUserManagement {
     /** 用户id */
     id: string;
     /** 用户名 */
-    userName: string | null;
+    username: string | null;
     /** 用户年龄 */
     age: number | null;
     /**

@@ -1,4 +1,6 @@
-import { mockRequest } from '../request';
+import { mockRequest, request } from '../request';
+
+const FORM_CONTENT_TYPE = 'application/x-www-form-urlencoded';
 
 /**
  * 获取验证码
@@ -11,11 +13,32 @@ export function fetchSmsCode(phone: string) {
 
 /**
  * 登录
- * @param userName - 用户名
+ * @param username - 用户名
  * @param password - 密码
  */
-export function fetchLogin(userName: string, password: string) {
-  return mockRequest.post<ApiAuth.Token>('/login', { userName, password });
+export function fetchLogin(username: string, password: string) {
+  const client = window.btoa(import.meta.env.VITE_OAUTH2_PASSWORD_CLIENT);
+  const basicAuth = `Basic ${client}`;
+  request
+    .post<ApiAuth.Token>(
+      '/oauth2/token',
+      {
+        username,
+        password,
+        grant_type: 'password',
+        scope: 'message.read'
+      },
+      {
+        headers: {
+          Authorization: basicAuth,
+          'Content-Type': FORM_CONTENT_TYPE
+        }
+      }
+    )
+    .then(result => {
+      console.log(result);
+    });
+  return mockRequest.post<ApiAuth.Token>('/login', { username, password });
 }
 
 /** 获取用户信息 */

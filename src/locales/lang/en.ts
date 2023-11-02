@@ -172,7 +172,7 @@ const locale: I18nType.Schema = {
   page: {
     login: {
       common: {
-        userNamePlaceholder: 'Please enter user name',
+        usernamePlaceholder: 'Please enter user name',
         phonePlaceholder: 'Please enter phone number',
         codePlaceholder: 'Please enter verification code',
         passwordPlaceholder: 'Please enter password',
@@ -182,7 +182,7 @@ const locale: I18nType.Schema = {
         back: 'Back',
         validateSuccess: 'Verification passed',
         loginSuccess: 'Login success',
-        welcomeBack: 'Welcome back, {userName}!'
+        welcomeBack: 'Welcome back, {username}!'
       },
       pwdLogin: {
         title: 'Password Login',

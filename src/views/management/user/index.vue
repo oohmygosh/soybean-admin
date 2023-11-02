@@ -55,6 +55,7 @@ const { loading, startLoading, endLoading } = useLoading(false);
 const { bool: visible, setTrue: openModal } = useBoolean();
 
 const tableData = ref<UserManagement.User[]>([]);
+
 function setTableData(data: UserManagement.User[]) {
   tableData.value = data;
 }
@@ -81,7 +82,7 @@ const columns: Ref<DataTableColumns<UserManagement.User>> = ref([
     align: 'center'
   },
   {
-    key: 'userName',
+    key: 'username',
     title: '用户名',
     align: 'center'
   },

@@ -70,7 +70,7 @@ export const useAuthStore = defineStore('auth-store', {
         if (route.isInitAuthRoute) {
           window.$notification?.success({
             title: $t('page.login.common.loginSuccess'),
-            content: $t('page.login.common.welcomeBack', { userName: this.userInfo.userName }),
+            content: $t('page.login.common.welcomeBack', { username: this.userInfo.username }),
             duration: 3000
           });
         }
@@ -110,12 +110,12 @@ export const useAuthStore = defineStore('auth-store', {
     },
     /**
      * 登录
-     * @param userName - 用户名
+     * @param username - 用户名
      * @param password - 密码
      */
-    async login(userName: string, password: string) {
+    async login(username: string, password: string) {
       this.loginLoading = true;
-      const { data } = await fetchLogin(userName, password);
+      const { data } = await fetchLogin(username, password);
       if (data) {
         await this.handleActionAfterLogin(data);
       }
@@ -128,22 +128,22 @@ export const useAuthStore = defineStore('auth-store', {
     async updateUserRole(userRole: Auth.RoleType) {
       const { resetRouteStore, initAuthRoute } = useRouteStore();
 
-      const accounts: Record<Auth.RoleType, { userName: string; password: string }> = {
+      const accounts: Record<Auth.RoleType, { username: string; password: string }> = {
         super: {
-          userName: 'Super',
+          username: 'Super',
           password: 'super123'
         },
         admin: {
-          userName: 'Admin',
+          username: 'Admin',
           password: 'admin123'
         },
         user: {
-          userName: 'User01',
+          username: 'User01',
           password: 'user01123'
         }
       };
-      const { userName, password } = accounts[userRole];
-      const { data } = await fetchLogin(userName, password);
+      const { username, password } = accounts[userRole];
+      const { data } = await fetchLogin(username, password);
       if (data) {
         await this.loginByToken(data);
         resetRouteStore();

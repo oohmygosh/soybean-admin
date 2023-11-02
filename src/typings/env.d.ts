@@ -70,6 +70,8 @@ interface ImportMetaEnv {
   readonly VITE_SOYBEAN_ROUTE_PLUGIN?: 'Y' | 'N';
   /** 是否是部署的vercel */
   readonly VITE_VERCEL?: 'Y' | 'N';
+  /** 是否是部署的vercel */
+  readonly VITE_OAUTH2_PASSWORD_CLIENT: 'messaging-client:secret';
 }
 
 interface ImportMeta {

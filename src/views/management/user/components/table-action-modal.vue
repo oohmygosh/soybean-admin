@@ -2,8 +2,8 @@
   <n-modal v-model:show="modalVisible" preset="card" :title="title" class="w-700px">
     <n-form ref="formRef" label-placement="left" :label-width="80" :model="formModel" :rules="rules">
       <n-grid :cols="24" :x-gap="18">
-        <n-form-item-grid-item :span="12" label="用户名" path="userName">
-          <n-input v-model:value="formModel.userName" />
+        <n-form-item-grid-item :span="12" label="用户名" path="username">
+          <n-input v-model:value="formModel.username" />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="年龄" path="age">
           <n-input-number v-model:value="formModel.age" clearable />
@@ -87,12 +87,12 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<UserManagement.User, 'userName' | 'age' | 'gender' | 'phone' | 'email' | 'userStatus'>;
+type FormModel = Pick<UserManagement.User, 'username' | 'age' | 'gender' | 'phone' | 'email' | 'userStatus'>;
 
 const formModel = reactive<FormModel>(createDefaultFormModel());
 
 const rules: Record<keyof FormModel, FormItemRule | FormItemRule[]> = {
-  userName: createRequiredFormRule('请输入用户名'),
+  username: createRequiredFormRule('请输入用户名'),
   age: createRequiredFormRule('请输入年龄'),
   gender: createRequiredFormRule('请选择性别'),
   phone: formRules.phone,
@@ -102,7 +102,7 @@ const rules: Record<keyof FormModel, FormItemRule | FormItemRule[]> = {
 
 function createDefaultFormModel(): FormModel {
   return {
-    userName: '',
+    username: '',
     age: null,
     gender: null,
     phone: '',

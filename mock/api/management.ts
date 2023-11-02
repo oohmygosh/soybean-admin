@@ -10,7 +10,7 @@ const apis: MockMethod[] = [
         'list|1000': [
           {
             id: '@id',
-            userName: '@cname',
+            username: '@cname',
             'age|18-56': 56,
             'gender|1': ['0', '1', null],
             phone:
