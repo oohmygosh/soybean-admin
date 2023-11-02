@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { sessionStg, getRgbOfColor } from '@/utils';
+import { getRgbOfColor, sessionStg } from '@/utils';
 import { $t } from '@/locales';
 import themeSettings from '@/settings/theme.json';
 
@@ -33,8 +33,7 @@ function addThemeColorCssVars() {
 
   const { r, g, b } = getRgbOfColor(themeColor);
 
-  const cssVars = `--primary-color: ${r},${g},${b}`;
-  document.documentElement.style.cssText = cssVars;
+  document.documentElement.style.cssText = `--primary-color: ${r},${g},${b}`;
 }
 
 addThemeColorCssVars();

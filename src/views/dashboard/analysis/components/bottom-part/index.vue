@@ -61,7 +61,7 @@ const columns = [
     title: 'Tags',
     key: 'tags',
     render(row: TableData) {
-      const tags = row.tags.map(tagKey => {
+      return row.tags.map(tagKey => {
         return h(
           NTag,
           {
@@ -75,7 +75,6 @@ const columns = [
           }
         );
       });
-      return tags;
     }
   }
 ];

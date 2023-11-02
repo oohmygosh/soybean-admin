@@ -35,4 +35,4 @@ async function setupApp() {
   app.mount('#app');
 }
 
-setupApp();
+setupApp().then(r => r);

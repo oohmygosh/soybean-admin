@@ -1,13 +1,13 @@
-import { unref, nextTick } from 'vue';
+import { nextTick, unref } from 'vue';
 import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { fetchLogin, fetchUserInfo } from '@/service';
+import { useRouteStore } from '@/store';
 import { useRouterPush } from '@/composables';
 import { localStg } from '@/utils';
 import { $t } from '@/locales';
 import { useTabStore } from '../tab';
-import { useRouteStore } from '../route';
-import { getToken, getUserInfo, clearAuthStorage } from './helpers';
+import { clearAuthStorage, getToken, getUserInfo } from './helpers';
 
 interface AuthState {
   /** 用户信息 */
@@ -48,7 +48,7 @@ export const useAuthStore = defineStore('auth-store', {
       nextTick(() => {
         resetTabStore();
         resetRouteStore();
-      });
+      }).then(r => r);
     },
     /**
      * 处理登录后成功或失败的逻辑
@@ -147,7 +147,7 @@ export const useAuthStore = defineStore('auth-store', {
       if (data) {
         await this.loginByToken(data);
         resetRouteStore();
-        initAuthRoute();
+        await initAuthRoute();
       }
     }
   }

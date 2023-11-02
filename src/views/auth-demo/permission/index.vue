@@ -42,9 +42,7 @@ import { superAdmin } from '~/mock/api/auth';
 const app = useAppStore();
 const auth = useAuthStore();
 const { hasPermission } = usePermission();
-
 const options: SelectOption[] = userRoleOptions;
-
 watch(
   () => auth.userInfo.userRole,
   async () => {

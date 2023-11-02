@@ -8,6 +8,7 @@ declare namespace Auth {
    * - user: 用户
    */
   type RoleType = SuperAdmin | 'admin' | 'user';
+  type PermissionType = string;
 
   /** 用户信息 */
   interface UserInfo {
@@ -17,6 +18,8 @@ declare namespace Auth {
     userName: string;
     /** 用户角色类型 */
     userRole: RoleType[];
+    /** 用户权限编码 */
+    permissions?: PermissionType[];
   }
 }
 
