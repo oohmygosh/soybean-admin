@@ -8,10 +8,20 @@ export function getToken() {
 /** 获取用户信息 */
 export function getUserInfo() {
   const emptyInfo: Auth.UserInfo = {
-    id: '',
-    username: '',
     roles: ['user'],
-    permissions: []
+    permissions: [],
+    sysUser: {
+      id: '',
+      username: '',
+      password: '',
+      realName: '',
+      nickName: '',
+      sex: '',
+      phone: '',
+      phoneVerified: 0,
+      emailVerified: 0,
+      status: 0
+    }
   };
   return localStg.get('userInfo') || emptyInfo;
 }

@@ -12,12 +12,12 @@ export async function handleRefreshToken(axiosConfig: AxiosRequestConfig) {
   const refreshToken = localStg.get('refreshToken') || '';
   const { data } = await fetchUpdateToken(refreshToken);
   if (data) {
-    localStg.set('accessToken', data.accessToken);
-    localStg.set('refreshToken', data.refreshToken);
+    localStg.set('accessToken', `${data.token_type} ${data.access_token}`);
+    localStg.set('refreshToken', data.refresh_token);
 
     const config = { ...axiosConfig };
     if (config.headers) {
-      config.headers.Authorization = data.accessToken;
+      config.headers.Authorization = data.access_token;
     }
     return config;
   }

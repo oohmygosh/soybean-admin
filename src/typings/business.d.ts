@@ -1,5 +1,6 @@
 /** 用户相关模块 */
 declare namespace Auth {
+  import SysUser = ApiUserManagement.SysUser;
   type SuperAdmin = 'super';
   /**
    * 用户角色类型(前端静态路由用角色类型进行路由权限的控制)
@@ -12,10 +13,7 @@ declare namespace Auth {
 
   /** 用户信息 */
   interface UserInfo {
-    /** 用户id */
-    id: string;
-    /** 用户名 */
-    username: string;
+    sysUser: SysUser;
     /** 用户角色类型 */
     roles: RoleType[];
     /** 用户权限编码 */

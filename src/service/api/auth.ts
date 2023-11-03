@@ -1,6 +1,57 @@
+import { apiPrefix } from '~/.env-config';
 import { mockRequest, request } from '../request';
 
 const FORM_CONTENT_TYPE = 'application/x-www-form-urlencoded';
+
+class BaseApi {
+  protected baseUri = '';
+}
+
+class AuthApi extends BaseApi {
+  baseUri = apiPrefix.auth;
+
+  sys = apiPrefix.sys;
+
+  // eslint-disable-next-line no-useless-constructor
+  private constructor() {
+    super();
+  }
+
+  private static instance: AuthApi;
+
+  public static getInstance() {
+    if (!AuthApi.instance) AuthApi.instance = new AuthApi();
+
+    return AuthApi.instance;
+  }
+
+  /**
+   * 登录
+   * @param username - 用户名
+   * @param password - 密码
+   */
+  public fetchLogin(username: string, password: string) {
+    const client = window.btoa(import.meta.env.VITE_OAUTH2_PASSWORD_CLIENT);
+    const basicAuth = `Basic ${client}`;
+    return request.post<ApiAuth.Token>(
+      `${this.baseUri}/oauth2/token`,
+      {
+        username,
+        password,
+        grant_type: 'password',
+        scope: 'message.read'
+      },
+      {
+        headers: {
+          Authorization: basicAuth,
+          'Content-Type': FORM_CONTENT_TYPE
+        }
+      }
+    );
+  }
+}
+
+export const authApi = AuthApi.getInstance();
 
 /**
  * 获取验证码
@@ -39,7 +90,8 @@ export function fetchLogin(username: string, password: string) {
 
 /** 获取用户信息 */
 export function fetchUserInfo() {
-  return mockRequest.get<ApiAuth.UserInfo>('/getUserInfo');
+  return request.get<Auth.UserInfo>('/auth/getCurrentUserInfo');
+  // return mockRequest.get<ApiAuth.UserInfo>('/getUserInfo');
 }
 
 /**

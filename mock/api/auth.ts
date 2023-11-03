@@ -36,15 +36,16 @@ const apis: MockMethod[] = [
         };
       }
 
-      const findItem = userModel.find(item => item.username === username && item.password === password);
+      const findItem = userModel.find(item => item.sysUser.username === username && item.sysUser.password === password);
 
       if (findItem) {
         return {
           code: 200,
           message: 'ok',
           data: {
-            accessToken: findItem.accessToken,
-            refreshToken: findItem.refreshToken
+            access_token: findItem.accessToken,
+            refresh_token: findItem.refreshToken,
+            token_type: ''
           }
         };
       }
@@ -72,16 +73,29 @@ const apis: MockMethod[] = [
         };
       }
       const userInfo: Auth.UserInfo = {
-        id: '',
-        username: '',
         roles: ['user'],
-        permissions: []
+        permissions: [],
+        sysUser: {
+          id: '1',
+          createBy: 'admin',
+          createId: '1',
+          createTime: new Date(),
+          username: 'admin',
+          password: '',
+          realName: '',
+          nickName: '',
+          sex: '',
+          phone: '15666666666',
+          phoneVerified: 1,
+          emailVerified: 0,
+          status: 1
+        }
       };
       const isInUser = userModel.some(item => {
         const flag = item.accessToken === authorization;
         if (flag) {
-          const { id: itemUserId, username, roles } = item;
-          Object.assign(userInfo, { userId: itemUserId, username, roles });
+          const { sysUser, roles } = item;
+          Object.assign(userInfo, { sysUser, roles });
         }
         return flag;
       });
@@ -114,8 +128,9 @@ const apis: MockMethod[] = [
           code: 200,
           message: 'ok',
           data: {
-            accessToken: findItem.accessToken,
-            refreshToken: findItem.refreshToken
+            access_token: findItem.accessToken,
+            refresh_token: findItem.refreshToken,
+            token_type: ''
           }
         };
       }

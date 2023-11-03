@@ -1,7 +1,7 @@
 import { nextTick, unref } from 'vue';
 import { defineStore } from 'pinia';
 import { router } from '@/router';
-import { fetchLogin, fetchUserInfo } from '@/service';
+import { authApi, userApi } from '@/service';
 import { useRouteStore } from '@/store';
 import { useRouterPush } from '@/composables';
 import { localStg } from '@/utils';
@@ -70,7 +70,7 @@ export const useAuthStore = defineStore('auth-store', {
         if (route.isInitAuthRoute) {
           window.$notification?.success({
             title: $t('page.login.common.loginSuccess'),
-            content: $t('page.login.common.welcomeBack', { username: this.userInfo.username }),
+            content: $t('page.login.common.welcomeBack', { username: this.userInfo.sysUser.username }),
             duration: 3000
           });
         }
@@ -89,19 +89,19 @@ export const useAuthStore = defineStore('auth-store', {
       let successFlag = false;
 
       // 先把token存储到缓存中(后面接口的请求头需要token)
-      const { accessToken, refreshToken } = backendToken;
-      localStg.set('accessToken', accessToken);
-      localStg.set('refreshToken', refreshToken);
+      const { access_token, refresh_token, token_type } = backendToken;
+      localStg.set('accessToken', `${token_type} ${access_token}`);
+      localStg.set('refreshToken', refresh_token);
 
       // 获取用户信息
-      const { data } = await fetchUserInfo();
+      const { data } = await userApi.fetchUserInfo();
       if (data) {
         // 成功后把用户信息存储到缓存中
         localStg.set('userInfo', data);
 
         // 更新状态
         this.userInfo = data;
-        this.accessToken = accessToken;
+        this.accessToken = access_token;
 
         successFlag = true;
       }
@@ -115,7 +115,7 @@ export const useAuthStore = defineStore('auth-store', {
      */
     async login(username: string, password: string) {
       this.loginLoading = true;
-      const { data } = await fetchLogin(username, password);
+      const { data } = await authApi.fetchLogin(username, password);
       if (data) {
         await this.handleActionAfterLogin(data);
       }
@@ -128,7 +128,13 @@ export const useAuthStore = defineStore('auth-store', {
     async updateUserRole(userRole: Auth.RoleType) {
       const { resetRouteStore, initAuthRoute } = useRouteStore();
 
-      const accounts: Record<Auth.RoleType, { username: string; password: string }> = {
+      const accounts: Record<
+        Auth.RoleType,
+        {
+          username: string;
+          password: string;
+        }
+      > = {
         super: {
           username: 'Super',
           password: 'super123'
@@ -143,7 +149,7 @@ export const useAuthStore = defineStore('auth-store', {
         }
       };
       const { username, password } = accounts[userRole];
-      const { data } = await fetchLogin(username, password);
+      const { data } = await authApi.fetchLogin(username, password);
       if (data) {
         await this.loginByToken(data);
         resetRouteStore();
