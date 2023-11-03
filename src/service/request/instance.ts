@@ -57,7 +57,8 @@ export default class CustomAxiosInstance {
           const contentType = handleConfig.headers['Content-Type'] as UnionKey.ContentType;
           handleConfig.data = await transformRequestData(handleConfig.data, contentType);
           // 设置token
-          if (!handleConfig.headers.Authorization) handleConfig.headers.Authorization = localStg.get('token') || '';
+          if (!handleConfig.headers.Authorization)
+            handleConfig.headers.Authorization = localStg.get('accessToken') || '';
         }
         return handleConfig;
       },
@@ -75,6 +76,8 @@ export default class CustomAxiosInstance {
           // 请求成功
           if (backend[codeKey] === successCode) {
             return handleServiceResult(null, backend[dataKey]);
+          } else if (!backend[codeKey]) {
+            return handleServiceResult(null, backend);
           }
 
           // token失效, 刷新token

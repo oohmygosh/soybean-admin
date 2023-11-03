@@ -16,6 +16,7 @@
 import { dateZhCN, zhCN } from 'naive-ui';
 import { subscribeStore, useThemeStore } from '@/store';
 import { useGlobalEvents } from '@/composables';
+import NaiveProvider from '@/components/common/naive-provider.vue';
 
 const theme = useThemeStore();
 

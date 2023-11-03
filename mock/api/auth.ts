@@ -43,7 +43,7 @@ const apis: MockMethod[] = [
           code: 200,
           message: 'ok',
           data: {
-            token: findItem.token,
+            accessToken: findItem.accessToken,
             refreshToken: findItem.refreshToken
           }
         };
@@ -62,7 +62,7 @@ const apis: MockMethod[] = [
     response: (options: Service.MockOption): Service.MockServiceResult<ApiAuth.UserInfo | null> => {
       // 这里的mock插件得到的字段是authorization, 前端传递的是Authorization字段
       const { authorization = '' } = options.headers;
-      const REFRESH_TOKEN_CODE = 66666;
+      const REFRESH_TOKEN_CODE = 424;
 
       if (!authorization) {
         return {
@@ -72,15 +72,16 @@ const apis: MockMethod[] = [
         };
       }
       const userInfo: Auth.UserInfo = {
-        userId: '',
+        id: '',
         username: '',
-        userRole: ['user']
+        roles: ['user'],
+        permissions: []
       };
       const isInUser = userModel.some(item => {
-        const flag = item.token === authorization;
+        const flag = item.accessToken === authorization;
         if (flag) {
-          const { userId: itemUserId, username, userRole } = item;
-          Object.assign(userInfo, { userId: itemUserId, username, userRole });
+          const { id: itemUserId, username, roles } = item;
+          Object.assign(userInfo, { userId: itemUserId, username, roles });
         }
         return flag;
       });
@@ -113,7 +114,7 @@ const apis: MockMethod[] = [
           code: 200,
           message: 'ok',
           data: {
-            token: findItem.token,
+            accessToken: findItem.accessToken,
             refreshToken: findItem.refreshToken
           }
         };

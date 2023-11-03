@@ -22,10 +22,10 @@ export async function createPermissionGuard(
   }
 
   const auth = useAuthStore();
-  const isLogin = Boolean(localStg.get('token'));
+  const isLogin = Boolean(localStg.get('accessToken'));
   const permissions = to.meta.permissions || [];
   const needLogin = Boolean(to.meta?.requiresAuth) || Boolean(permissions.length);
-  const hasPermission = !permissions.length || permissions.some(item => auth.userInfo.userRole.includes(item));
+  const hasPermission = !permissions.length || permissions.some(item => auth.userInfo.roles.includes(item));
 
   const actions: Common.StrategyAction[] = [
     // 已登录状态跳转登录页，跳转至首页

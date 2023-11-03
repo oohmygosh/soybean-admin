@@ -4,7 +4,7 @@ type ServiceEnv = Record<ServiceEnvType, ServiceEnvConfig>;
 /** 不同请求服务的环境配置 */
 const serviceEnv: ServiceEnv = {
   dev: {
-    url: 'http://127.0.0.1:8000'
+    url: 'http://127.0.0.1:9999'
   },
   test: {
     url: 'http://127.0.0.1:9999'

@@ -19,26 +19,22 @@ export function fetchSmsCode(phone: string) {
 export function fetchLogin(username: string, password: string) {
   const client = window.btoa(import.meta.env.VITE_OAUTH2_PASSWORD_CLIENT);
   const basicAuth = `Basic ${client}`;
-  request
-    .post<ApiAuth.Token>(
-      '/oauth2/token',
-      {
-        username,
-        password,
-        grant_type: 'password',
-        scope: 'message.read'
-      },
-      {
-        headers: {
-          Authorization: basicAuth,
-          'Content-Type': FORM_CONTENT_TYPE
-        }
+  return request.post<ApiAuth.Token>(
+    '/auth/oauth2/token',
+    {
+      username,
+      password,
+      grant_type: 'password',
+      scope: 'message.read'
+    },
+    {
+      headers: {
+        Authorization: basicAuth,
+        'Content-Type': FORM_CONTENT_TYPE
       }
-    )
-    .then(result => {
-      console.log(result);
-    });
-  return mockRequest.post<ApiAuth.Token>('/login', { username, password });
+    }
+  );
+  // return mockRequest.post<ApiAuth.Token>('/login', { username, password });
 }
 
 /** 获取用户信息 */

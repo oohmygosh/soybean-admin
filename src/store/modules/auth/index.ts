@@ -13,7 +13,7 @@ interface AuthState {
   /** 用户信息 */
   userInfo: Auth.UserInfo;
   /** 用户token */
-  token: string;
+  accessToken: string;
   /** 登录的加载状态 */
   loginLoading: boolean;
 }
@@ -21,13 +21,13 @@ interface AuthState {
 export const useAuthStore = defineStore('auth-store', {
   state: (): AuthState => ({
     userInfo: getUserInfo(),
-    token: getToken(),
+    accessToken: getToken(),
     loginLoading: false
   }),
   getters: {
     /** 是否登录 */
     isLogin(state) {
-      return Boolean(state.token);
+      return Boolean(state.accessToken);
     }
   },
   actions: {
@@ -89,8 +89,8 @@ export const useAuthStore = defineStore('auth-store', {
       let successFlag = false;
 
       // 先把token存储到缓存中(后面接口的请求头需要token)
-      const { token, refreshToken } = backendToken;
-      localStg.set('token', token);
+      const { accessToken, refreshToken } = backendToken;
+      localStg.set('accessToken', accessToken);
       localStg.set('refreshToken', refreshToken);
 
       // 获取用户信息
@@ -101,7 +101,7 @@ export const useAuthStore = defineStore('auth-store', {
 
         // 更新状态
         this.userInfo = data;
-        this.token = token;
+        this.accessToken = accessToken;
 
         successFlag = true;
       }

@@ -13,13 +13,13 @@ declare namespace Auth {
   /** 用户信息 */
   interface UserInfo {
     /** 用户id */
-    userId: string;
+    id: string;
     /** 用户名 */
     username: string;
     /** 用户角色类型 */
-    userRole: RoleType[];
+    roles: RoleType[];
     /** 用户权限编码 */
-    permissions?: PermissionType[];
+    permissions: PermissionType[];
   }
 }
 

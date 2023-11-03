@@ -2,10 +2,10 @@
   <div class="h-full">
     <n-card title="权限切换" :bordered="false" class="h-full rounded-8px shadow-sm">
       <div class="pb-12px">
-        <n-gradient-text type="primary" :size="20">当前用户的权限：{{ auth.userInfo.userRole }}</n-gradient-text>
+        <n-gradient-text type="primary" :size="20">当前用户的权限：{{ auth.userInfo.roles }}</n-gradient-text>
       </div>
       <n-select
-        :value="auth.userInfo.userRole"
+        :value="auth.userInfo.roles"
         class="w-120px"
         size="small"
         :options="options"
@@ -44,7 +44,7 @@ const auth = useAuthStore();
 const { hasPermission } = usePermission();
 const options: SelectOption[] = userRoleOptions;
 watch(
-  () => auth.userInfo.userRole,
+  () => auth.userInfo.roles,
   async () => {
     await app.reloadPage();
   }

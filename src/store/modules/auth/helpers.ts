@@ -2,22 +2,23 @@ import { localStg } from '@/utils';
 
 /** 获取token */
 export function getToken() {
-  return localStg.get('token') || '';
+  return localStg.get('accessToken') || '';
 }
 
 /** 获取用户信息 */
 export function getUserInfo() {
   const emptyInfo: Auth.UserInfo = {
-    userId: '',
+    id: '',
     username: '',
-    userRole: ['user']
+    roles: ['user'],
+    permissions: []
   };
   return localStg.get('userInfo') || emptyInfo;
 }
 
 /** 去除用户相关缓存 */
 export function clearAuthStorage() {
-  localStg.remove('token');
+  localStg.remove('accessToken');
   localStg.remove('refreshToken');
   localStg.remove('userInfo');
 }
