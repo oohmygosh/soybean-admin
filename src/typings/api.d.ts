@@ -24,6 +24,25 @@ declare namespace ApiRoute {
   }
 }
 
+declare interface Page<T> {
+  current: number;
+  optimizeCountSql: boolean;
+  orders: [];
+  pages: number;
+  records: T[];
+  searchCount: boolean;
+  size: number;
+  total: number;
+}
+
+declare interface PageParam<T> {
+  page: number;
+  pageSize: number;
+
+  orderItem?: { column: string; asc: boolean };
+  data?: T;
+}
+
 declare interface BaseEntity {
   // 主键
   id: string;
@@ -92,5 +111,42 @@ declare namespace ApiUserManagement {
     emailVerified: number;
     // 状态 0、禁用 1、正常
     status: number;
+  }
+}
+
+declare namespace ApiResourceManager {
+  interface SysResource extends BaseEntity {
+    // 父ID
+    pid?: number;
+    // 名称
+    title?: string;
+    // 别名
+    alias?: string;
+    // 类型 0，菜单 1，iframe 2，外链 3，按钮
+    type?: number;
+    // 编码
+    code?: string;
+    // 重定向
+    redirect?: string;
+    // 文件路径
+    path?: string;
+    // 图标
+    icon?: string;
+    // 状态 0、禁用 1、正常
+    status?: number;
+    // 排序
+    sort?: number;
+    // 视图
+    component?: string;
+    // 颜色
+    color?: string;
+    // 隐藏菜单
+    hidden?: boolean;
+    // Tag配置
+    meta: AuthRoute.RouteMeta<AuthRoute.RoutePath>;
+    // 父组件名
+    parentName?: string;
+    // 子节点
+    children?: SysResource[];
   }
 }

@@ -70,7 +70,7 @@ export default class CustomAxiosInstance {
     this.instance.interceptors.response.use(
       (async response => {
         const { status, config } = response;
-        if (status === 200 || status < 300 || status === 304) {
+        if (status === 200 || status < 300 || status === 304 || status === 424) {
           const backend = response.data;
           const { codeKey, dataKey, successCode } = this.backendConfig;
           // 请求成功

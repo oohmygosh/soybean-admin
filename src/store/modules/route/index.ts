@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ROOT_ROUTE, constantRoutes, router, routes as staticRoutes } from '@/router';
-import { fetchUserRoutes } from '@/service';
+import { resourceApi } from '@/service';
 import {
   localStg,
   filterAuthRoutesByUserPermission,
@@ -115,14 +115,13 @@ export const useRouteStore = defineStore('route-store', {
       if (!sysUser?.id) {
         throw new Error('userId 不能为空!');
       }
-      const { error, data } = await fetchUserRoutes(sysUser.id);
-
+      const { error, data } = await resourceApi.fetchUserRoutes();
       if (!error) {
-        this.handleAuthRoute(sortRoutes(data?.routes));
+        this.handleAuthRoute(sortRoutes(data));
         // home相关处理需要在最后，否则会出现找不到主页404的情况
-        this.routeHomeName = data?.home ? 'dashboard_analysis' : data?.home;
-        this.handleUpdateRootRedirect(data.home);
-        initHomeTab(data?.home, router);
+        this.routeHomeName = 'dashboard_analysis';
+        this.handleUpdateRootRedirect('dashboard_analysis');
+        initHomeTab('dashboard_analysis', router);
 
         this.isInitAuthRoute = true;
       } else {

@@ -3,19 +3,12 @@ import { mockRequest, request } from '../request';
 
 const FORM_CONTENT_TYPE = 'application/x-www-form-urlencoded';
 
-class BaseApi {
-  protected baseUri = '';
-}
-
-class AuthApi extends BaseApi {
+class AuthApi {
   baseUri = apiPrefix.auth;
 
-  sys = apiPrefix.sys;
+  basicAuth = `Basic ${window.btoa(import.meta.env.VITE_OAUTH2_PASSWORD_CLIENT)}`;
 
-  // eslint-disable-next-line no-useless-constructor
-  private constructor() {
-    super();
-  }
+  private constructor() {}
 
   private static instance: AuthApi;
 
@@ -31,8 +24,6 @@ class AuthApi extends BaseApi {
    * @param password - 密码
    */
   public fetchLogin(username: string, password: string) {
-    const client = window.btoa(import.meta.env.VITE_OAUTH2_PASSWORD_CLIENT);
-    const basicAuth = `Basic ${client}`;
     return request.post<ApiAuth.Token>(
       `${this.baseUri}/oauth2/token`,
       {
@@ -43,7 +34,23 @@ class AuthApi extends BaseApi {
       },
       {
         headers: {
-          Authorization: basicAuth,
+          Authorization: this.basicAuth,
+          'Content-Type': FORM_CONTENT_TYPE
+        }
+      }
+    );
+  }
+
+  public fetchUpdateToken(refreshToken: string) {
+    return request.post<ApiAuth.Token>(
+      `${this.baseUri}/oauth2/token`,
+      {
+        refresh_token: refreshToken,
+        grant_type: 'refresh_token'
+      },
+      {
+        headers: {
+          Authorization: this.basicAuth,
           'Content-Type': FORM_CONTENT_TYPE
         }
       }

@@ -1,27 +1,27 @@
 import { BaseApi, request } from '@/service/request';
 import { apiPrefix } from '~/.env-config';
-import SysUser = ApiUserManagement.SysUser;
 
-class SysUserApi extends BaseApi<SysUser> {
-  protected baseUri = `${apiPrefix.sys}/user`;
+class SysResourceApi extends BaseApi<ApiResourceManager.SysResource> {
+  protected baseUri = `${apiPrefix.sys}/resource`;
 
   private constructor() {
     super();
   }
 
-  private static instance: SysUserApi;
+  private static instance: SysResourceApi;
 
   public static getInstance() {
-    if (!SysUserApi.instance) SysUserApi.instance = new SysUserApi();
-    return SysUserApi.instance;
+    if (!SysResourceApi.instance) SysResourceApi.instance = new SysResourceApi();
+    return SysResourceApi.instance;
   }
 
   /**
-   * 获取登录用户信息
+   * 获取用户路由
    */
-  public fetchUserInfo() {
-    return request.get<Auth.UserInfo>(`${this.baseUri}/getCurrentUserInfo`);
+  public async fetchUserRoutes() {
+    // const { data, error } = await request.get<AuthRoute.Route[]>(`${this.baseUri}/list-menu-permissions`);
+    return request.get<AuthRoute.Route[]>(`${this.baseUri}/list-menu-permissions`);
   }
 }
 
-export const userApi = SysUserApi.getInstance();
+export const resourceApi = SysResourceApi.getInstance();

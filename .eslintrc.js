@@ -8,6 +8,13 @@ module.exports = {
       }
     },
     {
+      files: ['*.ts'],
+      rules: {
+        'no-useless-constructor': 'off',
+        'no-empty-function': 'off'
+      }
+    },
+    {
       files: ['*.vue'],
       rules: {
         'no-undef': 'off', // use tsc to check the ts code of the vue
