@@ -1,9 +1,10 @@
 <template>
   <n-popover placement="bottom" trigger="click">
     <template #trigger>
-      <n-button size="small" type="primary">
-        <icon-ant-design-setting-outlined class="mr-4px text-16px" />
-        表格列设置
+      <n-button quaternary circle size="large" type="primary">
+        <template #icon>
+          <icon-ant-design-setting-outlined />
+        </template>
       </n-button>
     </template>
     <div class="w-180px">

@@ -1,13 +1,13 @@
-export function adapterOfFetchUserList(data: ApiUserManagement.User[] | null): UserManagement.User[] {
-  if (!data) return [];
-
-  return data.map((item, index) => {
-    const user: UserManagement.User = {
-      index: index + 1,
-      key: item.id,
+export function adapterOfFetchPage<T extends Page<M>, M extends BaseEntity>(data: T | null): T {
+  if (!data) return <T>{};
+  const { current, size } = data;
+  let startIndex = current * size - size;
+  data.records = data.records.map(item => {
+    const entity: M = {
+      index: ++startIndex,
       ...item
     };
-
-    return user;
+    return entity;
   });
+  return data;
 }

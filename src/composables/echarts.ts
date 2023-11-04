@@ -140,7 +140,7 @@ export function useEcharts(
       }
       if (canRender()) {
         if (!isRendered()) {
-          render();
+          render().then(r => r);
         } else {
           resize();
         }

@@ -36,10 +36,13 @@ declare interface Page<T> {
 }
 
 declare interface PageParam<T> {
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
 
-  orderItem?: { column: string; asc: boolean };
+  orderItem?: {
+    column: string;
+    asc: boolean;
+  };
   data?: T;
 }
 
@@ -90,27 +93,27 @@ declare namespace ApiUserManagement {
 
   interface SysUser extends BaseEntity {
     // 用户名
-    username: string;
+    username?: string;
     // 密码
-    password: string;
+    password?: string;
     // 真实名称
-    realName: string;
+    realName?: string;
     // 昵称
-    nickName: string;
+    nickName?: string;
     // 头像
     avatar?: string;
     // 性别
-    sex: string;
+    sex?: string;
     // 手机号
-    phone: string;
+    phone?: string;
     // 手机号是否验证 0、否 1、是
-    phoneVerified: number;
+    phoneVerified?: number;
     // 邮箱
     email?: string;
     // 邮箱是否验证 0、否 1、是
-    emailVerified: number;
+    emailVerified?: number;
     // 状态 0、禁用 1、正常
-    status: number;
+    status?: number;
   }
 }
 

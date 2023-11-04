@@ -4,23 +4,27 @@
       <div class="flex-col h-full">
         <n-space class="pb-12px" justify="space-between">
           <n-space>
-            <n-button type="primary" @click="handleAddTable">
-              <icon-ic-round-plus class="mr-4px text-20px" />
-              新增
+            <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
+              <template #icon>
+                <icon-ic-round-plus />
+              </template>
             </n-button>
-            <n-button type="error">
-              <icon-ic-round-delete class="mr-4px text-20px" />
-              删除
+            <n-button strong secondary size="medium" circle type="error">
+              <template #icon>
+                <icon-ic-round-delete />
+              </template>
             </n-button>
-            <n-button type="success">
-              <icon-uil:export class="mr-4px text-20px" />
-              导出Excel
+            <n-button strong secondary size="medium" circle type="success">
+              <template #icon>
+                <icon-uil-export />
+              </template>
             </n-button>
           </n-space>
           <n-space align="center" :size="18">
-            <n-button size="small" type="primary" @click="getTableData">
-              <icon-mdi-refresh class="mr-4px text-16px" :class="{ 'animate-spin': loading }" />
-              刷新表格
+            <n-button quaternary size="large" circle type="primary" @click="getTableData">
+              <template #icon>
+                <icon-mdi-refresh :class="{ 'animate-spin': loading }" />
+              </template>
             </n-button>
             <column-setting v-model:columns="columns" />
           </n-space>
@@ -40,19 +44,40 @@
 </template>
 
 <script setup lang="tsx">
-import { reactive, ref } from 'vue';
 import type { Ref } from 'vue';
-import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { nextTick, onMounted, reactive, ref } from 'vue';
 import type { DataTableColumns, PaginationProps } from 'naive-ui';
-import { genderLabels, userStatusLabels } from '@/constants';
-import { fetchUserList } from '@/service';
+import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { userStatusLabels } from '@/constants';
+import { userApi } from '@/service';
 import { useBoolean, useLoading } from '@/hooks';
-import TableActionModal from './components/table-action-modal.vue';
 import type { ModalType } from './components/table-action-modal.vue';
+import TableActionModal from './components/table-action-modal.vue';
 import ColumnSetting from './components/column-setting.vue';
 
 const { loading, startLoading, endLoading } = useLoading(false);
 const { bool: visible, setTrue: openModal } = useBoolean();
+
+const pagination: PaginationProps = reactive({
+  page: 1,
+  pageSize: 1,
+  showSizePicker: true,
+  pageSizes: [1, 15, 20, 25, 30],
+  onChange: (page: number) => {
+    pagination.page = page;
+  },
+  onUpdatePageSize: (pageSize: number) => {
+    pagination.pageSize = pageSize;
+    pagination.page = 1;
+  },
+  prefix({ itemCount }) {
+    return `Total is ${itemCount}.`;
+  }
+});
+
+onMounted(() => {
+  init();
+});
 
 const tableData = ref<UserManagement.User[]>([]);
 
@@ -62,16 +87,21 @@ function setTableData(data: UserManagement.User[]) {
 
 async function getTableData() {
   startLoading();
-  const { data } = await fetchUserList();
+  const { data } = await userApi.page({
+    page: pagination.page,
+    pageSize: pagination.pageSize
+  });
   if (data) {
-    setTimeout(() => {
-      setTableData(data);
+    await nextTick(() => {
+      setTableData(data.records as UserManagement.User[]);
+      pagination.page = data.current;
+      pagination.pageCount = data.total;
       endLoading();
-    }, 1000);
+    });
   }
 }
 
-const columns: Ref<DataTableColumns<UserManagement.User>> = ref([
+const columns = ref([
   {
     type: 'selection',
     align: 'center'
@@ -79,43 +109,14 @@ const columns: Ref<DataTableColumns<UserManagement.User>> = ref([
   {
     key: 'index',
     title: '序号',
-    align: 'center'
+    align: 'center',
+    width: 100,
+    sorter: 'default',
+    resizable: true
   },
   {
     key: 'username',
-    title: '用户名',
-    align: 'center'
-  },
-  {
-    key: 'age',
-    title: '用户年龄',
-    align: 'center'
-  },
-  {
-    key: 'gender',
-    title: '性别',
-    align: 'center',
-    render: row => {
-      if (row.gender) {
-        const tagTypes: Record<UserManagement.GenderKey, NaiveUI.ThemeColor> = {
-          '0': 'success',
-          '1': 'warning'
-        };
-
-        return <NTag type={tagTypes[row.gender]}>{genderLabels[row.gender]}</NTag>;
-      }
-
-      return <span></span>;
-    }
-  },
-  {
-    key: 'phone',
-    title: '手机号码',
-    align: 'center'
-  },
-  {
-    key: 'email',
-    title: '邮箱',
+    title: '账号',
     align: 'center'
   },
   {
@@ -123,7 +124,7 @@ const columns: Ref<DataTableColumns<UserManagement.User>> = ref([
     title: '状态',
     align: 'center',
     render: row => {
-      if (row.userStatus) {
+      if (row.status) {
         const tagTypes: Record<UserManagement.UserStatusKey, NaiveUI.ThemeColor> = {
           '1': 'success',
           '2': 'error',
@@ -131,10 +132,62 @@ const columns: Ref<DataTableColumns<UserManagement.User>> = ref([
           '4': 'default'
         };
 
-        return <NTag type={tagTypes[row.userStatus]}>{userStatusLabels[row.userStatus]}</NTag>;
+        return <NTag type={tagTypes[row.status]}>{userStatusLabels[row.status]}</NTag>;
       }
       return <span></span>;
     }
+  },
+  {
+    key: 'avatar',
+    title: '头像',
+    align: 'center',
+    render: row => {
+      if (row.avatar) {
+        return <n-avatar src={row.avatar} size="small" round />;
+      }
+      const firstName = !row.avatar ? String(row.realName).substring(0, 1) : '';
+      return (
+        <n-avatar src={row.avatar} size="small" round>
+          {firstName}
+        </n-avatar>
+      );
+    }
+  },
+  {
+    key: 'realName',
+    title: '姓名',
+    align: 'center'
+  },
+  {
+    key: 'gender',
+    title: '性别',
+    align: 'center',
+    render: row => {
+      if (row.sex) {
+        return <NTag type={row.sex === '男' ? 'success' : 'warning'}>{row.sex}</NTag>;
+      }
+      return <span></span>;
+    }
+  },
+  {
+    key: 'updateBy',
+    title: '修改人',
+    align: 'center'
+  },
+  {
+    key: 'updateTime',
+    title: '修改时间',
+    align: 'center'
+  },
+  {
+    key: 'createBy',
+    title: '创建人',
+    align: 'center'
+  },
+  {
+    key: 'createTime',
+    title: '创建时间',
+    align: 'center'
   },
   {
     key: 'actions',
@@ -143,13 +196,17 @@ const columns: Ref<DataTableColumns<UserManagement.User>> = ref([
     render: row => {
       return (
         <NSpace justify={'center'}>
-          <NButton size={'small'} onClick={() => handleEditTable(row.id)}>
-            编辑
+          <NButton strong secondary size={'small'} onClick={() => handleEditTable(row.id)}>
+            {{ icon: () => <icon-mdi-credit-card-edit-outline /> }}
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDeleteTable(row.id)}>
             {{
               default: () => '确认删除',
-              trigger: () => <NButton size={'small'}>删除</NButton>
+              trigger: () => (
+                <NButton strong secondary type="error" size={'small'}>
+                  {{ icon: () => <icon-ic-round-delete /> }}
+                </NButton>
+              )
             }}
           </NPopconfirm>
         </NSpace>
@@ -188,26 +245,9 @@ function handleDeleteTable(rowId: string) {
   window.$message?.info(`点击了删除，rowId为${rowId}`);
 }
 
-const pagination: PaginationProps = reactive({
-  page: 1,
-  pageSize: 10,
-  showSizePicker: true,
-  pageSizes: [10, 15, 20, 25, 30],
-  onChange: (page: number) => {
-    pagination.page = page;
-  },
-  onUpdatePageSize: (pageSize: number) => {
-    pagination.pageSize = pageSize;
-    pagination.page = 1;
-  }
-});
-
 function init() {
   getTableData();
 }
-
-// 初始化
-init();
 </script>
 
 <style scoped></style>

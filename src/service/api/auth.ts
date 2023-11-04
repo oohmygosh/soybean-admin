@@ -1,3 +1,4 @@
+import { localStg } from '@/utils';
 import { apiPrefix } from '~/.env-config';
 import { mockRequest, request } from '../request';
 
@@ -24,6 +25,7 @@ class AuthApi {
    * @param password - 密码
    */
   public fetchLogin(username: string, password: string) {
+    localStg.set('accessToken', this.basicAuth);
     return request.post<ApiAuth.Token>(
       `${this.baseUri}/oauth2/token`,
       {
@@ -34,14 +36,18 @@ class AuthApi {
       },
       {
         headers: {
-          Authorization: this.basicAuth,
           'Content-Type': FORM_CONTENT_TYPE
         }
       }
     );
   }
 
+  /**
+   * 刷新AccessToken
+   * @param refreshToken - 刷新token
+   */
   public fetchUpdateToken(refreshToken: string) {
+    localStg.set('accessToken', this.basicAuth);
     return request.post<ApiAuth.Token>(
       `${this.baseUri}/oauth2/token`,
       {
@@ -50,7 +56,6 @@ class AuthApi {
       },
       {
         headers: {
-          Authorization: this.basicAuth,
           'Content-Type': FORM_CONTENT_TYPE
         }
       }
@@ -67,53 +72,4 @@ export const authApi = AuthApi.getInstance();
  */
 export function fetchSmsCode(phone: string) {
   return mockRequest.post<boolean>('/getSmsCode', { phone });
-}
-
-/**
- * 登录
- * @param username - 用户名
- * @param password - 密码
- */
-export function fetchLogin(username: string, password: string) {
-  const client = window.btoa(import.meta.env.VITE_OAUTH2_PASSWORD_CLIENT);
-  const basicAuth = `Basic ${client}`;
-  return request.post<ApiAuth.Token>(
-    '/auth/oauth2/token',
-    {
-      username,
-      password,
-      grant_type: 'password',
-      scope: 'message.read'
-    },
-    {
-      headers: {
-        Authorization: basicAuth,
-        'Content-Type': FORM_CONTENT_TYPE
-      }
-    }
-  );
-  // return mockRequest.post<ApiAuth.Token>('/login', { username, password });
-}
-
-/** 获取用户信息 */
-export function fetchUserInfo() {
-  return request.get<Auth.UserInfo>('/auth/getCurrentUserInfo');
-  // return mockRequest.get<ApiAuth.UserInfo>('/getUserInfo');
-}
-
-/**
- * 获取用户路由数据
- * @param userId - 用户id
- * @description 后端根据用户id查询到对应的角色类型，并将路由筛选出对应角色的路由数据返回前端
- */
-export function fetchUserRoutes(userId: string) {
-  return mockRequest.post<ApiRoute.Route>('/getUserRoutes', { userId });
-}
-
-/**
- * 刷新token
- * @param refreshToken
- */
-export function fetchUpdateToken(refreshToken: string) {
-  return mockRequest.post<ApiAuth.Token>('/updateToken', { refreshToken });
 }

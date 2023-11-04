@@ -44,9 +44,7 @@ export function handleAxiosError(axiosError: AxiosError) {
       Boolean(axiosError.response),
       () => {
         const errorCode: ErrorStatus = (axiosError.response?.status as ErrorStatus) || 'DEFAULT';
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        const msg = axiosError.response?.data?.message || ERROR_STATUS[errorCode];
+        const msg = ERROR_STATUS[errorCode];
         Object.assign(error, { code: errorCode, msg });
       }
     ]

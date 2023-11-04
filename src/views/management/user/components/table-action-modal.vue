@@ -6,10 +6,10 @@
           <n-input v-model:value="formModel.username" />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="年龄" path="age">
-          <n-input-number v-model:value="formModel.age" clearable />
+          <n-input-number v-model="formModel.nickName" clearable />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="性别" path="gender">
-          <n-radio-group v-model:value="formModel.gender">
+          <n-radio-group v-model:value="formModel.sex">
             <n-radio v-for="item in genderOptions" :key="item.value" :value="item.value">{{ item.label }}</n-radio>
           </n-radio-group>
         </n-form-item-grid-item>
@@ -20,7 +20,7 @@
           <n-input v-model:value="formModel.email" />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="状态" path="userStatus">
-          <n-select v-model:value="formModel.userStatus" :options="userStatusOptions" />
+          <n-select v-model:value="formModel.status" :options="userStatusOptions" />
         </n-form-item-grid-item>
       </n-grid>
       <n-space class="w-full pt-16px" :size="24" justify="end">
@@ -87,27 +87,24 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<UserManagement.User, 'username' | 'age' | 'gender' | 'phone' | 'email' | 'userStatus'>;
+type FormModel = Pick<UserManagement.User, 'username' | 'phone' | 'email' | 'status' | 'sex' | 'nickName'>;
 
 const formModel = reactive<FormModel>(createDefaultFormModel());
 
 const rules: Record<keyof FormModel, FormItemRule | FormItemRule[]> = {
   username: createRequiredFormRule('请输入用户名'),
-  age: createRequiredFormRule('请输入年龄'),
-  gender: createRequiredFormRule('请选择性别'),
+  nickName: createRequiredFormRule('请输入年龄'),
+  sex: createRequiredFormRule('请选择性别'),
   phone: formRules.phone,
   email: formRules.email,
-  userStatus: createRequiredFormRule('请选择用户状态')
+  status: createRequiredFormRule('请选择用户状态')
 };
 
 function createDefaultFormModel(): FormModel {
   return {
     username: '',
-    age: null,
-    gender: null,
     phone: '',
-    email: null,
-    userStatus: null
+    status: 0
   };
 }
 

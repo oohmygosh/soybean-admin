@@ -11,6 +11,7 @@ module.exports = {
       files: ['*.ts'],
       rules: {
         'no-useless-constructor': 'off',
+        'no-plusplus': 'off',
         'no-empty-function': 'off'
       }
     },

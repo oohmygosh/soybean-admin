@@ -22,11 +22,9 @@ declare namespace Auth {
 }
 
 declare namespace UserManagement {
-  interface User extends ApiUserManagement.User {
+  interface User extends ApiUserManagement.SysUser {
     /** 序号 */
     index: number;
-    /** 表格的key（id） */
-    key: string;
   }
 
   /**
@@ -34,7 +32,7 @@ declare namespace UserManagement {
    * - 0: 女
    * - 1: 男
    */
-  type GenderKey = NonNullable<User['gender']>;
+  type GenderKey = NonNullable<User['sex']>;
 
   /**
    * 用户状态
@@ -43,5 +41,5 @@ declare namespace UserManagement {
    * - 3: 冻结
    * - 4: 软删除
    */
-  type UserStatusKey = NonNullable<User['userStatus']>;
+  type UserStatusKey = NonNullable<User['status']>;
 }

@@ -19,7 +19,6 @@ class SysResourceApi extends BaseApi<ApiResourceManager.SysResource> {
    * 获取用户路由
    */
   public async fetchUserRoutes() {
-    // const { data, error } = await request.get<AuthRoute.Route[]>(`${this.baseUri}/list-menu-permissions`);
     return request.get<AuthRoute.Route[]>(`${this.baseUri}/list-menu-permissions`);
   }
 }

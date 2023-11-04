@@ -1,4 +1,6 @@
 import type { AxiosRequestConfig } from 'axios';
+import { adapter } from '@/utils';
+import { adapterOfFetchPage } from '@/service/api/management.adapter';
 import { getServiceEnvConfig } from '~/.env-config';
 import { createRequest } from './request';
 
@@ -10,7 +12,7 @@ export const request = createRequest({ baseURL: isHttpProxy ? proxyPattern : url
 
 export const mockRequest = createRequest({ baseURL: '/mock' });
 
-export class BaseApi<M> {
+export class BaseApi<M extends BaseEntity> {
   protected baseUri = '';
 
   /**
@@ -18,7 +20,14 @@ export class BaseApi<M> {
    * @param param
    * @param config
    */
-  save = <T extends { id?: number | string }>(param: T, config?: AxiosRequestConfig) => {
+  save = <
+    T extends {
+      id?: number | string;
+    }
+  >(
+    param: T,
+    config?: AxiosRequestConfig
+  ) => {
     return request.post<boolean | number>(
       param.id ? `${this.baseUri}/update` : `${this.baseUri}/create`,
       param,
@@ -40,8 +49,8 @@ export class BaseApi<M> {
    * @param param
    * @param config
    */
-  page = <T extends BaseEntity>(param?: PageParam<T>, config?: AxiosRequestConfig) => {
-    return request.post<Page<M>>(`${this.baseUri}/page`, param || {}, config);
+  page = async (param?: PageParam<M>, config?: AxiosRequestConfig) => {
+    return adapter(adapterOfFetchPage, await request.post<Page<M>>(`${this.baseUri}/page`, param, config));
   };
 
   /**
