@@ -1,14 +1,10 @@
-import { request } from '@/service/request';
+import { BaseApi, request } from '@/service/request';
 import { apiPrefix } from '~/.env-config';
+import SysUser = ApiUserManagement.SysUser;
 
-class BaseApi {
-  protected baseUri = '';
-}
-
-class SysUserApi extends BaseApi {
+class SysUserApi extends BaseApi<SysUser> {
   protected baseUri = `${apiPrefix.sys}/user`;
 
-  // eslint-disable-next-line no-useless-constructor
   private constructor() {
     super();
   }
