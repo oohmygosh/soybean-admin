@@ -1,15 +1,6 @@
 <template>
-  <div class="overflow-hidden">
+  <div class="overflow-y-auto">
     <n-card title="用户管理" :bordered="false" class="h-full rounded-8px shadow-sm">
-      <!-- <s-table
-        :columns="columns"
-        :data="tableData"
-        :loading="loading"
-        :scroll-x="1800"
-        :remote="true"
-        :row-key="data => data.id"
-        :pagination="pagination"
-      /> -->
       <div class="flex-col h-full">
         <n-space class="pb-12px" justify="space-between">
           <n-space>
@@ -30,7 +21,7 @@
             </n-button>
           </n-space>
           <n-space align="center" :size="18">
-            <n-button quaternary size="large" circle type="primary" @click="getTableData">
+            <n-button quaternary size="large" circle type="primary">
               <template #icon>
                 <icon-mdi-refresh :class="{ 'animate-spin': loading }" />
               </template>
@@ -38,17 +29,7 @@
             <column-setting v-model:columns="columns" />
           </n-space>
         </n-space>
-        <n-data-table
-          :columns="columns"
-          :data="tableData"
-          :loading="loading"
-          :scroll-x="1800"
-          :remote="true"
-          :row-key="data => data.id"
-          :pagination="pagination"
-          flex-height
-          class="flex-1-hidden"
-        />
+        <s-table ref="tableRef" :columns="columns" :api="userApi.page" />
         <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
       </div>
     </n-card>
@@ -57,64 +38,22 @@
 
 <script setup lang="tsx">
 import type { Ref } from 'vue';
-import { nextTick, onMounted, reactive, ref } from 'vue';
-import type { DataTableColumns, PaginationProps } from 'naive-ui';
+import { ref } from 'vue';
+import type { DataTableColumns } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { $ref } from 'vue/macros';
 import { userStatusLabels } from '@/constants';
 import { userApi } from '@/service';
 import { useBoolean, useLoading } from '@/hooks';
+import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
+import ColumnSetting from '@/views/management/user/components/column-setting.vue';
+import type { STableElement } from '@/components/table';
 import type { ModalType } from './components/table-action-modal.vue';
-import TableActionModal from './components/table-action-modal.vue';
-import ColumnSetting from './components/column-setting.vue';
 
-const { loading, startLoading, endLoading } = useLoading(false);
+const { loading } = useLoading(false);
 const { bool: visible, setTrue: openModal } = useBoolean();
-const pagination: PaginationProps = reactive({
-  page: 1,
-  pageCount: 1,
-  pageSize: 10,
-  pageSizes: [10, 20, 30],
-  showQuickJumper: true,
-  showSizePicker: true,
-  prefix({ itemCount }) {
-    return `Total is ${itemCount}.`;
-  },
-  onChange: (page: number) => {
-    pagination.page = page;
-    getTableData();
-  },
-  onUpdatePageSize: (pageSize: number) => {
-    pagination.pageSize = pageSize;
-    pagination.page = 1;
-    getTableData();
-  }
-});
 
-onMounted(() => {
-  init();
-});
-
-const tableData = ref<UserManagement.User[]>([]);
-
-function setTableData(data: UserManagement.User[]) {
-  tableData.value = data;
-}
-
-async function getTableData() {
-  startLoading();
-  const { data } = await userApi.page({
-    page: pagination.page,
-    pageSize: pagination.pageSize
-  });
-  if (data) {
-    await nextTick(() => {
-      setTableData(data.records as UserManagement.User[]);
-      pagination.page = data.current;
-      pagination.itemCount = data.total;
-      endLoading();
-    });
-  }
-}
+const tableRef = $ref<STableElement>();
 
 const columns = ref([
   {
@@ -126,7 +65,6 @@ const columns = ref([
     title: '序号',
     align: 'center',
     width: 100,
-    sorter: 'default',
     resizable: true
   },
   {
@@ -237,10 +175,10 @@ function setModalType(type: ModalType) {
   modalType.value = type;
 }
 
-const editData = ref<UserManagement.User | null>(null);
+let editData = $ref<UserManagement.User | null>(null);
 
 function setEditData(data: UserManagement.User | null) {
-  editData.value = data;
+  editData = data;
 }
 
 function handleAddTable() {
@@ -249,7 +187,7 @@ function handleAddTable() {
 }
 
 function handleEditTable(rowId: string) {
-  const findItem = tableData.value.find(item => item.id === rowId);
+  const findItem = tableRef?.getData().find((item: typeof editData) => item?.id === rowId);
   if (findItem) {
     setEditData(findItem);
   }
@@ -259,10 +197,6 @@ function handleEditTable(rowId: string) {
 
 function handleDeleteTable(rowId: string) {
   window.$message?.info(`点击了删除，rowId为${rowId}`);
-}
-
-function init() {
-  getTableData();
 }
 </script>
 

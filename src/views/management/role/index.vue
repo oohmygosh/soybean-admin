@@ -1,6 +1,13 @@
 <template>
   <div>角色管理</div>
-  <n-data-table :columns="columns" :data="data" :summary="summary" />
+  <n-data-table
+    :columns="columns"
+    :data="data"
+    :summary="summary"
+    :pagination="{
+      pageSize: 10
+    }"
+  />
 </template>
 
 <script lang="ts" setup>
