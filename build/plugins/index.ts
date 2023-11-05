@@ -5,6 +5,8 @@ import unocss from '@unocss/vite';
 import progress from 'vite-plugin-progress';
 import VueDevtools from 'vite-plugin-vue-devtools';
 import pageRoute from '@soybeanjs/vite-plugin-vue-page-route';
+import VueMacros from 'unplugin-vue-macros/vite';
+import macrosConfig from './macros-config';
 import unplugin from './unplugin';
 import mock from './mock';
 import visualizer from './visualizer';
@@ -27,7 +29,8 @@ export function setupVitePlugins(viteEnv: ImportMetaEnv): (PluginOption | Plugin
     ...unplugin(viteEnv),
     unocss(),
     mock(viteEnv),
-    progress()
+    progress(),
+    VueMacros(macrosConfig)
   ];
 
   if (viteEnv.VITE_VISUALIZER === 'Y') {

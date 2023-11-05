@@ -99,6 +99,7 @@
     "@unocss/vite": "0.56.5",
     "@vitejs/plugin-vue": "4.4.0",
     "@vitejs/plugin-vue-jsx": "3.0.2",
+    "@vue-macros/volar": "^0.17.2",
     "cross-env": "7.0.3",
     "eslint": "8.51.0",
     "eslint-config-soybeanjs": "0.5.7",

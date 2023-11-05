@@ -1,6 +1,15 @@
 <template>
   <div class="overflow-hidden">
     <n-card title="用户管理" :bordered="false" class="h-full rounded-8px shadow-sm">
+      <!-- <s-table
+        :columns="columns"
+        :data="tableData"
+        :loading="loading"
+        :scroll-x="1800"
+        :remote="true"
+        :row-key="data => data.id"
+        :pagination="pagination"
+      /> -->
       <div class="flex-col h-full">
         <n-space class="pb-12px" justify="space-between">
           <n-space>
@@ -42,7 +51,6 @@
         />
         <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
       </div>
-      <s-table :data="tableData"></s-table>
     </n-card>
   </div>
 </template>
