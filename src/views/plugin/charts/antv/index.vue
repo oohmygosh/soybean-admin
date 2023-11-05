@@ -221,7 +221,7 @@ function renderBarChart() {
   chart.tooltip({
     showMarkers: false
   });
-  chart.interval().position('type*value');
+  chart.interval().position('types*value');
   chart.interaction('element-active');
 
   // 添加文本标注

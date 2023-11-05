@@ -33,12 +33,16 @@
           :columns="columns"
           :data="tableData"
           :loading="loading"
+          :scroll-x="1800"
+          :remote="true"
+          :row-key="data => data.id"
           :pagination="pagination"
           flex-height
           class="flex-1-hidden"
         />
         <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
       </div>
+      <s-table :data="tableData"></s-table>
     </n-card>
   </div>
 </template>
@@ -57,21 +61,24 @@ import ColumnSetting from './components/column-setting.vue';
 
 const { loading, startLoading, endLoading } = useLoading(false);
 const { bool: visible, setTrue: openModal } = useBoolean();
-
 const pagination: PaginationProps = reactive({
   page: 1,
-  pageSize: 1,
+  pageCount: 1,
+  pageSize: 10,
+  pageSizes: [10, 20, 30],
+  showQuickJumper: true,
   showSizePicker: true,
-  pageSizes: [1, 15, 20, 25, 30],
+  prefix({ itemCount }) {
+    return `Total is ${itemCount}.`;
+  },
   onChange: (page: number) => {
     pagination.page = page;
+    getTableData();
   },
   onUpdatePageSize: (pageSize: number) => {
     pagination.pageSize = pageSize;
     pagination.page = 1;
-  },
-  prefix({ itemCount }) {
-    return `Total is ${itemCount}.`;
+    getTableData();
   }
 });
 
@@ -95,7 +102,7 @@ async function getTableData() {
     await nextTick(() => {
       setTableData(data.records as UserManagement.User[]);
       pagination.page = data.current;
-      pagination.pageCount = data.total;
+      pagination.itemCount = data.total;
       endLoading();
     });
   }
@@ -192,6 +199,7 @@ const columns = ref([
   {
     key: 'actions',
     title: '操作',
+    fixed: 'right',
     align: 'center',
     render: row => {
       return (

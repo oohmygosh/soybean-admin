@@ -145,7 +145,7 @@ const locale: I18nType.Schema = {
       },
       page: {
         animate: 'switch animation',
-        animateMode: 'switch animation type',
+        animateMode: 'switch animation types',
         animateModeList: {
           zoomFade: 'Gradual change',
           zoomOut: 'Flash',

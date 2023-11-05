@@ -95,7 +95,7 @@ const buttonExample: ButtonExample[] = [
         label: 'Error'
       }
     ],
-    desc: '按钮的 type 分别为 default、primary、info、success、warning 和 error。'
+    desc: '按钮的 types 分别为 default、primary、info、success、warning 和 error。'
   },
   {
     id: 1,
