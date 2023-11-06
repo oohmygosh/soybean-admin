@@ -1,16 +1,13 @@
 <template>
-  <div>aa</div>
+  <div>{{ $props }}</div>
   <n-data-table
+    v-bind="$props"
     ref="dataTableRef"
     :data="data ?? tableData"
     :loading="loading"
-    :flex-height="flexHeight"
-    class="flex-1-hidden"
-    :pagination="paginationConf"
-    :scroll-x="scrollX ?? 1800"
-    :columns="columns"
+    :pagination="pagination ?? paginationConf"
     :row-key="rowKey ?? (row => row.id)"
-    style="min-height: 300px"
+    class="flex-1-hidden"
   />
 </template>
 
@@ -23,9 +20,6 @@ import { $ref } from 'vue/macros';
 import { useLoading } from '@/hooks';
 import type { STableProps } from './src/types/props';
 
-const tableData = ref<T[]>();
-const { loading, startLoading, endLoading } = useLoading(false);
-const { api } = defineProps<STableProps<T>>();
 const paginationConf: PaginationProps = $ref({
   page: 1,
   pageCount: 1,
@@ -45,6 +39,32 @@ const paginationConf: PaginationProps = $ref({
     paginationConf.page = 1;
     getTableData();
   }
+});
+const tableData = ref<T[]>();
+const { loading, startLoading, endLoading } = useLoading(false);
+const { api } = withDefaults(defineProps<STableProps<T>>(), {
+  scrollX: 1800,
+  size: 'medium',
+  tableLayout: 'auto',
+  bordered: true,
+  virtualScroll: false,
+  remote: true,
+  paginateSinglePage: true,
+  bottomBordered: true,
+  striped: false,
+  defaultCheckedRowKeys: () => [],
+  singleLine: true,
+  singleColumn: false,
+  defaultExpandedRowKeys: () => [],
+  defaultExpandAll: false,
+  stickyExpandedRows: false,
+  allowCheckingNotLoaded: false,
+  cascade: true,
+  childrenKey: 'children',
+  indent: 16,
+  flexHeight: false,
+  summaryPlacement: 'bottom',
+  paginationBehaviorOnFilter: 'current'
 });
 
 function setTableData(data: T[]) {

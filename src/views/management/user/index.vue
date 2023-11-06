@@ -45,7 +45,6 @@ import { $ref } from 'vue/macros';
 import { userStatusLabels } from '@/constants';
 import { userApi } from '@/service';
 import { useBoolean, useLoading } from '@/hooks';
-import STable from '@/components/table/s-table.vue';
 import ColumnSetting from '@/views/management/user/components/column-setting.vue';
 import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
 import type { STableElementType } from '~/src/components/table';
