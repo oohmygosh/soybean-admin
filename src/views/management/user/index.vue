@@ -20,7 +20,7 @@
               </template>
             </n-button>
           </n-space>
-          <n-space align="center" :size="18">
+          <n-space :align="'center'" :size="18">
             <n-button quaternary size="large" circle type="primary">
               <template #icon>
                 <icon-mdi-refresh :class="{ 'animate-spin': loading }" />
@@ -45,15 +45,16 @@ import { $ref } from 'vue/macros';
 import { userStatusLabels } from '@/constants';
 import { userApi } from '@/service';
 import { useBoolean, useLoading } from '@/hooks';
-import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
+import STable from '@/components/table/s-table.vue';
 import ColumnSetting from '@/views/management/user/components/column-setting.vue';
-import type { STableElement } from '@/components/table';
+import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
+import type { STableElementType } from '~/src/components/table';
 import type { ModalType } from './components/table-action-modal.vue';
 
 const { loading } = useLoading(false);
 const { bool: visible, setTrue: openModal } = useBoolean();
 
-const tableRef = $ref<STableElement>();
+const tableRef = $ref<STableElementType<UserManagement.User>>();
 
 const columns = ref([
   {
@@ -196,7 +197,7 @@ function handleEditTable(rowId: string) {
 }
 
 function handleDeleteTable(rowId: string) {
-  window.$message?.info(`点击了删除，rowId为${rowId}`);
+  window.$message?.info(`点击了删除,rowId为${rowId}`);
 }
 </script>
 

@@ -10,6 +10,9 @@ type ServiceEnvType = 'dev' | 'test' | 'prod';
 interface ServiceEnvConfig {
   /** 请求地址 */
   url: string;
+  /** 服务URI */
+  auth: string;
+  sys: string;
 }
 
 interface ServiceEnvConfigWithProxyPattern extends ServiceEnvConfig {

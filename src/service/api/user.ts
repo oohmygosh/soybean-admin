@@ -1,8 +1,8 @@
 import { BaseApi, request } from '@/service/request';
-import { apiPrefix } from '~/.env-config';
+import { getServiceEnvConfig } from '~/.env-config';
 
 class SysUserApi extends BaseApi<ApiUserManagement.SysUser> {
-  protected baseUri = `${apiPrefix.sys}/user`;
+  protected baseUri = `${getServiceEnvConfig(import.meta.env).sys}/user`;
 
   private constructor() {
     super();

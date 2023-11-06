@@ -1,11 +1,11 @@
 import { localStg } from '@/utils';
-import { apiPrefix } from '~/.env-config';
+import { getServiceEnvConfig } from '~/.env-config';
 import { mockRequest, request } from '../request';
 
 const FORM_CONTENT_TYPE = 'application/x-www-form-urlencoded';
 
 class AuthApi {
-  baseUri = apiPrefix.auth;
+  baseUri = getServiceEnvConfig(import.meta.env).auth;
 
   basicAuth = `Basic ${window.btoa(import.meta.env.VITE_OAUTH2_PASSWORD_CLIENT)}`;
 

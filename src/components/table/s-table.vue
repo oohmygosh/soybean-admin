@@ -1,31 +1,30 @@
 <template>
   <n-data-table
     ref="dataTableRef"
-    :data="tableData"
+    :data="data ?? tableData"
     :loading="loading"
-    flex-height
+    :flex-height="flexHeight"
     class="flex-1-hidden"
     :pagination="paginationConf"
+    :scroll-x="scrollX ?? 1800"
     :columns="columns"
-    :row-key="rowKey"
+    :row-key="rowKey ?? (row => row.id)"
+    style="min-height: 300px"
   />
 </template>
 
-<script lang="ts" setup>
-import { nextTick, onMounted, unref } from 'vue';
+<script lang="ts" setup generic="T extends RowData">
+import { nextTick, onMounted, ref, unref } from 'vue';
 import type { PaginationProps } from 'naive-ui';
 import { NDataTable } from 'naive-ui';
-import type { DataTableSetupProps } from 'naive-ui/es/data-table/src/interface';
+import type { RowData } from 'naive-ui/es/data-table/src/interface';
 import { $ref } from 'vue/macros';
-import { useLoading } from '../../hooks';
+import { useLoading } from '@/hooks';
 import type { STableProps } from './src/types/props';
 
+const tableData = ref<T[]>();
 const { loading, startLoading, endLoading } = useLoading(false);
-const { api } = withDefaults(defineProps<STableProps & DataTableSetupProps>(), {
-  rowKey: (rowData: { id: 'id' }) => rowData.id,
-  scrollX: 1800
-});
-let tableData = $ref<any[]>([]);
+const { api } = defineProps<STableProps<T>>();
 const paginationConf: PaginationProps = $ref({
   page: 1,
   pageCount: 1,
@@ -47,8 +46,8 @@ const paginationConf: PaginationProps = $ref({
   }
 });
 
-function setTableData(data: any[]) {
-  tableData = data;
+function setTableData(data: T[]) {
+  tableData.value = data;
 }
 
 async function getTableData() {

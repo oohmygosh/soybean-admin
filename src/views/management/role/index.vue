@@ -10,7 +10,7 @@
   />
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T">
 import { h } from 'vue';
 import type { DataTableColumns, DataTableCreateSummary } from 'naive-ui';
 
