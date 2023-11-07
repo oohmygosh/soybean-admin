@@ -2,8 +2,8 @@
   <div class="overflow-y-auto">
     <n-card title="用户管理" :bordered="false" class="h-full rounded-8px shadow-sm">
       <div class="flex-col h-full">
-        <n-space class="pb-12px" justify="space-between">
-          <n-space>
+        <s-table ref="tableRef" :columns="columns" :api="userApi.page">
+          <template #default>
             <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
               <template #icon>
                 <icon-ic-round-plus />
@@ -19,17 +19,8 @@
                 <icon-uil-export />
               </template>
             </n-button>
-          </n-space>
-          <n-space :align="'center'" :size="18">
-            <n-button quaternary size="large" circle type="primary">
-              <template #icon>
-                <icon-mdi-refresh :class="{ 'animate-spin': loading }" />
-              </template>
-            </n-button>
-            <column-setting v-model:columns="columns" />
-          </n-space>
-        </n-space>
-        <s-table ref="tableRef" :columns="columns" :api="userApi.page" />
+          </template>
+        </s-table>
         <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
       </div>
     </n-card>
@@ -44,13 +35,11 @@ import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import { userStatusLabels } from '@/constants';
 import { userApi } from '@/service';
-import { useBoolean, useLoading } from '@/hooks';
-import ColumnSetting from '@/views/management/user/components/column-setting.vue';
+import { useBoolean } from '@/hooks';
 import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
 import type { STableElementType } from '~/src/components/table';
 import type { ModalType } from './components/table-action-modal.vue';
 
-const { loading } = useLoading(false);
 const { bool: visible, setTrue: openModal } = useBoolean();
 
 const tableRef = $ref<STableElementType<UserManagement.User>>();

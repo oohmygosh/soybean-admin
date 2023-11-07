@@ -1,5 +1,19 @@
 <template>
-  <div>{{ $props }}</div>
+  <n-space class="pb-12px" justify="space-between">
+    <n-space>
+      <slot></slot>
+    </n-space>
+    <n-space :align="'center'">
+      <slot name="right">
+        <n-button quaternary size="large" circle type="primary">
+          <template #icon>
+            <icon-mdi-refresh :class="{ 'animate-spin': loading }" @click="getTableData" />
+          </template>
+        </n-button>
+        <column-setting v-model:columns="tableColumns" />
+      </slot>
+    </n-space>
+  </n-space>
   <n-data-table
     v-bind="$props"
     ref="dataTableRef"
@@ -7,6 +21,7 @@
     :loading="loading"
     :pagination="pagination ?? paginationConf"
     :row-key="rowKey ?? (row => row.id)"
+    :columns="tableColumns"
     class="flex-1-hidden"
   />
 </template>
@@ -42,7 +57,7 @@ const paginationConf: PaginationProps = $ref({
 });
 const tableData = ref<T[]>();
 const { loading, startLoading, endLoading } = useLoading(false);
-const { api } = withDefaults(defineProps<STableProps<T>>(), {
+const { api, columns } = withDefaults(defineProps<STableProps<T>>(), {
   scrollX: 1800,
   size: 'medium',
   tableLayout: 'auto',
@@ -66,7 +81,7 @@ const { api } = withDefaults(defineProps<STableProps<T>>(), {
   summaryPlacement: 'bottom',
   paginationBehaviorOnFilter: 'current'
 });
-
+const tableColumns = $ref(columns);
 function setTableData(data: T[]) {
   tableData.value = data;
 }
