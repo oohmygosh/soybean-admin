@@ -1,7 +1,7 @@
-import { ref, reactive } from 'vue';
 import type { Ref } from 'vue';
-import type { PaginationProps, DataTableBaseColumn, DataTableSelectionColumn, DataTableExpandColumn } from 'naive-ui';
-import type { TableColumnGroup } from 'naive-ui/es/data-table/src/interface';
+import { reactive, ref } from 'vue';
+import type { DataTableBaseColumn, DataTableExpandColumn, DataTableSelectionColumn, PaginationProps } from 'naive-ui';
+import type { TableColumn, TableColumnGroup } from 'naive-ui/es/data-table/src/interface';
 import { useLoadingEmpty } from '../common';
 
 /**
@@ -55,6 +55,7 @@ type HookTableColumn<T = Record<string, unknown>> =
   | (Omit<TableColumnGroup<T>, 'key'> & { key: CustomColumnKey<keyof T> })
   | (Omit<DataTableBaseColumn<T>, 'key'> & { key: CustomColumnKey<keyof T> })
   | DataTableSelectionColumn<T>
+  | TableColumn<T>
   | DataTableExpandColumn<T>;
 
 /**

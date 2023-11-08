@@ -1,6 +1,8 @@
 <template>
   <n-space class="pb-12px" justify="space-between">
-    <n-space><slot></slot></n-space>
+    <n-space>
+      <slot></slot>
+    </n-space>
     <n-space :align="'center'">
       <slot name="right">
         <n-button quaternary size="large" circle type="primary">
@@ -32,6 +34,7 @@ import { NDataTable } from 'naive-ui';
 import type { RowData } from 'naive-ui/es/data-table/src/interface';
 import { $ref } from 'vue/macros';
 import { useLoading } from '@/hooks';
+import useHookTable from '~/src/hooks/business/use-hook-table';
 import type { STableProps } from './src/types/props';
 
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
@@ -82,6 +85,19 @@ const { api, columns } = withDefaults(defineProps<STableProps<T>>(), {
   paginationBehaviorOnFilter: 'current'
 });
 const tableColumns = $ref(columns);
+useHookTable(api, {
+  apiParams: {},
+  columns: () => columns,
+  transformer: response => {
+    return {
+      data: response.records,
+      pageNum: response.current,
+      pageSize: response.size,
+      total: response.total
+    };
+  }
+});
+
 function setTableData(data: T[]) {
   tableData.value = data;
 }
@@ -102,10 +118,13 @@ async function getTableData() {
     });
   }
 }
+
 interface Emits {
   (e: 'update:checked', rowKeys: DataTableRowKey[]): void;
+
   (e: 'update:columns', columns: DataTableColumn<T>[]): void;
 }
+
 const emit = defineEmits<Emits>();
 const getData = () => unref(tableData);
 const getChecked = () => unref(checkedRowKeysRef);
