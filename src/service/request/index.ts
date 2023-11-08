@@ -1,4 +1,5 @@
 import type { AxiosRequestConfig } from 'axios';
+import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
 import { adapter } from '@/utils';
 import { adapterOfFetchPage } from '@/service/api/management.adapter';
 import { getServiceEnvConfig } from '~/.env-config';
@@ -56,6 +57,12 @@ export class BaseApi<M extends BaseEntity> {
    */
   get = (id: number | string, config?: AxiosRequestConfig) => request.get<M>(`${this.baseUri}/get?id=${id}`, config);
 
+  /**
+   * 树菜单
+   * @param params 查询参数
+   * @param config 请求配置
+   * @returns 树菜单
+   */
   listTree = (params?: object, config?: AxiosRequestConfig) =>
-    request.post<M[]>(`${this.baseUri}/list-tree`, params, config);
+    request.post<TreeOptions>(`${this.baseUri}/list-tree`, params, config);
 }

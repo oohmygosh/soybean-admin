@@ -1,35 +1,53 @@
 <template>
   <div class="overflow-y-auto">
-    <n-card title="用户管理" :bordered="false" class="h-full rounded-8px shadow-sm">
-      <div class="flex-col h-full">
-        <s-table ref="tableRef" :columns="columns" :api="userApi.page">
-          <template #default>
-            <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
-              <template #icon>
-                <icon-ic-round-plus />
-              </template>
-            </n-button>
-            <n-button
-              strong
-              secondary
-              size="medium"
-              circle
-              type="error"
-              @click="handleDeleteTable(tableRef?.getChecked())"
-            >
-              <template #icon>
-                <icon-ic-round-delete />
-              </template>
-            </n-button>
-            <n-button strong secondary size="medium" circle type="success">
-              <template #icon>
-                <icon-uil-export />
-              </template>
-            </n-button>
-          </template>
-        </s-table>
-        <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
-      </div>
+    <n-card :bordered="false" class="h-full rounded-r-8px shadow-sm">
+      <n-space vertical size="large">
+        <n-layout has-sider>
+          <n-layout-sider content-style="padding: 24px;" class="rounded-l-8px">
+            <n-space vertical :size="12">
+              <n-input v-model:value="pattern" placeholder="搜索" />
+              <n-tree
+                :show-irrelevant-nodes="showIrrelevantNodes"
+                :pattern="pattern"
+                :data="roleTree"
+                block-line
+                :node-props="nodeProps"
+              />
+            </n-space>
+          </n-layout-sider>
+          <n-layout-content>
+            <n-card title="用户管理" :bordered="false" class="h-full rounded-r-8px shadow-sm">
+              <s-table ref="tableRef" :columns="columns" :api="userApi.page">
+                <template #default>
+                  <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
+                    <template #icon>
+                      <icon-ic-round-plus />
+                    </template>
+                  </n-button>
+                  <n-button
+                    strong
+                    secondary
+                    size="medium"
+                    circle
+                    type="error"
+                    @click="handleDeleteTable(tableRef?.getChecked())"
+                  >
+                    <template #icon>
+                      <icon-ic-round-delete />
+                    </template>
+                  </n-button>
+                  <n-button strong secondary size="medium" circle type="success">
+                    <template #icon>
+                      <icon-uil-export />
+                    </template>
+                  </n-button>
+                </template>
+              </s-table>
+              <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
+            </n-card>
+          </n-layout-content>
+        </n-layout>
+      </n-space>
     </n-card>
   </div>
 </template>
@@ -37,11 +55,11 @@
 <script setup lang="tsx">
 import type { Ref } from 'vue';
 import { ref } from 'vue';
-import type { DataTableColumns } from 'naive-ui';
+import type { DataTableColumns, TreeOption } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import { userStatusLabels } from '@/constants';
-import { userApi } from '@/service';
+import { userApi, roleApi } from '@/service';
 import { useBoolean } from '@/hooks';
 import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
 import type { STableElementType } from '~/src/components/table';
@@ -49,7 +67,32 @@ import type { ModalType } from './components/table-action-modal.vue';
 
 const { bool: visible, setTrue: openModal } = useBoolean();
 
+const pattern = $ref('');
+const showIrrelevantNodes = $ref(false);
+let roleTree: TreeOption[] = $ref([]);
+
 const tableRef = $ref<STableElementType<UserManagement.User>>();
+const fetchRoleTree = async () => {
+  const { data } = await roleApi.listTree();
+  if (data) {
+    data.unshift({ id: undefined, label: '所有' });
+    roleTree = data;
+  }
+};
+
+fetchRoleTree();
+
+const nodeProps = ({ option }: { option: TreeOption }) => {
+  return {
+    onClick() {
+      tableRef?.setParam({
+        roleId: option.key
+      });
+      tableRef?.getTableData();
+    }
+  };
+};
+
 const columns = ref([
   {
     type: 'selection',
@@ -182,7 +225,7 @@ function handleAddTable() {
 }
 
 function handleEditTable(rowId: string) {
-  const findItem = tableRef?.getData().find((item: typeof editData) => item?.id === rowId);
+  const findItem = tableRef?.fetchData().find((item: typeof editData) => item?.id === rowId);
   if (findItem) {
     setEditData(findItem);
   }

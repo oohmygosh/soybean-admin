@@ -10,7 +10,7 @@
     <template #trigger>
       <n-button quaternary circle size="large" type="primary">
         <template #icon>
-          <icon-ant-design-setting-outlined />
+          <icon-tdesign:adjustment />
         </template>
       </n-button>
     </template>
@@ -81,8 +81,6 @@ watch(
 </script>
 
 <style scoped>
-.setting-column {
-}
 .setting-column__title {
   border-bottom: 1px solid #ebeef5;
   padding-bottom: 15px;
@@ -148,12 +146,5 @@ watch(
   border-top: 1px solid #ebeef5;
   padding-top: 15px;
   text-align: right;
-}
-
-.dark .setting-column__title {
-  border-color: var(--el-border-color-light);
-}
-.dark .setting-column__bottom {
-  border-color: var(--el-border-color-light);
 }
 </style>

@@ -124,14 +124,14 @@ export default function useHookTable<TableData, Fn extends ApiFn>(apiFn: Fn, con
       pagination.page = page;
 
       updateRequestParamsByPagination({ page });
-      getData();
+      getData().then();
     },
     onUpdatePageSize: (pageSize: number) => {
       pagination.pageSize = pageSize;
       pagination.page = 1;
 
       updateRequestParamsByPagination({ pageSize });
-      getData();
+      getData().then();
     },
     ...config.pagination
   }) as PaginationProps;
@@ -144,6 +144,7 @@ export default function useHookTable<TableData, Fn extends ApiFn>(apiFn: Fn, con
 
   async function getData() {
     startLoading();
+    console.log(requestParams.value);
 
     const { data: apiData, error } = await apiFn(requestParams.value);
 
@@ -165,7 +166,7 @@ export default function useHookTable<TableData, Fn extends ApiFn>(apiFn: Fn, con
   }
 
   if (immediate) {
-    getData();
+    getData().then();
   }
 
   return {

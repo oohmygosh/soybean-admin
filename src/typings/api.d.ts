@@ -153,3 +153,24 @@ declare namespace ApiResourceManager {
     children?: SysResource[];
   }
 }
+
+declare namespace ApiRoleManager {
+  /**
+   * 系统角色
+   *
+   * @author oohmygosh
+   * @since 2023-01-30
+   */
+  interface SysRole extends BaseEntity {
+    // 名称
+    name?: string;
+    // 别名
+    alias?: string;
+    // 备注
+    remark?: string;
+    // 状态 0、禁用 1、正常
+    status?: number;
+    // 排序
+    sort?: number;
+  }
+}
