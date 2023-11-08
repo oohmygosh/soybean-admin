@@ -9,7 +9,14 @@
                 <icon-ic-round-plus />
               </template>
             </n-button>
-            <n-button strong secondary size="medium" circle type="error">
+            <n-button
+              strong
+              secondary
+              size="medium"
+              circle
+              type="error"
+              @click="handleDeleteTable(tableRef?.getChecked())"
+            >
               <template #icon>
                 <icon-ic-round-delete />
               </template>
@@ -43,7 +50,6 @@ import type { ModalType } from './components/table-action-modal.vue';
 const { bool: visible, setTrue: openModal } = useBoolean();
 
 const tableRef = $ref<STableElementType<UserManagement.User>>();
-
 const columns = ref([
   {
     type: 'selection',
@@ -142,7 +148,7 @@ const columns = ref([
           <NButton strong secondary size={'small'} onClick={() => handleEditTable(row.id)}>
             {{ icon: () => <icon-mdi-credit-card-edit-outline /> }}
           </NButton>
-          <NPopconfirm onPositiveClick={() => handleDeleteTable(row.id)}>
+          <NPopconfirm onPositiveClick={() => handleDeleteTable([row.id])}>
             {{
               default: () => '确认删除',
               trigger: () => (
@@ -184,7 +190,7 @@ function handleEditTable(rowId: string) {
   openModal();
 }
 
-function handleDeleteTable(rowId: string) {
+function handleDeleteTable(rowId: string[]) {
   window.$message?.info(`点击了删除,rowId为${rowId}`);
 }
 </script>

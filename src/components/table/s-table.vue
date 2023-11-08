@@ -1,8 +1,6 @@
 <template>
   <n-space class="pb-12px" justify="space-between">
-    <n-space>
-      <slot></slot>
-    </n-space>
+    <n-space><slot></slot></n-space>
     <n-space :align="'center'">
       <slot name="right">
         <n-button quaternary size="large" circle type="primary">
@@ -10,7 +8,7 @@
             <icon-mdi-refresh :class="{ 'animate-spin': loading }" @click="getTableData" />
           </template>
         </n-button>
-        <column-setting v-model:columns="tableColumns" />
+        <column-setting v-model:columns="tableColumns" @update:columns="x => emit('update:columns', x)" />
       </slot>
     </n-space>
   </n-space>
@@ -23,18 +21,20 @@
     :row-key="rowKey ?? (row => row.id)"
     :columns="tableColumns"
     class="flex-1-hidden"
+    @update-checked-row-keys="handleChecked"
   />
 </template>
 
 <script lang="ts" setup generic="T extends RowData">
 import { nextTick, onMounted, ref, unref } from 'vue';
-import type { PaginationProps } from 'naive-ui';
+import type { DataTableColumn, DataTableRowKey, PaginationProps } from 'naive-ui';
 import { NDataTable } from 'naive-ui';
 import type { RowData } from 'naive-ui/es/data-table/src/interface';
 import { $ref } from 'vue/macros';
 import { useLoading } from '@/hooks';
 import type { STableProps } from './src/types/props';
 
+const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 const paginationConf: PaginationProps = $ref({
   page: 1,
   pageCount: 1,
@@ -102,16 +102,25 @@ async function getTableData() {
     });
   }
 }
-
+interface Emits {
+  (e: 'update:checked', rowKeys: DataTableRowKey[]): void;
+  (e: 'update:columns', columns: DataTableColumn<T>[]): void;
+}
+const emit = defineEmits<Emits>();
 const getData = () => unref(tableData);
-
+const getChecked = () => unref(checkedRowKeysRef);
+const handleChecked = (rowKeys: DataTableRowKey[]) => {
+  checkedRowKeysRef.value = rowKeys;
+  emit('update:checked', rowKeys);
+  emit('update:columns', tableColumns);
+};
 onMounted(async () => {
   await getTableData();
 });
-
 defineExpose({
   getData,
-  getTableData
+  getTableData,
+  getChecked
 });
 </script>
 <style scoped></style>

@@ -12,6 +12,9 @@ export const request = createRequest({ baseURL: isHttpProxy ? proxyPattern : url
 
 export const mockRequest = createRequest({ baseURL: '/mock' });
 
+/**
+ * 基础Api类
+ */
 export class BaseApi<M extends BaseEntity> {
   protected baseUri = '';
 
@@ -20,14 +23,7 @@ export class BaseApi<M extends BaseEntity> {
    * @param param
    * @param config
    */
-  save = <
-    T extends {
-      id?: number | string;
-    }
-  >(
-    param: T,
-    config?: AxiosRequestConfig
-  ) => {
+  save = <T extends M>(param: T, config?: AxiosRequestConfig) => {
     return request.post<boolean | number>(
       param.id ? `${this.baseUri}/update` : `${this.baseUri}/create`,
       param,
