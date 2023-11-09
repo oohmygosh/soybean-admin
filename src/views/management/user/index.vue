@@ -8,6 +8,7 @@
               <n-input v-model:value="pattern" placeholder="搜索" />
               <n-tree
                 :show-irrelevant-nodes="showIrrelevantNodes"
+                :key-field="'id'"
                 :pattern="pattern"
                 :data="roleTree"
                 block-line
@@ -59,7 +60,7 @@ import type { DataTableColumns, TreeOption } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import { userStatusLabels } from '@/constants';
-import { userApi, roleApi } from '@/service';
+import { roleApi, userApi } from '@/service';
 import { useBoolean } from '@/hooks';
 import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
 import type { STableElementType } from '~/src/components/table';
@@ -86,7 +87,7 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
     onClick() {
       tableRef?.setParam({
-        roleId: option.key
+        roleId: option.id
       });
       tableRef?.getTableData();
     }
