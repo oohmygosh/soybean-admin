@@ -59,6 +59,7 @@ import { ref } from 'vue';
 import type { DataTableColumns, TreeOption } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
+import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
 import { userStatusLabels } from '@/constants';
 import { roleApi, userApi } from '@/service';
 import { useBoolean } from '@/hooks';
@@ -70,7 +71,7 @@ const { bool: visible, setTrue: openModal } = useBoolean();
 
 const pattern = $ref('');
 const showIrrelevantNodes = $ref(false);
-let roleTree: TreeOption[] = $ref([]);
+let roleTree: TreeOptions = $ref([]);
 
 const tableRef = $ref<STableElementType<UserManagement.User>>();
 const fetchRoleTree = async () => {
@@ -189,7 +190,7 @@ const columns = ref([
     render: row => {
       return (
         <NSpace justify={'center'}>
-          <NButton strong secondary size={'small'} onClick={() => handleEditTable(row.id)}>
+          <NButton strong secondary size={'small'} onClick={() => handleEditTable(row)}>
             {{ icon: () => <icon-mdi-credit-card-edit-outline /> }}
           </NButton>
           <NPopconfirm onPositiveClick={() => handleDeleteTable([row.id])}>
@@ -214,27 +215,33 @@ function setModalType(type: ModalType) {
   modalType.value = type;
 }
 
-let editData = $ref<UserManagement.User | null>(null);
-
-function setEditData(data: UserManagement.User | null) {
-  editData = data;
-}
+let editData = $ref<
+  | (UserManagement.User & {
+      roleTree: typeof roleTree;
+      roleIds?: number[] | null;
+    })
+  | null
+>(null);
 
 function handleAddTable() {
   openModal();
   setModalType('add');
 }
 
-function handleEditTable(rowId: string) {
-  const findItem = tableRef?.fetchData().find((item: typeof editData) => item?.id === rowId);
-  if (findItem) {
-    setEditData(findItem);
+async function handleEditTable(row: UserManagement.User) {
+  if (row) {
+    const { data: roleIds } = await userApi.roleIds(row.id);
+    editData = {
+      ...row,
+      roleTree: roleTree.slice(1),
+      roleIds
+    };
   }
   setModalType('edit');
   openModal();
 }
 
-function handleDeleteTable(rowId: string[]) {
+function handleDeleteTable(rowId: string[] | undefined[]) {
   window.$message?.info(`点击了删除,rowId为${rowId}`);
 }
 </script>

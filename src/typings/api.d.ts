@@ -48,7 +48,7 @@ declare interface PageParam<T> {
 
 declare interface BaseEntity {
   // 主键
-  id: string;
+  id?: string;
   // 创建人
   createBy?: string;
   // 创建人Id
@@ -65,8 +65,6 @@ declare interface BaseEntity {
 
 declare namespace ApiUserManagement {
   interface User {
-    /** 用户id */
-    id: string;
     /** 用户名 */
     username: string | null;
     /** 用户年龄 */

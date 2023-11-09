@@ -22,8 +22,6 @@
     :pagination="pagination"
     :row-key="rowKey ?? (row => row.id)"
     :columns="tableColumns"
-    class="flex-1-hidden"
-    :min-height="400"
     @update-checked-row-keys="handleChecked"
   />
 </template>

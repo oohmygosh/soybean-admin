@@ -18,8 +18,8 @@ export const userRoleOptions = transformObjectToOption(userRoleLabels);
 
 /** 用户性别 */
 export const genderLabels: Record<UserManagement.GenderKey, string> = {
-  0: '女',
-  1: '男'
+  女: '女',
+  男: '男'
 };
 export const genderOptions = transformObjectToOption(genderLabels);
 
