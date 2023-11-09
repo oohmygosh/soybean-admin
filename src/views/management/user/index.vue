@@ -44,7 +44,13 @@
                   </n-button>
                 </template>
               </s-table>
-              <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
+              <table-action-modal
+                v-model:visible="visible"
+                :type="modalType"
+                :edit-data="editData"
+                :role-options="roleTree.slice(1)"
+                @update:action="() => tableRef?.getTableData()"
+              />
             </n-card>
           </n-layout-content>
         </n-layout>
@@ -217,7 +223,6 @@ function setModalType(type: ModalType) {
 
 let editData = $ref<
   | (UserManagement.User & {
-      roleTree: typeof roleTree;
       roleIds?: number[] | null;
     })
   | null
@@ -233,7 +238,6 @@ async function handleEditTable(row: UserManagement.User) {
     const { data: roleIds } = await userApi.roleIds(row.id);
     editData = {
       ...row,
-      roleTree: roleTree.slice(1),
       roleIds
     };
   }
@@ -241,7 +245,7 @@ async function handleEditTable(row: UserManagement.User) {
   openModal();
 }
 
-function handleDeleteTable(rowId: string[] | undefined[]) {
+function handleDeleteTable(rowId: (string | undefined)[]) {
   window.$message?.info(`点击了删除,rowId为${rowId}`);
 }
 </script>

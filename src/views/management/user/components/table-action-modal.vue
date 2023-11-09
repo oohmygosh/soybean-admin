@@ -1,8 +1,15 @@
 <template>
   <n-modal v-model:show="modalVisible" preset="card" :title="title" class="w-500px">
+    {{ props.type === 'add' }}
     <n-form ref="formRef" label-placement="left" label-width="auto" :model="formModel" :rules="rules">
       <n-grid :cols="1" :x-gap="18">
         <n-form-item-grid-item :span="12" label="用户名" path="username">
+          <n-input v-model:value="formModel.username" placeholder="用户名用于登录系统" clearable />
+        </n-form-item-grid-item>
+        <n-form-item-grid-item v-if="props.type === 'add'" :span="12" label="登录密码" path="username">
+          <n-input v-model:value="formModel.password" placeholder="用户名用于登录系统" clearable />
+        </n-form-item-grid-item>
+        <n-form-item-grid-item v-if="props.type === 'add'" :span="12" label="确认密码" path="username">
           <n-input v-model:value="formModel.username" placeholder="用户名用于登录系统" clearable />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="昵称" path="nickName">
@@ -19,15 +26,15 @@
         <n-form-item-grid-item :span="12" label="状态" path="status">
           <n-switch v-model:value="formModel.status" :checked-value="1" :unchecked-value="0" clearable />
         </n-form-item-grid-item>
-        <n-form-item-grid-item :span="12" label="所属角色" path="roles">
+        <n-form-item-grid-item :span="12" label="所属角色" path="roleIds">
           <n-tree-select
+            v-model="formModel.roleIds"
             multiple
-            :options="editData?.roleTree"
-            :default-value="editData?.roleIds"
+            :options="roleOptions"
+            :default-value="formModel?.roleIds"
             key-field="id"
             clearable
             :render-suffix="renderSuffix"
-            @update:value="x => (formModel.roleIds = x)"
           />
         </n-form-item-grid-item>
       </n-grid>
@@ -60,10 +67,10 @@ export interface Props {
   /** 编辑的表格行数据 */
   editData?:
     | (UserManagement.User & {
-        roleTree?: TreeOptions;
         roleIds?: number[] | null;
       })
     | null;
+  roleOptions: TreeOptions;
 }
 
 export type ModalType = NonNullable<Props['type']>;
@@ -77,6 +84,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 interface Emits {
   (e: 'update:visible', visible: boolean): void;
+
+  (e: 'update:action'): void;
 }
 
 const emit = defineEmits<Emits>();
@@ -103,7 +112,12 @@ const title = computed(() => {
 
 const formRef = ref<HTMLElement & FormInst>();
 
-type FormModel = Pick<UserManagement.User, 'username' | 'realName' | 'status' | 'sex' | 'nickName'>;
+type FormModel = Pick<
+  UserManagement.User & {
+    roleIds?: number[];
+  },
+  'username' | 'realName' | 'status' | 'sex' | 'nickName' | 'roleIds' | 'password'
+>;
 
 const formModel = reactive<
   FormModel & {
@@ -116,14 +130,19 @@ const rules: Record<keyof FormModel, FormItemRule | FormItemRule[]> = {
   nickName: createRequiredFormRule('请输入年龄'),
   sex: createRequiredFormRule('请选择性别'),
   realName: createRequiredFormRule('请输入真实姓名'),
-  status: createRequiredFormRule('请选择用户状态')
+  status: createRequiredFormRule('请选择用户状态'),
+  password: createRequiredFormRule('请输入密码'),
+  roleIds: createRequiredFormRule('请选择角色')
 };
 
 function createDefaultFormModel(): FormModel {
   return {
     username: '',
     realName: '',
-    status: 0
+    nickName: '',
+    sex: '男',
+    status: 0,
+    roleIds: []
   };
 }
 
@@ -139,7 +158,7 @@ function handleUpdateFormModelByModalType() {
     },
     edit: () => {
       if (props.editData) {
-        handleUpdateFormModel(props.editData);
+        handleUpdateFormModel(props.editData as Partial<FormModel>);
       }
     }
   };
@@ -151,6 +170,7 @@ async function handleSubmit() {
   await formRef.value?.validate();
   await userApi.save(formModel);
   window.$message?.success('新增成功!');
+  emit('update:action');
   closeModal();
 }
 
@@ -162,7 +182,6 @@ watch(
     }
   }
 );
-
 const renderSuffix: TreeSelectRenderTreePart = info => <span>{info.option.alias}</span>;
 </script>
 
