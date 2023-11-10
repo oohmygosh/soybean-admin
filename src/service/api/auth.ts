@@ -1,4 +1,5 @@
 import { localStg } from '@/utils';
+import { encryptByMD5 } from '@/utils/crypto';
 import { getServiceEnvConfig } from '~/.env-config';
 import { mockRequest, request } from '../request';
 
@@ -26,11 +27,12 @@ class AuthApi {
    */
   public fetchLogin(username: string, password: string) {
     localStg.set('accessToken', this.basicAuth);
+    const encryptPassword = encryptByMD5(password);
     return request.post<ApiAuth.Token>(
       `${this.baseUri}/oauth2/token`,
       {
         username,
-        password,
+        password: encryptPassword,
         grant_type: 'password',
         scope: 'message.read'
       },

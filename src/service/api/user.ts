@@ -1,5 +1,6 @@
 import type { AxiosRequestConfig } from 'axios';
 import { BaseApi, request } from '@/service/request';
+import { encryptByMD5 } from '@/utils/crypto';
 import { getServiceEnvConfig } from '~/.env-config';
 
 class SysUserApi extends BaseApi<ApiUserManagement.SysUser> {
@@ -22,6 +23,15 @@ class SysUserApi extends BaseApi<ApiUserManagement.SysUser> {
   public fetchUserInfo() {
     return request.get<Auth.UserInfo>(`${this.baseUri}/getCurrentUserInfo`);
   }
+
+  save = <T extends ApiUserManagement.SysUser>(param: T, config?: AxiosRequestConfig) => {
+    if (!param.id) param.password = encryptByMD5(param.password);
+    return request.post<boolean | number>(
+      param.id ? `${this.baseUri}/update` : `${this.baseUri}/create`,
+      param,
+      config
+    );
+  };
 
   roleIds = (id?: number | string, config?: AxiosRequestConfig<any>) =>
     request.post<number[]>(`${this.baseUri}/role-ids?id=${id}`, {}, config);

@@ -59,7 +59,7 @@ const formRef = ref<HTMLElement & FormInst>();
 
 const model = reactive({
   username: 'admin',
-  password: 'admin'
+  password: 'SwiftPassword1$'
 });
 
 const rules: FormRules = {

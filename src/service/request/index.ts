@@ -64,5 +64,5 @@ export class BaseApi<M extends BaseEntity> {
    * @returns 树菜单
    */
   listTree = (params?: object, config?: AxiosRequestConfig) =>
-    request.post<TreeOptions>(`${this.baseUri}/list-tree`, params, config);
+    request.post<TreeOptions & M>(`${this.baseUri}/list-tree`, params, config);
 }

@@ -8,7 +8,7 @@ import {
   REQUEST_TIMEOUT_CODE,
   REQUEST_TIMEOUT_MSG
 } from '@/config';
-import { exeStrategyActions } from '../common';
+import { exeStrategyActions } from '@/utils';
 import { showErrorMsg } from './msg';
 
 type ErrorStatus = keyof typeof ERROR_STATUS;

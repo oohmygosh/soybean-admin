@@ -25,18 +25,19 @@
                       <icon-ic-round-plus />
                     </template>
                   </n-button>
-                  <n-button
-                    strong
-                    secondary
-                    size="medium"
-                    circle
-                    type="error"
-                    @click="handleDeleteTable(tableRef?.getChecked())"
+                  <n-popconfirm
+                    :disabled="tableRef?.getChecked()?.length <= 0"
+                    @positive-click="handleDeleteTable(tableRef?.getChecked())"
                   >
-                    <template #icon>
-                      <icon-ic-round-delete />
+                    <template #trigger>
+                      <n-button strong secondary size="medium" circle type="error">
+                        <template #icon>
+                          <icon-ic-round-delete />
+                        </template>
+                      </n-button>
                     </template>
-                  </n-button>
+                    确定删除吗？
+                  </n-popconfirm>
                   <n-button strong secondary size="medium" circle type="success">
                     <template #icon>
                       <icon-uil-export />
@@ -68,7 +69,7 @@ import { $ref } from 'vue/macros';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
 import { userStatusLabels } from '@/constants';
 import { roleApi, userApi } from '@/service';
-import { useBoolean } from '@/hooks';
+import { execApi, useBoolean } from '@/hooks';
 import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
 import type { STableElementType } from '~/src/components/table';
 import type { ModalType } from './components/table-action-modal.vue';
@@ -77,7 +78,7 @@ const { bool: visible, setTrue: openModal } = useBoolean();
 
 const pattern = $ref('');
 const showIrrelevantNodes = $ref(false);
-let roleTree: TreeOptions = $ref([]);
+let roleTree: TreeOptions & ApiRoleManager.SysRole[] = $ref([]);
 
 const tableRef = $ref<STableElementType<UserManagement.User>>();
 const fetchRoleTree = async () => {
@@ -123,10 +124,10 @@ const columns = ref([
     title: '状态',
     align: 'center',
     render: row => {
-      if (row.status) {
+      if (row.status !== undefined) {
         const tagTypes: Record<UserManagement.UserStatusKey, NaiveUI.ThemeColor> = {
           '1': 'success',
-          '2': 'error',
+          '0': 'error',
           '3': 'warning',
           '4': 'default'
         };
@@ -199,7 +200,7 @@ const columns = ref([
           <NButton strong secondary size={'small'} onClick={() => handleEditTable(row)}>
             {{ icon: () => <icon-mdi-credit-card-edit-outline /> }}
           </NButton>
-          <NPopconfirm onPositiveClick={() => handleDeleteTable([row.id])}>
+          <NPopconfirm onPositiveClick={() => handleDeleteTable([row.id as string])}>
             {{
               default: () => '确认删除',
               trigger: () => (
@@ -245,8 +246,10 @@ async function handleEditTable(row: UserManagement.User) {
   openModal();
 }
 
-function handleDeleteTable(rowId: (string | undefined)[]) {
-  window.$message?.info(`点击了删除,rowId为${rowId}`);
+async function handleDeleteTable(rowId: string[] = []) {
+  if (rowId.length === 0) return;
+  const { error } = await execApi(userApi.delete, { data: rowId, msg: '删除成功!' });
+  if (!error) tableRef?.getTableData();
 }
 </script>
 

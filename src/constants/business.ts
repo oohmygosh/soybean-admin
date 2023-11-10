@@ -25,8 +25,8 @@ export const genderOptions = transformObjectToOption(genderLabels);
 
 /** 用户状态 */
 export const userStatusLabels: Record<UserManagement.UserStatusKey, string> = {
+  0: '禁用',
   1: '启用',
-  2: '禁用',
   3: '冻结',
   4: '软删除'
 };

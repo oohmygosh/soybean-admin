@@ -12,6 +12,15 @@ export function encrypt(data: any) {
 }
 
 /**
+ * 加密数据
+ * @param data - 数据
+ */
+export function encryptByMD5(data: any) {
+  const newData = JSON.stringify(data);
+  return CryptoJS.MD5(newData).toString();
+}
+
+/**
  * 解密数据
  * @param cipherText - 密文
  */

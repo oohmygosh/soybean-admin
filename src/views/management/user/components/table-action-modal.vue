@@ -1,16 +1,23 @@
 <template>
   <n-modal v-model:show="modalVisible" preset="card" :title="title" class="w-500px">
-    {{ props.type === 'add' }}
     <n-form ref="formRef" label-placement="left" label-width="auto" :model="formModel" :rules="rules">
       <n-grid :cols="1" :x-gap="18">
         <n-form-item-grid-item :span="12" label="用户名" path="username">
-          <n-input v-model:value="formModel.username" placeholder="用户名用于登录系统" clearable />
+          <n-input
+            v-model:value="formModel.username"
+            :disabled="props.type !== 'add'"
+            placeholder="用户名用于登录系统"
+            clearable
+          />
         </n-form-item-grid-item>
-        <n-form-item-grid-item v-if="props.type === 'add'" :span="12" label="登录密码" path="username">
-          <n-input v-model:value="formModel.password" placeholder="用户名用于登录系统" clearable />
-        </n-form-item-grid-item>
-        <n-form-item-grid-item v-if="props.type === 'add'" :span="12" label="确认密码" path="username">
-          <n-input v-model:value="formModel.username" placeholder="用户名用于登录系统" clearable />
+        <n-form-item-grid-item v-if="props.type === 'add'" :span="12" label="登录密码" path="password">
+          <n-input
+            v-model:value="formModel.password"
+            type="password"
+            placeholder="用户名用于登录系统"
+            clearable
+            show-password-on="click"
+          />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="昵称" path="nickName">
           <n-input v-model:value="formModel.nickName" placeholder="请输入昵称" clearable />
@@ -27,14 +34,15 @@
           <n-switch v-model:value="formModel.status" :checked-value="1" :unchecked-value="0" clearable />
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="所属角色" path="roleIds">
+          <!--suppress JSValidateTypes -->
           <n-tree-select
-            v-model="formModel.roleIds"
             multiple
             :options="roleOptions"
             :default-value="formModel?.roleIds"
             key-field="id"
             clearable
             :render-suffix="renderSuffix"
+            @update:value="ids => (formModel.roleIds = ids)"
           />
         </n-form-item-grid-item>
       </n-grid>
@@ -47,12 +55,14 @@
 </template>
 
 <script setup lang="tsx">
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { FormInst, FormItemRule } from 'naive-ui';
 import type { TreeSelectRenderTreePart } from 'naive-ui/es/tree-select/src/interface';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
+import { $ref } from 'vue/macros';
 import { genderOptions } from '@/constants';
-import { createRequiredFormRule } from '@/utils';
+import { execApi } from '@/hooks';
+import { createRequiredFormRule, formRules } from '@/utils';
 import { userApi } from '~/src/service';
 
 export interface Props {
@@ -116,27 +126,30 @@ type FormModel = Pick<
   UserManagement.User & {
     roleIds?: number[];
   },
-  'username' | 'realName' | 'status' | 'sex' | 'nickName' | 'roleIds' | 'password'
+  'username' | 'realName' | 'status' | 'sex' | 'nickName' | 'roleIds' | 'password' | 'id'
 >;
 
-const formModel = reactive<
+let formModel = $ref<
   FormModel & {
     roleIds?: number[];
   }
 >(createDefaultFormModel());
 
 const rules: Record<keyof FormModel, FormItemRule | FormItemRule[]> = {
-  username: createRequiredFormRule('请输入用户名'),
-  nickName: createRequiredFormRule('请输入年龄'),
+  username: formRules.username,
+  password: formRules.pwd,
+  nickName: createRequiredFormRule('请输入别名'),
   sex: createRequiredFormRule('请选择性别'),
   realName: createRequiredFormRule('请输入真实姓名'),
   status: createRequiredFormRule('请选择用户状态'),
-  password: createRequiredFormRule('请输入密码'),
-  roleIds: createRequiredFormRule('请选择角色')
+  roleIds: createRequiredFormRule('请选择角色'),
+  id: []
 };
 
 function createDefaultFormModel(): FormModel {
   return {
+    password: undefined,
+    id: undefined,
     username: '',
     realName: '',
     nickName: '',
@@ -147,7 +160,7 @@ function createDefaultFormModel(): FormModel {
 }
 
 function handleUpdateFormModel(model: Partial<FormModel>) {
-  Object.assign(formModel, model);
+  formModel = model;
 }
 
 function handleUpdateFormModelByModalType() {
@@ -168,8 +181,8 @@ function handleUpdateFormModelByModalType() {
 
 async function handleSubmit() {
   await formRef.value?.validate();
-  await userApi.save(formModel);
-  window.$message?.success('新增成功!');
+  const { error } = await execApi(userApi.save, { data: { ...formModel }, msg: '执行成功!' });
+  if (error) return;
   emit('update:action');
   closeModal();
 }

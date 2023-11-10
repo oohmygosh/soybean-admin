@@ -1,18 +1,18 @@
 import { defineStore } from 'pinia';
-import { ROOT_ROUTE, constantRoutes, router, routes as staticRoutes } from '@/router';
+import { constantRoutes, ROOT_ROUTE, router, routes as staticRoutes } from '@/router';
 import { resourceApi } from '@/service';
 import {
-  localStg,
   filterAuthRoutesByUserPermission,
   getCacheRoutes,
   getConstantRouteNames,
-  transformAuthRouteToVueRoutes,
-  transformAuthRouteToVueRoute,
+  localStg,
+  sortRoutes,
   transformAuthRouteToMenu,
   transformAuthRouteToSearchMenus,
+  transformAuthRouteToVueRoute,
+  transformAuthRouteToVueRoutes,
   transformRouteNameToRoutePath,
-  transformRoutePathToRouteName,
-  sortRoutes
+  transformRoutePathToRouteName
 } from '@/utils';
 import { useAppStore } from '../app';
 import { useAuthStore } from '../auth';

@@ -75,7 +75,10 @@ const { getData, loading, pagination, data, updatePagination } = useHookTable(ap
       total: response.total
     };
   },
-  apiParamsUpdater: () => apiParams
+  apiParamsUpdater: pageParam => {
+    pageParam.data = apiParams;
+    return pageParam;
+  }
 });
 
 function getTableData() {
