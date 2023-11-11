@@ -21,11 +21,13 @@ declare namespace Auth {
   }
 }
 
+interface AdapterExt {
+  /** 序号 */
+  index: number;
+}
+
 declare namespace UserManagement {
-  interface User extends ApiUserManagement.SysUser {
-    /** 序号 */
-    index: number;
-  }
+  interface User extends ApiUserManagement.SysUser, AdapterExt {}
 
   /**
    * 用户性别
@@ -42,4 +44,13 @@ declare namespace UserManagement {
    * - 4: 软删除
    */
   type UserStatusKey = NonNullable<User['status']>;
+}
+
+declare namespace RoleManager {
+  interface Role extends ApiRoleManager.SysRole, AdapterExt {}
+
+  /**
+   * 0、禁用 1、正常
+   */
+  type RoleStatusKey = NonNullable<Role['status']>;
 }

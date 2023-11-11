@@ -1,10 +1,10 @@
-import type { PaginationProps } from 'naive-ui';
+import type { PaginationProps, DataTableColumns } from 'naive-ui';
 import type { BaseLoadingExposedProps } from 'naive-ui/es/_internal';
-import type { CreateRowKey, RowData, RowKey, TableColumns } from 'naive-ui/es/data-table/src/interface';
+import type { CreateRowKey, RowData, RowKey } from 'naive-ui/es/data-table/src/interface';
 
 export interface STableProps<T> {
   api: (...param: any) => Promise<Service.RequestResult<Page<any>>>;
-  columns: TableColumns<T>;
+  columns: DataTableColumns<T>;
   data?: RowData[];
   size?: 'small' | 'medium' | 'large';
   tableLayout?: 'fixed' | 'auto';

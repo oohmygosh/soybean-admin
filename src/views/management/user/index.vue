@@ -25,12 +25,16 @@
                       <icon-ic-round-plus />
                     </template>
                   </n-button>
-                  <n-popconfirm
-                    :disabled="tableRef?.getChecked()?.length <= 0"
-                    @positive-click="handleDeleteTable(tableRef?.getChecked())"
-                  >
+                  <n-popconfirm @positive-click="handleDeleteTable(tableRef?.getChecked())">
                     <template #trigger>
-                      <n-button strong secondary size="medium" circle type="error">
+                      <n-button
+                        strong
+                        secondary
+                        :disabled="tableRef?.getChecked()?.length <= 0"
+                        size="medium"
+                        circle
+                        type="error"
+                      >
                         <template #icon>
                           <icon-ic-round-delete />
                         </template>
@@ -92,6 +96,7 @@ const fetchRoleTree = async () => {
 fetchRoleTree();
 
 const nodeProps = ({ option }: { option: TreeOption }) => {
+  // noinspection JSUnusedGlobalSymbols
   return {
     onClick() {
       tableRef?.setParam({

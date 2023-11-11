@@ -5,7 +5,6 @@ import {
   filterAuthRoutesByUserPermission,
   getCacheRoutes,
   getConstantRouteNames,
-  localStg,
   sortRoutes,
   transformAuthRouteToMenu,
   transformAuthRouteToSearchMenus,
@@ -111,10 +110,6 @@ export const useRouteStore = defineStore('route-store', {
       const { resetAuthStore } = useAuthStore();
       const { initHomeTab } = useTabStore();
 
-      const { sysUser } = localStg.get('userInfo') || {};
-      if (!sysUser?.id) {
-        throw new Error('userId 不能为空!');
-      }
       const { error, data } = await resourceApi.fetchUserRoutes();
       if (!error) {
         this.handleAuthRoute(sortRoutes(data));

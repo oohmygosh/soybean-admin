@@ -1,36 +1,37 @@
 <template>
-  <n-space class="pb-12px" justify="space-between">
-    <n-space>
-      <slot></slot>
+  <div class="h-full">
+    <n-space class="pb-12px" justify="space-between">
+      <n-space>
+        <slot></slot>
+      </n-space>
+      <n-space :align="'center'">
+        <slot name="right">
+          <n-button quaternary size="large" circle type="primary">
+            <template #icon>
+              <icon-mdi-refresh :class="{ 'animate-spin': loading }" @click="getTableData" />
+            </template>
+          </n-button>
+          <column-setting v-model:columns="tableColumns" @update:columns="x => emit('update:columns', x)" />
+        </slot>
+      </n-space>
     </n-space>
-    <n-space :align="'center'">
-      <slot name="right">
-        <n-button quaternary size="large" circle type="primary">
-          <template #icon>
-            <icon-mdi-refresh :class="{ 'animate-spin': loading }" @click="getTableData" />
-          </template>
-        </n-button>
-        <column-setting v-model:columns="tableColumns" @update:columns="x => emit('update:columns', x)" />
-      </slot>
-    </n-space>
-  </n-space>
-  <n-data-table
-    v-bind="$props"
-    ref="dataTableRef"
-    :data="data"
-    :loading="loading"
-    :pagination="pagination"
-    :row-key="rowKey ?? (row => row.id)"
-    :columns="tableColumns"
-    @update-checked-row-keys="handleChecked"
-  />
+    <n-data-table
+      v-bind="$props"
+      ref="dataTableRef"
+      :data="data"
+      :loading="loading"
+      :pagination="pagination"
+      :row-key="rowKey ?? (row => row.id)"
+      :columns="tableColumns"
+      @update-checked-row-keys="handleChecked"
+    />
+  </div>
 </template>
 
-<script lang="ts" setup generic="T extends RowData">
+<script lang="ts" setup generic="T = any">
 import { onMounted, ref, unref } from 'vue';
-import type { DataTableColumn, DataTableRowKey } from 'naive-ui';
+import type { DataTableColumn, DataTableColumns, DataTableRowKey } from 'naive-ui';
 import { NDataTable } from 'naive-ui';
-import type { RowData } from 'naive-ui/es/data-table/src/interface';
 import { $ref } from 'vue/macros';
 import useHookTable from '~/src/hooks/business/use-hook-table';
 import type { STableProps } from './src/types/props';
@@ -60,10 +61,8 @@ const { api, columns } = withDefaults(defineProps<STableProps<T>>(), {
   summaryPlacement: 'bottom',
   paginationBehaviorOnFilter: 'current'
 });
-const tableColumns = $ref(columns);
-const apiParams = $ref({
-  data: {}
-});
+const tableColumns = $ref(columns) as DataTableColumns<T>;
+let apiParams = $ref({});
 const { getData, loading, pagination, data, updatePagination } = useHookTable(api, {
   apiParams,
   columns: () => columns,
@@ -94,7 +93,8 @@ interface Emits {
 
 const fetchData = () => unref(data);
 const setParam = (obj: typeof apiParams) => {
-  apiParams.data = obj;
+  apiParams = obj;
+  updatePagination({ ...pagination });
 };
 const emit = defineEmits<Emits>();
 const getChecked = () => unref(checkedRowKeysRef);
