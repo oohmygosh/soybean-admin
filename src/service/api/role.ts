@@ -1,4 +1,6 @@
-import { BaseApi } from '@/service/request';
+import type { AxiosRequestConfig } from 'axios';
+import type { Key } from 'naive-ui/es/cascader/src/interface';
+import { BaseApi, request } from '@/service/request';
 import { getServiceEnvConfig } from '~/.env-config';
 
 class RoleApi extends BaseApi<ApiRoleManager.SysRole> {
@@ -14,6 +16,14 @@ class RoleApi extends BaseApi<ApiRoleManager.SysRole> {
     if (!RoleApi.instance) RoleApi.instance = new RoleApi();
     return RoleApi.instance;
   }
+
+  fetchRoleIds = (roleId: Key, config?: AxiosRequestConfig) => {
+    return request.get<number[]>(`${this.baseUri}/resource-ids?id=${roleId}`, config);
+  };
+
+  resourceSet = (param: { roleId: Key; resourceIds: Key[] }, config?: AxiosRequestConfig) => {
+    return request.post<boolean>(`${this.baseUri}/resource-set`, param, config);
+  };
 }
 
 export const roleApi = RoleApi.getInstance();
