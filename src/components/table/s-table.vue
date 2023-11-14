@@ -8,7 +8,7 @@
         <slot name="right">
           <n-button quaternary size="large" circle type="primary">
             <template #icon>
-              <icon-mdi-refresh :class="{ 'animate-spin': loading }" @click="getTableData" />
+              <icon-mdi-refresh :class="{ 'animate-spin': loading }" @click="LoadData" />
             </template>
           </n-button>
           <column-setting v-model:columns="tableColumns" @update:columns="x => emit('update:columns', x)" />
@@ -18,7 +18,7 @@
     <n-data-table
       v-bind="$props"
       ref="dataTableRef"
-      :data="data"
+      :data="$props.data ?? data"
       :loading="loading"
       :pagination="pagination"
       :row-key="rowKey ?? (row => row.id)"
@@ -28,7 +28,7 @@
   </div>
 </template>
 
-<script lang="ts" setup generic="T = any">
+<script lang="ts" setup>
 import { onMounted, ref, unref } from 'vue';
 import type { DataTableColumn, DataTableColumns, DataTableRowKey } from 'naive-ui';
 import { NDataTable } from 'naive-ui';
@@ -37,7 +37,7 @@ import useHookTable from '~/src/hooks/business/use-hook-table';
 import type { STableProps } from './src/types/props';
 
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
-const { api, columns } = withDefaults(defineProps<STableProps<T>>(), {
+const { api, columns } = withDefaults(defineProps<STableProps>(), {
   scrollX: 1800,
   size: 'medium',
   tableLayout: 'auto',
@@ -61,8 +61,8 @@ const { api, columns } = withDefaults(defineProps<STableProps<T>>(), {
   summaryPlacement: 'bottom',
   paginationBehaviorOnFilter: 'current'
 });
-const tableColumns = $ref(columns) as DataTableColumns<T>;
-let apiParams = $ref({});
+const tableColumns = $ref(columns) as DataTableColumns<any>;
+let apiParams: object = $ref({});
 const { getData, loading, pagination, data, updatePagination } = useHookTable(api, {
   apiParams,
   columns: () => columns,
@@ -77,10 +77,15 @@ const { getData, loading, pagination, data, updatePagination } = useHookTable(ap
   apiParamsUpdater: pageParam => {
     pageParam.data = apiParams;
     return pageParam;
+  },
+  pagination: {
+    prefix({ itemCount }) {
+      return `Total is ${itemCount}.`;
+    }
   }
 });
 
-function getTableData() {
+function LoadData() {
   if (!api) return;
   getData().then();
 }
@@ -88,7 +93,7 @@ function getTableData() {
 interface Emits {
   (e: 'update:checked', rowKeys: DataTableRowKey[]): void;
 
-  (e: 'update:columns', columns: DataTableColumn<T>[]): void;
+  (e: 'update:columns', columns: DataTableColumn<any>[]): void;
 }
 
 const fetchData = () => unref(data);
@@ -97,18 +102,18 @@ const setParam = (obj: typeof apiParams) => {
   updatePagination({ ...pagination });
 };
 const emit = defineEmits<Emits>();
-const getChecked = () => unref(checkedRowKeysRef);
+const getChecked = (): Array<DataTableRowKey> => unref(checkedRowKeysRef) ?? [];
 const handleChecked = (rowKeys: DataTableRowKey[]) => {
   checkedRowKeysRef.value = rowKeys;
   emit('update:checked', rowKeys);
   emit('update:columns', tableColumns);
 };
 onMounted(async () => {
-  getTableData();
+  LoadData();
 });
 defineExpose({
   fetchData,
-  getTableData,
+  LoadData,
   getChecked,
   updatePagination,
   setParam

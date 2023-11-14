@@ -13,7 +13,7 @@
               <n-button
                 strong
                 secondary
-                :disabled="tableRef?.getChecked()?.length <= 0"
+                :disabled="(tableRef?.getChecked() ?? [])?.length <= 0"
                 size="medium"
                 circle
                 type="error"
@@ -50,7 +50,7 @@
 
 <script lang="tsx" setup>
 import { ref } from 'vue';
-import type { DataTableColumns } from 'naive-ui';
+import type { DataTableColumns, DataTableRowKey } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
@@ -62,7 +62,7 @@ import Permission from './components/permission.vue';
 import type { ModalType } from './components/table-action-modal.vue';
 import TableActionModal from './components/table-action-modal.vue';
 
-const tableRef = $ref<STableElementType<UserManagement.User>>();
+const tableRef = $ref<STableElementType>();
 const permissionRef = $ref<InstanceType<typeof Permission>>();
 const { bool: visible, setTrue: openModal } = useBoolean();
 const { bool: permissionVisible, setTrue: openPermissionModal } = useBoolean();
@@ -75,10 +75,10 @@ function setModalType(type: ModalType) {
   modalType.value = type;
 }
 
-async function handleDeleteTable(rowId: string[] = []) {
+async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
   if (rowId.length === 0) return;
   const { error } = await execApi(roleApi.delete, { data: rowId, msg: '删除成功!' });
-  if (!error) tableRef?.getTableData();
+  if (!error) tableRef?.LoadData();
 }
 
 function handleAddTable() {

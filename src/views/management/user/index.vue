@@ -30,7 +30,7 @@
                       <n-button
                         strong
                         secondary
-                        :disabled="tableRef?.getChecked()?.length <= 0"
+                        :disabled="(tableRef?.getChecked() ?? []).length <= 0"
                         size="medium"
                         circle
                         type="error"
@@ -54,7 +54,7 @@
                 :type="modalType"
                 :edit-data="editData"
                 :role-options="roleTree.slice(1)"
-                @update:action="() => tableRef?.getTableData()"
+                @update:action="() => tableRef?.LoadData()"
               />
             </n-card>
           </n-layout-content>
@@ -67,7 +67,7 @@
 <script setup lang="tsx">
 import type { Ref } from 'vue';
 import { ref } from 'vue';
-import type { DataTableColumns, TreeOption } from 'naive-ui';
+import type { DataTableColumns, DataTableRowKey, TreeOption } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
@@ -84,7 +84,7 @@ const pattern = $ref('');
 const showIrrelevantNodes = $ref(false);
 let roleTree: TreeOptions & ApiRoleManager.SysRole[] = $ref([]);
 
-const tableRef = $ref<STableElementType<UserManagement.User>>();
+const tableRef = $ref<STableElementType>();
 const fetchRoleTree = async () => {
   const { data } = await roleApi.listTree();
   if (data) {
@@ -102,7 +102,7 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
       tableRef?.setParam({
         roleId: option.id
       });
-      tableRef?.getTableData();
+      tableRef?.LoadData();
     }
   };
 };
@@ -251,10 +251,10 @@ async function handleEditTable(row: UserManagement.User) {
   openModal();
 }
 
-async function handleDeleteTable(rowId: string[] = []) {
+async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
   if (rowId.length === 0) return;
   const { error } = await execApi(userApi.delete, { data: rowId, msg: '删除成功!' });
-  if (!error) tableRef?.getTableData();
+  if (!error) tableRef?.LoadData();
 }
 </script>
 
