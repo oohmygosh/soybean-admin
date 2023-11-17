@@ -6,7 +6,7 @@
           <n-layout-sider content-style="padding: 24px;">
             <n-space vertical :size="12">
               <n-input v-model:value="pattern" placeholder="搜索" />
-              <n-tree :pattern="pattern" :data="data" block-line expand-on-click />
+              <n-tree block-line :data="data" checkable expand-on-click selectable />
             </n-space>
           </n-layout-sider>
           <n-layout>
@@ -22,55 +22,30 @@
 </template>
 
 <script setup lang="ts">
+import { repeat } from 'seemly';
 import type { TreeOption } from 'naive-ui/es/tree/src/interface';
 
 const pattern = $ref('');
-const data: TreeOption[] = [
-  {
-    label: '0',
-    key: '0',
-    children: [
-      {
-        label: '0-0',
-        key: '0-0',
-        children: [
-          { label: '0-0-0', key: '0-0-0' },
-          { label: '0-0-1', key: '0-0-1' }
-        ]
-      },
-      {
-        label: '0-1',
-        key: '0-1',
-        children: [
-          { label: '0-1-0', key: '0-1-0' },
-          { label: '0-1-1', key: '0-1-1' }
-        ]
-      }
-    ]
-  },
-  {
-    label: '1',
-    key: '1',
-    children: [
-      {
-        label: '1-0',
-        key: '1-0',
-        children: [
-          { label: '1-0-0', key: '1-0-0' },
-          { label: '1-0-1', key: '1-0-1' }
-        ]
-      },
-      {
-        label: '1-1',
-        key: '1-1',
-        children: [
-          { label: '1-1-0', key: '1-1-0' },
-          { label: '1-1-1', key: '1-1-1' }
-        ]
-      }
-    ]
-  }
-];
+function createData(level = 4, baseKey = ''): TreeOption[] | undefined {
+  if (!level) return undefined;
+  return repeat(6 - level, undefined).map((_, index) => {
+    const key = String(baseKey) + level + index;
+    return {
+      label: createLabel(level),
+      key,
+      children: createData(level - 1, key)
+    };
+  });
+}
+
+function createLabel(level: number): string {
+  if (level === 4) return '道生一';
+  if (level === 3) return '一生二';
+  if (level === 2) return '二生三';
+  if (level === 1) return '三生万物';
+  return '';
+}
+const data = createData();
 </script>
 
 <style scoped></style>
