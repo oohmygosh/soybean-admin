@@ -5,7 +5,7 @@
         <n-layout has-sider>
           <n-layout-sider content-style="padding: 24px;" class="rounded-l-8px">
             <n-space vertical :size="12">
-              <n-input v-model:value="pattern" placeholder="搜索" />
+              <n-input v-model:value="pattern" :placeholder="$t('common.search')" />
               <n-tree
                 :show-irrelevant-nodes="showIrrelevantNodes"
                 :key-field="'id'"

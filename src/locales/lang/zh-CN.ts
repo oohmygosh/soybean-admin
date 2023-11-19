@@ -13,7 +13,8 @@ const locale: I18nType.Schema = {
     confirm: '确认',
     cancel: '取消',
     pleaseCheckValue: '请检查输入的值是否合法',
-    action: '操作'
+    action: '操作',
+    search: '搜索'
   },
   routes: {
     dashboard: {

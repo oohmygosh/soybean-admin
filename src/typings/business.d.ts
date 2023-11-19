@@ -54,3 +54,12 @@ declare namespace RoleManager {
    */
   type RoleStatusKey = NonNullable<Role['status']>;
 }
+
+declare namespace ResourceManager {
+  interface Resource extends ApiResourceManager.SysResource {}
+
+  /**
+   * 类型 0，菜单 1，iframe 2，外链 3，按钮
+   */
+  type MenuTypeKey = NonNullable<Resource['type']>;
+}

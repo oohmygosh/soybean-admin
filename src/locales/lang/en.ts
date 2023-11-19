@@ -13,7 +13,8 @@ const locale: I18nType.Schema = {
     confirm: 'Confirm',
     cancel: 'Cancel',
     pleaseCheckValue: 'Please check the value is valid',
-    action: 'Action'
+    action: 'Action',
+    search: 'search'
   },
   routes: {
     dashboard: {

@@ -34,3 +34,11 @@ export const statusLabels: Record<UserManagement.UserStatusKey, string> = {
   1: '启用'
 };
 export const userStatusOptions = transformObjectToOption(userStatusLabels);
+
+/** 类型 0，菜单 1，iframe 2，外链 3，按钮 */
+export const menuTypeLabels: Record<ResourceManager.MenuTypeKey, string> = {
+  0: '菜单',
+  1: 'iframe',
+  2: '外链',
+  3: '按钮'
+};
