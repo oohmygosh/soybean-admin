@@ -32,7 +32,8 @@
       <div class="py-12px text-16px">通过SvgIcon组件动态渲染, 菜单通过meta的localIcon属性渲染自定义图标</div>
       <div class="grid grid-cols-10">
         <div v-for="(fileName, index) in localIcons" :key="index" class="mt-5px flex-x-center">
-          <svg-icon :local-icon="fileName" class="text-30px text-primary" />
+          {{ fileName }}
+          <svg-icon :icon="fileName" class="text-30px text-primary" />
         </div>
       </div>
     </n-card>
@@ -45,7 +46,7 @@ import { icons } from './icons';
 
 const selectValue = ref('');
 
-const localIcons = ['custom-icon', 'activity', 'at-sign', 'cast', 'chrome', 'copy', 'wind'];
+const localIcons = ['local-custom-icon', 'activity', 'at-sign', 'cast', 'chrome', 'copy', 'wind', 'logo'];
 </script>
 
 <style scoped></style>

@@ -1,4 +1,8 @@
-export const icons = [
+// 图标选择器配置
+
+const glob = import.meta.glob('../assets/svg-icon/*.svg');
+
+const icons = [
   'mdi:emoticon',
   'mdi:ab-testing',
   'ph:alarm',
@@ -28,6 +32,24 @@ export const icons = [
   'ic:baseline-filter-7',
   'ic:baseline-filter-8',
   'ic:baseline-filter-9',
-  'ic:baseline-filter-9-plus',
-  'local-logo'
+  'ic:baseline-filter-9-plus'
+];
+
+export default [
+  {
+    name: '默认',
+    icons
+  },
+  {
+    name: '扩展',
+    icons: Object.keys(glob).map(
+      item =>
+        `local-${item
+          .split('/')
+          .pop()
+          ?.split('.')[0]
+          .replace(/([A-Z])/g, '-$1')
+          .toLowerCase()}`
+    )
+  }
 ];

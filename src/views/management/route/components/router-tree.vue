@@ -1,5 +1,5 @@
 <template>
-  <n-layout-sider content-style="padding: 24px;" :native-scrollbar="false">
+  <div style="h-full">
     <n-input v-model:value="pattern" :placeholder="$t('common.search')" />
     <n-space vertical :size="14">
       <n-tree
@@ -38,7 +38,7 @@
         </n-popconfirm>
       </n-button-group>
     </n-layout-footer>
-  </n-layout-sider>
+  </div>
 </template>
 
 <script setup lang="tsx">
@@ -73,7 +73,7 @@ const getData = async () => {
 
 const renderPrefix = ({ option }: { option: TreeOption }) => {
   const data = option as TreeOption & ApiResourceManager.SysResource;
-  return <svg-icon icon={data.meta.icon}></svg-icon>;
+  return <svg-icon icon={data.icon}></svg-icon>;
 };
 
 const delMenu = () => {
@@ -89,7 +89,6 @@ const renderSuffix = ({ option }: { option: TreeOption }) => {
   return (
     <n-button
       text
-      quaternary
       round
       type="info"
       size="small"

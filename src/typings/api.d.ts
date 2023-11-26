@@ -119,10 +119,10 @@ declare namespace ApiResourceManager {
   interface SysResource extends BaseEntity {
     // 父ID
     pid?: number;
-    // 名称
+    // 标题
     title?: string;
-    // 别名
-    alias?: string;
+    // 名称
+    name?: string;
     // 类型 0，菜单 1，iframe 2，外链 3，按钮
     type?: number;
     // 编码

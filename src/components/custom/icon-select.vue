@@ -25,20 +25,25 @@
 
 <script lang="ts" setup>
 import { computed, ref } from 'vue';
+import defaultIcons from '@/config/iconSelector';
 
 defineOptions({ name: 'IconSelect' });
-
 interface Props {
   /** 选中的图标 */
-  value: string;
+  value?: string;
   /** 图标列表 */
-  icons: string[];
+  icons?: string[];
   /** 未选中图标 */
   emptyIcon?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  emptyIcon: 'mdi:apps'
+  emptyIcon: 'mdi:apps',
+  icons: () =>
+    defaultIcons.reduce<string[]>((accumulator, currentCategory) => {
+      return accumulator.concat(currentCategory.icons);
+    }, []),
+  value: ''
 });
 
 interface Emits {
