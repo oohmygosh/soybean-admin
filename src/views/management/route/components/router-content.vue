@@ -48,7 +48,10 @@
           </n-form>
         </n-card>
       </n-layout-content>
-      <n-layout-sider content-style="padding: 24px;">海淀桥</n-layout-sider>
+      <n-layout-sider content-style="padding: 24px;">
+        <h1 class="font-size-5 mb-5">接口权限</h1>
+        <form-table />
+      </n-layout-sider>
     </n-layout>
   </div>
 </template>

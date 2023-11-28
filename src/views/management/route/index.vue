@@ -19,7 +19,6 @@ let resource = $ref({}) as TreeOption & ResourceManager.Resource;
 
 const treeClick = (node: TreeOption & ResourceManager.Resource) => {
   resource = node;
-  window.$message?.success(`click: ${node.title}`);
 };
 </script>
 
