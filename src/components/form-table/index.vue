@@ -6,7 +6,7 @@
 import type { VNode } from 'vue';
 import { h } from 'vue';
 import type { DataTableColumn } from 'naive-ui';
-import { NTooltip, NGradientText } from 'naive-ui';
+import { NTooltip, NGradientText, NButton, NInput } from 'naive-ui';
 
 const renderTooltip = (trigger: VNode, content: string) => {
   return h(NTooltip, null, {
@@ -17,68 +17,65 @@ const renderTooltip = (trigger: VNode, content: string) => {
 const pagination = {
   pageSize: 10
 };
-const columns: Array<DataTableColumn> = [
-  {
-    key: 'name',
-    title() {
-      return renderTooltip(
-        h(
-          NGradientText,
-          {
-            size: 24,
-            type: 'danger'
-          },
-          { default: () => 'Name' }
-        ),
-        'Tooltip Content'
-      );
-    }
-  },
-  {
-    key: 'age',
-    title() {
-      return h(
-        NGradientText,
-        {
-          size: '20',
-          type: 'info'
-        },
-        { default: () => 'Age' }
-      );
-    }
-  },
-  {
-    key: 'address',
-    title() {
-      return h(
-        NGradientText,
-        {
-          size: '16',
-          type: 'warning'
-        },
-        { default: () => 'Address' }
-      );
-    }
-  }
-];
-const data = [
+const data = $ref([
   {
     key: 0,
-    name: 'John Brown',
     age: 32,
     address: 'New York No. 1 Lake Park'
   },
   {
     key: 1,
-    name: 'Jim Green',
     age: 42,
     address: 'London No. 1 Lake Park'
   },
   {
     key: 2,
-    name: 'Joe Black',
     age: 32,
     address: 'Sidney No. 1 Lake Park'
+  }
+]);
+const columns: Array<DataTableColumn<(typeof data)[0]>> = [
+  {
+    key: 'key',
+    title() {
+      return renderTooltip(
+        <NButton strong secondary type="primary">
+          {{ icon: () => <icon-ic-round-plus /> }}
+        </NButton>,
+        '添加接口权限'
+      );
+    },
+    align: 'center'
+  },
+  {
+    key: 'age',
+    title() {
+      return h(NGradientText, null, { default: () => '权限标识' });
+    },
+    align: 'center',
+    render(row, index) {
+      return h(NInput, {
+        value: String(row.age),
+        onUpdateValue(v: string) {
+          data[index].age = Number(v);
+        }
+      });
+    }
+  },
+  {
+    key: 'address',
+    title() {
+      return h(NGradientText, null, { default: () => '接口URI' });
+    },
+    align: 'center',
+    render(row, index) {
+      return h(NInput, {
+        value: row.address,
+        onUpdateValue(v: string) {
+          data[index].address = v;
+        }
+      });
+    }
   }
 ];
 </script>
