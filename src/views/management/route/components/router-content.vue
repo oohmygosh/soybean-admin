@@ -1,8 +1,8 @@
 <template>
   <div class="h-full">
     <n-layout has-sider embedded class="h-full">
-      <n-layout-content class="h-full">
-        <n-card :bordered="false" class="w-full h-full">
+      <n-layout-content>
+        <n-card :bordered="false" class="h-full">
           <h1 class="font-size-5 mb-5">{{ form.title }}</h1>
           <n-form ref="formRef" label-placement="left" label-width="auto" :model="form">
             <n-form-item label="显示名称" path="title">
@@ -48,7 +48,8 @@
           </n-form>
         </n-card>
       </n-layout-content>
-      <n-layout-sider content-style="padding: 24px;" :width="'30%'">
+
+      <n-layout-sider content-style="padding: 24px;" :width="'30%'" :native-scrollbar="false">
         <h1 class="font-size-5 mb-5">接口权限</h1>
         <form-table />
       </n-layout-sider>

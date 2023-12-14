@@ -1,12 +1,14 @@
 <template>
-  <n-data-table :columns="columns" :data="data" :pagination="pagination" />
+  <div class="sf-form-table">
+    <n-data-table :columns="columns" :data="data" :pagination="pagination" />
+  </div>
 </template>
 
 <script setup lang="tsx">
 import type { VNode } from 'vue';
 import { h } from 'vue';
 import type { DataTableColumn } from 'naive-ui';
-import { NTooltip, NGradientText, NButton, NInput } from 'naive-ui';
+import { NButton, NInput, NTooltip } from 'naive-ui';
 
 const renderTooltip = (trigger: VNode, content: string) => {
   return h(NTooltip, null, {
@@ -45,12 +47,31 @@ const columns: Array<DataTableColumn<(typeof data)[0]>> = [
         '添加接口权限'
       );
     },
-    align: 'center'
+    align: 'center',
+    render(row, index) {
+      return (
+        <div class={'sf-form-table-handle'}>
+          <span>{row.key}</span>
+          <NButton
+            round
+            strong
+            secondary
+            type="error"
+            size="small"
+            onClick={() => {
+              data.splice(index, 1);
+            }}
+          >
+            {{ icon: () => <icon-ic-round-delete /> }}
+          </NButton>
+        </div>
+      );
+    }
   },
   {
     key: 'age',
     title() {
-      return h(NGradientText, null, { default: () => '权限标识' });
+      return <span>权限标识</span>;
     },
     align: 'center',
     render(row, index) {
@@ -65,7 +86,7 @@ const columns: Array<DataTableColumn<(typeof data)[0]>> = [
   {
     key: 'address',
     title() {
-      return h(NGradientText, null, { default: () => '接口URI' });
+      return <span>接口URL</span>;
     },
     align: 'center',
     render(row, index) {
@@ -79,3 +100,25 @@ const columns: Array<DataTableColumn<(typeof data)[0]>> = [
   }
 ];
 </script>
+
+<style>
+.sf-form-table {
+  width: 100%;
+}
+
+.sf-form-table .sf-form-table-handle span {
+  display: inline-block;
+}
+
+.sf-form-table .sf-form-table-handle button {
+  display: none;
+}
+
+.sf-form-table .n-data-table-tr:hover .sf-form-table-handle > span {
+  display: none;
+}
+
+.sf-form-table .n-data-table-tr:hover .sf-form-table-handle button {
+  display: inline-block;
+}
+</style>
