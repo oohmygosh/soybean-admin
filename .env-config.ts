@@ -20,9 +20,9 @@ const serviceEnv: ServiceEnv = {
   }
 };
 
-export const apiPrefix = {
-  auth: '/auth',
-  sys: '/res'
+export const ServicePrefix = {
+  'maker-service-authorization': '/auth',
+  'maker-service-resource-biz': '/res'
 };
 
 /**

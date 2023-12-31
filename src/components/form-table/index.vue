@@ -1,104 +1,59 @@
 <template>
   <div class="sf-form-table">
-    <n-data-table :columns="columns" :data="data" :pagination="pagination" />
+    <n-data-table :columns="tableColumns" :data="modelValue" />
   </div>
 </template>
 
 <script setup lang="tsx">
-import type { VNode } from 'vue';
-import { h } from 'vue';
+import { toRefs } from 'vue';
 import type { DataTableColumn } from 'naive-ui';
-import { NButton, NInput, NTooltip } from 'naive-ui';
+import { NButton } from 'naive-ui';
 
-const renderTooltip = (trigger: VNode, content: string) => {
-  return h(NTooltip, null, {
-    trigger: () => trigger,
-    default: () => content
-  });
+type PropsType = {
+  modelValue?: Array<any>;
+  columns: Array<DataTableColumn<any>>;
 };
-const pagination = {
-  pageSize: 10
+const props = defineProps<PropsType>();
+const { modelValue: data, columns } = toRefs(props);
+
+interface Emits {
+  (e: 'click'): undefined;
+}
+const emit = defineEmits<Emits>();
+const addAction = () => {
+  emit('click');
 };
-const data = $ref([
-  {
-    key: 0,
-    age: 32,
-    address: 'New York No. 1 Lake Park'
+const tableColumns = $ref(columns) as Array<DataTableColumn<any>>;
+tableColumns.unshift({
+  key: 'key',
+  title() {
+    return (
+      <NButton strong secondary type="primary" onClick={addAction}>
+        {{ icon: () => <icon-ic-round-plus /> }}
+      </NButton>
+    );
   },
-  {
-    key: 1,
-    age: 42,
-    address: 'London No. 1 Lake Park'
-  },
-  {
-    key: 2,
-    age: 32,
-    address: 'Sidney No. 1 Lake Park'
+  align: 'center',
+  render(_, index) {
+    return (
+      <div class={'sf-form-table-handle'}>
+        <span>{index + 1}</span>
+        <NButton
+          round
+          strong
+          secondary
+          type="error"
+          size="small"
+          onClick={() => {
+            data?.value?.splice(index, 1);
+          }}
+        >
+          {{ icon: () => <icon-ic-round-delete /> }}
+        </NButton>
+      </div>
+    );
   }
-]);
-const columns: Array<DataTableColumn<(typeof data)[0]>> = [
-  {
-    key: 'key',
-    title() {
-      return renderTooltip(
-        <NButton strong secondary type="primary">
-          {{ icon: () => <icon-ic-round-plus /> }}
-        </NButton>,
-        '添加接口权限'
-      );
-    },
-    align: 'center',
-    render(row, index) {
-      return (
-        <div class={'sf-form-table-handle'}>
-          <span>{row.key}</span>
-          <NButton
-            round
-            strong
-            secondary
-            type="error"
-            size="small"
-            onClick={() => {
-              data.splice(index, 1);
-            }}
-          >
-            {{ icon: () => <icon-ic-round-delete /> }}
-          </NButton>
-        </div>
-      );
-    }
-  },
-  {
-    key: 'age',
-    title() {
-      return <span>权限标识</span>;
-    },
-    align: 'center',
-    render(row, index) {
-      return h(NInput, {
-        value: String(row.age),
-        onUpdateValue(v: string) {
-          data[index].age = Number(v);
-        }
-      });
-    }
-  },
-  {
-    key: 'address',
-    title() {
-      return <span>接口URL</span>;
-    },
-    align: 'center',
-    render(row, index) {
-      return h(NInput, {
-        value: row.address,
-        onUpdateValue(v: string) {
-          data[index].address = v;
-        }
-      });
-    }
-  }
-];
+});
 </script>
 
 <style>

@@ -51,23 +51,130 @@
 
       <n-layout-sider content-style="padding: 24px;" :width="'30%'" :native-scrollbar="false">
         <h1 class="font-size-5 mb-5">接口权限</h1>
-        <form-table />
+        <form-table v-model="form.apiList" :columns="apiColumns" @click="addAction" />
       </n-layout-sider>
     </n-layout>
+    <n-modal
+      v-model:show="showModal"
+      preset="dialog"
+      title="权限树"
+      positive-text="保存"
+      negative-text="取消"
+      @positive-click="submitCallback"
+    >
+      <n-tree
+        ref="apiTree"
+        block-line
+        cascade
+        checkable
+        virtual-scroll
+        style="height: 300px"
+        label-field="title"
+        :show-line="true"
+        :selectable="false"
+        :data="apiDocs"
+        :expand-on-click="true"
+        :default-expanded-keys="defaultExpandedKeys"
+        :default-checked-keys="defaultCheckedKeys"
+      />
+    </n-modal>
   </div>
 </template>
 <script setup lang="tsx">
+import { h, onMounted, toRef } from 'vue';
+import type { DataTableColumn, TreeOption } from 'naive-ui';
+import { NInput, NTree } from 'naive-ui';
+import type { Key } from 'naive-ui/es/cascader/src/interface';
 import { menuTypeLabels } from '@/constants';
+import { ServicePrefix } from '~/.env-config';
+import { resourceApi } from '~/src/service';
 
 interface Props {
-  /** 异常类型 403 404 500 */
-  data: ResourceManager.Resource;
+  data: ResourceManager.Resource & { apiList?: ApiResourceManager.ResourceApi[] };
 }
-const { data: form } = definePropsRefs<Props>();
-
+const { data: propData } = defineProps<Props>();
+const form = toRef(propData);
+const apiTree = $ref<InstanceType<typeof NTree>>();
+const apiDocs: (ApiResourceManager.ApiDoc & TreeOption)[] = $ref([]);
+const defaultExpandedKeys: Key[] = [];
+let defaultCheckedKeys: Key[] = $ref([]);
 const radioOptions = Object.entries(menuTypeLabels).map(([key, value]) => ({
   value: Number(key),
   label: value
 }));
+const apiMap: Record<string, Key> = {};
+
+let showModal = $ref(false);
+
+const fillApiMap = (arr: ApiResourceManager.ApiDoc[]) => {
+  if (!arr) return;
+  arr.forEach(e => {
+    fillApiMap(e.children);
+    e.api?.forEach(item => (apiMap[item] = e.key));
+  });
+};
+
+const addAction = () => {
+  if (Object.keys(apiMap).length === 0) {
+    fillApiMap(apiDocs);
+  }
+
+  defaultCheckedKeys = form.value.apiList?.map(e => {
+    return apiMap[e.url as string];
+  }) as Key[];
+  showModal = true;
+};
+
+const submitCallback = () => {
+  form.value.apiList = [];
+  apiTree?.getCheckedData().options.forEach(item => {
+    const data = item as unknown as ApiResourceManager.ApiDoc;
+    data?.api?.forEach(
+      url =>
+        form.value.apiList?.push({
+          code: data.permission,
+          url
+        })
+    );
+  });
+};
+
+const apiColumns: Array<DataTableColumn<ApiResourceManager.ResourceApi>> = [
+  {
+    key: 'code',
+    title: '编码',
+    align: 'center',
+    render(row) {
+      return h(NInput, {
+        value: row.code,
+        onUpdateValue(v: string) {
+          row.code = v;
+        }
+      });
+    }
+  },
+  {
+    key: 'url',
+    title: '接口URL',
+    align: 'center',
+    render(row) {
+      return h(NInput, {
+        value: row.url,
+        onUpdateValue(v: string) {
+          row.url = v;
+        }
+      });
+    }
+  }
+];
+onMounted(async () => {
+  const { data } = await resourceApi.fetchAllService();
+  data?.forEach(async item => {
+    if (ServicePrefix[item]) {
+      const { data: apiDoc } = await resourceApi.fetchServiceApiPermissions(ServicePrefix[item]);
+      if (apiDoc) apiDocs.push(...apiDoc);
+    }
+  });
+});
 </script>
 <style scoped></style>

@@ -150,6 +150,23 @@ declare namespace ApiResourceManager {
     // 子节点
     children?: SysResource[];
   }
+
+  interface ResourceApi extends BaseEntity {
+    // 资源ID
+    resourceId?: string;
+    // 接口地址
+    url?: string;
+    // 编码
+    code?: string;
+  }
+
+  interface ApiDoc {
+    key: number;
+    title: string;
+    permission: string;
+    api: Array<string>;
+    children: ApiDoc[];
+  }
 }
 
 declare namespace ApiRoleManager {

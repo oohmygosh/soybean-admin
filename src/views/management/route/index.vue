@@ -15,9 +15,9 @@ import type { TreeOption } from 'naive-ui';
 import RouterTree from '@/views/management/route/components/router-tree.vue';
 import RouterContent from '@/views/management/route/components/router-content.vue';
 
-let resource = $ref({}) as TreeOption & ResourceManager.Resource;
+let resource = $ref({}) as TreeOption & ResourceManager.Resource & { apiList?: ApiResourceManager.ResourceApi[] };
 
-const treeClick = (node: TreeOption & ResourceManager.Resource) => {
+const treeClick = (node: typeof resource) => {
   resource = node;
 };
 </script>

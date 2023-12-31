@@ -49,8 +49,8 @@ import { resourceApi } from '@/service';
 
 const pattern = $ref('');
 const checkedKeys: number[] = $ref([]);
-// const data = createData();
-let treeData = $ref([]) as TreeOptions & ApiResourceManager.SysResource[];
+let treeData = $ref([]) as TreeOptions &
+  (ApiResourceManager.SysResource & { apiList?: ApiResourceManager.ResourceApi[] })[];
 const routerRef = $ref() as InstanceType<typeof NTree>;
 type Emits = {
   (e: 'tree-click', param: (typeof treeData)[0]): void;
@@ -60,7 +60,9 @@ const emit = defineEmits<Emits>();
 const nodeProps = ({ option }: { option: TreeOption }) => {
   // noinspection JSUnusedGlobalSymbols
   return {
-    onClick() {
+    async onClick() {
+      const { data } = await resourceApi.fetchApiByResourceId(option.id as string);
+      (option as any).apiList = data;
       emit('tree-click', option as (typeof treeData)[0]);
     }
   };
