@@ -3,13 +3,10 @@
     <n-layout has-sider embedded class="h-full">
       <n-layout-content>
         <n-card :bordered="false" class="h-full">
-          <h1 class="font-size-5 mb-5">{{ form.title }}</h1>
-          <n-form ref="formRef" label-placement="left" label-width="auto" :model="form">
+          <h1 class="font-size-5 mb-5">{{ form.parentName ? form.parentName + ' / ' + form.title : form.title }}</h1>
+          <n-form ref="formRef" label-placement="left" label-width="auto" :model="form" :rules="rules">
             <n-form-item label="显示名称" path="title">
               <n-input v-model:value="form.title" clearable></n-input>
-            </n-form-item>
-            <n-form-item v-if="form.pid != 0" label="上级菜单" path="parentName">
-              <n-input v-model:value="form.parentName" clearable></n-input>
             </n-form-item>
             <n-form-item label="类型" path="type">
               <n-radio-group v-model:value="form.type" :default-value="form.type">
@@ -35,16 +32,31 @@
                 <n-input v-model:value="form.path" :disabled="form.type !== 0" clearable />
               </n-input-group>
             </n-form-item>
+            <n-form-item label="i18n" path="i18nTitle">
+              <n-input v-model:value="form.i18nTitle" />
+            </n-form-item>
             <n-form-item label="排序" path="sort">
               <n-input-number v-model:value="form.sort" button-placement="both" style="text-align: center" />
             </n-form-item>
-            <n-form-item label="元数据" path="meta">
-              <n-checkbox v-model:checked="form.meta.hide" size="small" label="隐藏菜单" />
-              <n-checkbox v-model:checked="form.meta.keepAlive" size="small" label="缓存页面" />
-              <n-checkbox v-model:checked="form.meta.multiTab" size="small" label="多Tab" />
-              <n-checkbox v-model:checked="form.meta.affix" size="small" label="固定" />
+            <n-form-item label="路由组件" path="component">
+              <n-radio-group v-model:value="form.component" :default-value="form.component">
+                <n-radio-button
+                  v-for="node in componentOptions"
+                  :key="node.label"
+                  :value="node.label"
+                  :label="node.label"
+                  default-checked
+                  checked
+                />
+              </n-radio-group>
             </n-form-item>
-            <n-button round type="primary">保存</n-button>
+            <n-form-item label="元数据" path="meta">
+              <n-checkbox v-model:checked="form.hide" size="small" label="隐藏菜单" />
+              <n-checkbox v-model:checked="form.keepAlive" size="small" label="缓存页面" />
+              <n-checkbox v-model:checked="form.multiTab" size="small" label="多Tab" />
+              <n-checkbox v-model:checked="form.affix" size="small" label="固定" />
+            </n-form-item>
+            <n-button round type="primary" @click="saveForm">保存</n-button>
           </n-form>
         </n-card>
       </n-layout-content>
@@ -81,19 +93,21 @@
   </div>
 </template>
 <script setup lang="tsx">
-import { h, onMounted, toRef } from 'vue';
-import type { DataTableColumn, TreeOption } from 'naive-ui';
+import { h, onMounted, toRefs } from 'vue';
+import type { DataTableColumn, FormInst, FormRules, TreeOption } from 'naive-ui';
 import { NInput, NTree } from 'naive-ui';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
-import { menuTypeLabels } from '@/constants';
+import { componentLabels, menuTypeLabels } from '@/constants';
 import { ServicePrefix } from '~/.env-config';
 import { resourceApi } from '~/src/service';
+import { formRules } from '~/src/utils';
 
 interface Props {
   data: ResourceManager.Resource & { apiList?: ApiResourceManager.ResourceApi[] };
 }
-const { data: propData } = defineProps<Props>();
-const form = toRef(propData);
+const formRef = $ref<HTMLElement & FormInst>();
+const props = defineProps<Props>();
+const { data: form } = toRefs(props);
 const apiTree = $ref<InstanceType<typeof NTree>>();
 const apiDocs: (ApiResourceManager.ApiDoc & TreeOption)[] = $ref([]);
 const defaultExpandedKeys: Key[] = [];
@@ -102,8 +116,32 @@ const radioOptions = Object.entries(menuTypeLabels).map(([key, value]) => ({
   value: Number(key),
   label: value
 }));
+const componentOptions = Object.entries(componentLabels).map(([key, value]) => ({
+  value: key,
+  label: value
+}));
 const apiMap: Record<string, Key> = {};
-
+const rules: FormRules = {
+  title: {
+    required: true
+  },
+  icon: {
+    required: true
+  },
+  type: {
+    required: true
+  },
+  name: {
+    required: true
+  },
+  path: {
+    required: true
+  },
+  component: {
+    required: true
+  },
+  code: formRules.code
+};
 let showModal = $ref(false);
 
 const fillApiMap = (arr: ApiResourceManager.ApiDoc[]) => {
@@ -128,11 +166,11 @@ const addAction = () => {
 const submitCallback = () => {
   form.value.apiList = [];
   apiTree?.getCheckedData().options.forEach(item => {
-    const data = item as unknown as ApiResourceManager.ApiDoc;
-    data?.api?.forEach(
+    const e = item as unknown as ApiResourceManager.ApiDoc;
+    e?.api?.forEach(
       url =>
         form.value.apiList?.push({
-          code: data.permission,
+          code: e.permission,
           url
         })
     );
@@ -167,9 +205,19 @@ const apiColumns: Array<DataTableColumn<ApiResourceManager.ResourceApi>> = [
     }
   }
 ];
+
+const saveForm = () => {
+  formRef?.validate(async errors => {
+    if (!errors) {
+      const { error } = await resourceApi.save(form.value);
+      if (!error) window.$message?.success('保存成功');
+    }
+  });
+};
+
 onMounted(async () => {
-  const { data } = await resourceApi.fetchAllService();
-  data?.forEach(async item => {
+  const { data: service } = await resourceApi.fetchAllService();
+  service?.forEach(async item => {
     if (ServicePrefix[item]) {
       const { data: apiDoc } = await resourceApi.fetchServiceApiPermissions(ServicePrefix[item]);
       if (apiDoc) apiDocs.push(...apiDoc);

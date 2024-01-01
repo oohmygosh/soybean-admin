@@ -55,7 +55,6 @@ const fetchTreeData = async () => {
     const something = (param?: ApiResourceManager.SysResource[]) => {
       if (param) {
         param.forEach(item => {
-          item.title = item.meta.title;
           something(item.children);
         });
       }

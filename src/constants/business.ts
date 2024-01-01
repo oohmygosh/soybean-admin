@@ -42,3 +42,11 @@ export const menuTypeLabels: Record<ResourceManager.MenuTypeKey, string> = {
   2: '外链',
   3: '按钮'
 };
+
+/** 类型 0，菜单 1，iframe 2，外链 3，按钮 */
+export const componentLabels: Record<string, string> = {
+  0: 'basic',
+  1: 'blank',
+  2: 'multi',
+  3: 'self'
+};

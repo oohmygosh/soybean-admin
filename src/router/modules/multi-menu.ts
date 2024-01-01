@@ -54,7 +54,7 @@ const multiMenu: AuthRoute.Route = {
     title: '多级菜单',
     i18nTitle: 'routes.multi-menu._value',
     icon: 'carbon:menu',
-    order: 8
+    sort: 8
   }
 };
 

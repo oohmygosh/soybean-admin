@@ -31,7 +31,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
       meta: {
         title: '仪表盘',
         icon: 'mdi:monitor-dashboard',
-        order: 1,
+        sort: 1,
         i18nTitle: 'routes.dashboard._value'
       }
     },
@@ -100,7 +100,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '文档',
         i18nTitle: 'routes.document._value',
         icon: 'mdi:file-document-multiple-outline',
-        order: 2
+        sort: 2
       }
     },
     {
@@ -146,7 +146,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '组件示例',
         i18nTitle: 'routes.component._value',
         icon: 'cib:app-store',
-        order: 3
+        sort: 3
       }
     },
     {
@@ -293,7 +293,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '插件示例',
         i18nTitle: 'routes.plugin._value',
         icon: 'clarity:plugin-line',
-        order: 4
+        sort: 4
       }
     },
     {
@@ -328,7 +328,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '权限示例',
         i18nTitle: 'routes.auth-demo._value',
         icon: 'ic:baseline-security',
-        order: 5
+        sort: 5
       }
     },
     {
@@ -377,7 +377,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '功能',
         i18nTitle: 'routes.function._value',
         icon: 'icon-park-outline:all-application',
-        order: 6
+        sort: 6
       }
     },
     {
@@ -423,7 +423,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         i18nTitle: 'routes.exception._value',
         title: '异常页',
         icon: 'ant-design:exception-outlined',
-        order: 7
+        sort: 7
       }
     },
     {
@@ -482,7 +482,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '多级菜单',
         i18nTitle: 'routes.multi-menu._value',
         icon: 'carbon:menu',
-        order: 8
+        sort: 8
       }
     },
     {
@@ -539,7 +539,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '系统管理',
         i18nTitle: 'routes.management._value',
         icon: 'carbon:cloud-service-management',
-        order: 9
+        sort: 9
       }
     },
     {
@@ -553,7 +553,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         keepAlive: true,
         singleLayout: 'basic',
         icon: 'fluent:book-information-24-regular',
-        order: 10
+        sort: 10
       }
     }
   ],
@@ -589,7 +589,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
       meta: {
         title: '仪表盘',
         icon: 'mdi:monitor-dashboard',
-        order: 1,
+        sort: 1,
         i18nTitle: 'routes.dashboard._value'
       }
     },
@@ -658,7 +658,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '文档',
         i18nTitle: 'routes.document._value',
         icon: 'mdi:file-document-multiple-outline',
-        order: 2
+        sort: 2
       }
     },
     {
@@ -704,7 +704,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '组件示例',
         i18nTitle: 'routes.component._value',
         icon: 'cib:app-store',
-        order: 3
+        sort: 3
       }
     },
     {
@@ -851,7 +851,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '插件示例',
         i18nTitle: 'routes.plugin._value',
         icon: 'clarity:plugin-line',
-        order: 4
+        sort: 4
       }
     },
     {
@@ -886,7 +886,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '权限示例',
         i18nTitle: 'routes.auth-demo._value',
         icon: 'ic:baseline-security',
-        order: 5
+        sort: 5
       }
     },
     {
@@ -935,7 +935,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '功能',
         i18nTitle: 'routes.function._value',
         icon: 'icon-park-outline:all-application',
-        order: 6
+        sort: 6
       }
     },
     {
@@ -981,7 +981,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         i18nTitle: 'routes.exception._value',
         title: '异常页',
         icon: 'ant-design:exception-outlined',
-        order: 7
+        sort: 7
       }
     },
     {
@@ -1040,7 +1040,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '多级菜单',
         i18nTitle: 'routes.multi-menu._value',
         icon: 'carbon:menu',
-        order: 8
+        sort: 8
       }
     },
     {
@@ -1097,7 +1097,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '系统管理',
         i18nTitle: 'routes.management._value',
         icon: 'carbon:cloud-service-management',
-        order: 9
+        sort: 9
       }
     },
     {
@@ -1111,7 +1111,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         keepAlive: true,
         singleLayout: 'basic',
         icon: 'fluent:book-information-24-regular',
-        order: 10
+        sort: 10
       }
     }
   ],
@@ -1147,7 +1147,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
       meta: {
         title: '仪表盘',
         icon: 'mdi:monitor-dashboard',
-        order: 1,
+        sort: 1,
         i18nTitle: 'routes.dashboard._value'
       }
     },
@@ -1183,7 +1183,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '权限示例',
         i18nTitle: 'routes.auth-demo._value',
         icon: 'ic:baseline-security',
-        order: 5
+        sort: 5
       }
     },
     {
@@ -1242,7 +1242,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         title: '多级菜单',
         i18nTitle: 'routes.multi-menu._value',
         icon: 'carbon:menu',
-        order: 8
+        sort: 8
       }
     },
     {
@@ -1256,7 +1256,7 @@ export const routeModel: Record<Auth.RoleType, AuthRoute.Route[]> = {
         keepAlive: true,
         singleLayout: 'basic',
         icon: 'fluent:book-information-24-regular',
-        order: 10
+        sort: 10
       }
     }
   ]

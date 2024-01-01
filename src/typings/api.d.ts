@@ -142,11 +142,21 @@ declare namespace ApiResourceManager {
     // 颜色
     color?: string;
     // 隐藏菜单
-    hidden?: boolean;
-    // Tag配置
-    meta: AuthRoute.RouteMeta<AuthRoute.RoutePath>;
+    hide?: boolean;
     // 父组件名
     parentName?: string;
+    // 语言配置
+    i18nTitle?: string;
+    // 路由的动态路径
+    dynamicPath?: string;
+    // 作为单级路由的父级路由布局组件
+    singleLayout?: string;
+    // 是否缓存
+    keepAlive?: boolean;
+    // 是否支持多个tab页签
+    multiTab?: boolean;
+    // 固定
+    affix?: boolean;
     // 子节点
     children?: SysResource[];
   }

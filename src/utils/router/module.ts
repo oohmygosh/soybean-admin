@@ -4,7 +4,7 @@
  */
 export function sortRoutes(routes: AuthRoute.Route[] = []) {
   return routes
-    .sort((next, pre) => Number(next.meta?.order) - Number(pre.meta?.order))
+    .sort((next, pre) => Number(next.meta?.sort) - Number(pre.meta?.sort))
     .map(i => {
       if (i.children) sortRoutes(i.children);
       return i;
