@@ -47,6 +47,14 @@ class SysResourceApi extends BaseApi<ApiResourceManager.SysResource> {
   }
 
   /**
+   * 排序
+   *
+   */
+  public sort(resourceList: ApiResourceManager.SysResource[]) {
+    return request.post<boolean>(`${this.baseUri}/sort`, resourceList);
+  }
+
+  /**
    * 获取所有已注册的后台服务的Api列表
    *
    * @returns Api列表

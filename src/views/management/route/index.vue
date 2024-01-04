@@ -5,7 +5,7 @@
     </n-layout-sider>
     <n-layout-content :style="!resource?.id ? 'margin: auto' : ''">
       <n-empty v-if="!resource?.id" description="请点击左侧菜单" />
-      <router-content v-else :data="resource" class="ml" />
+      <router-content v-else :data="resource" class="ml h-full" />
     </n-layout-content>
   </n-layout>
 </template>

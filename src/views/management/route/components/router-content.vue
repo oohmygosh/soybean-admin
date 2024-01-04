@@ -1,7 +1,7 @@
 <template>
   <div class="h-full">
     <n-layout has-sider embedded class="h-full">
-      <n-layout-content>
+      <n-layout-content :native-scrollbar="false" content-style="height:100%">
         <n-card :bordered="false" class="h-full">
           <h1 class="font-size-5 mb-5">{{ form.parentName ? form.parentName + ' / ' + form.title : form.title }}</h1>
           <n-form ref="formRef" label-placement="left" label-width="auto" :model="form" :rules="rules">
@@ -56,9 +56,13 @@
               <n-checkbox v-model:checked="form.multiTab" size="small" label="多Tab" />
               <n-checkbox v-model:checked="form.affix" size="small" label="固定" />
             </n-form-item>
-            <n-button round type="primary" @click="saveForm">保存</n-button>
           </n-form>
         </n-card>
+        <n-layout-footer bordered position="absolute">
+          <n-card :bordered="false" size="small">
+            <n-button round type="primary" @click="saveForm">保存</n-button>
+          </n-card>
+        </n-layout-footer>
       </n-layout-content>
 
       <n-layout-sider content-style="padding: 24px;" :width="'30%'" :native-scrollbar="false">

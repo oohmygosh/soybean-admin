@@ -2,7 +2,7 @@ module.exports = {
   extends: ['soybeanjs/vue'],
   overrides: [
     {
-      files: ['*.ts'],
+      files: ['*.ts', '*.vue'],
       rules: {
         'no-unused-expressions': 'off',
         'no-useless-constructor': 'off',
