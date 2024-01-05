@@ -86,7 +86,11 @@ declare namespace AuthRoute {
         children?: Route[];
         /** 路由描述 */
         meta: RouteMeta<RoutePath<K>>;
-      } & Omit<import('vue-router').RouteRecordRaw, 'name' | 'path' | 'redirect' | 'component' | 'children' | 'meta'>
+        type?: number;
+      } & Omit<
+        import('vue-router').RouteRecordRaw,
+        'name' | 'path' | 'redirect' | 'component' | 'children' | 'meta'
+      > & { type?: number }
     : never;
 
   /** 前端导入的路由模块 */

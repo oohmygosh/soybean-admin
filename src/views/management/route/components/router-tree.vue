@@ -24,7 +24,7 @@
     <n-layout-footer bordered position="absolute">
       <n-card :bordered="false" size="small">
         <n-button-group size="medium">
-          <n-button strong secondary type="primary">
+          <n-button strong secondary type="primary" @click="addRootMenu">
             <template #icon>
               <icon-ic-round-plus />
             </template>
@@ -49,6 +49,7 @@
 import { onMounted } from 'vue';
 import { NButton, NTree } from 'naive-ui';
 import type { TreeDropInfo, TreeOption, TreeOptions } from 'naive-ui/es/tree/src/interface';
+import type { Key } from 'naive-ui/es/cascader/src/interface';
 import { resourceApi } from '@/service';
 
 const pattern = $ref('');
@@ -59,7 +60,18 @@ const routerRef = $ref() as InstanceType<typeof NTree>;
 type Emits = {
   (e: 'tree-click', param: (typeof treeData)[0]): void;
 };
-
+const newMenu: (typeof treeData)[0] = {
+  title: 'NewMenu',
+  name: 'NewMenu',
+  path: '/',
+  type: 0,
+  icon: 'local-logo',
+  href: '',
+  dynamicPath: '',
+  i18nTitle: '',
+  singleLayout: '',
+  component: 'self'
+};
 const emit = defineEmits<Emits>();
 const nodeProps = ({ option }: { option: TreeOption }) => {
   // noinspection JSUnusedGlobalSymbols
@@ -81,13 +93,42 @@ const renderPrefix = ({ option }: { option: TreeOption }) => {
   const data = option as TreeOption & ApiResourceManager.SysResource;
   return <svg-icon icon={data.icon}></svg-icon>;
 };
-
 const delMenu = () => {
-  window.$message?.warning(`删除：${routerRef.getCheckedData().keys}`);
+  const keys = routerRef
+    .getCheckedData()
+    .options.filter(e => !e?.children || e?.children?.length === 0)
+    .filter(e => e)
+    .map(e => e?.id) as Key[];
+  resourceApi.delete(keys).then(({ error }) => {
+    if (!error) {
+      window.$message?.success('删除成功');
+      getData();
+    }
+  });
 };
 
-const addMenu = (option: (typeof treeData)[0]) => {
-  window.$message?.success(`添加：${option.title}`);
+const addMenu = async (option: (typeof treeData)[0]) => {
+  option.children = option.children || [];
+  const menu = { ...newMenu };
+  menu.sort = (option.children[0]?.sort as number) - 1;
+  menu.pid = option.id;
+  menu.parentName = option.title;
+  const { error, data } = await resourceApi.save(menu);
+  if (error) return;
+  menu.id = data as string;
+  option.children.unshift(menu);
+  window.$message?.success(`添加成功`);
+};
+
+const addRootMenu = async () => {
+  const menu = { ...newMenu };
+  menu.sort = (treeData[0]?.sort as number) - 1;
+  menu.pid = '0';
+  const { error, data } = await resourceApi.save(menu);
+  if (error) return;
+  menu.id = data as string;
+  treeData.unshift(menu);
+  window.$message?.success(`添加成功`);
 };
 
 const findSiblingsAndIndex = (node: TreeOption, nodes?: TreeOption[]): [TreeOption[], number] | [null, null] => {
@@ -148,6 +189,9 @@ const handleDrop = ({ node, dragNode, dropPosition }: TreeDropInfo) => {
 
 const renderSuffix = ({ option }: { option: TreeOption }) => {
   const data = option as (typeof treeData)[0];
+  if (data.component !== 'multi' && data.component !== 'basic') {
+    return <span></span>;
+  }
   return (
     <n-button
       text

@@ -1,10 +1,10 @@
 <template>
   <div class="h-full">
     <n-layout has-sider embedded class="h-full">
-      <n-layout-content :native-scrollbar="false" content-style="height:100%">
-        <n-card :bordered="false" class="h-full">
+      <n-layout-content :native-scrollbar="false" content-style="height: 100%">
+        <n-card :bordered="false" class="h-full" style="min-height: 600px">
           <h1 class="font-size-5 mb-5">{{ form.parentName ? form.parentName + ' / ' + form.title : form.title }}</h1>
-          <n-form ref="formRef" label-placement="left" label-width="auto" :model="form" :rules="rules">
+          <n-form ref="formRef" label-placement="left" label-width="80" :model="form" :rules="rules">
             <n-form-item label="显示名称" path="title">
               <n-input v-model:value="form.title" clearable></n-input>
             </n-form-item>
@@ -29,11 +29,23 @@
             <n-form-item label="路由地址" path="path">
               <n-input-group>
                 <n-input-group-label>views</n-input-group-label>
-                <n-input v-model:value="form.path" :disabled="form.type !== 0" clearable />
+                <n-input v-model:value="form.path" clearable />
               </n-input-group>
+            </n-form-item>
+            <n-form-item v-if="form.type === 2 || form.type === 1" label="页面链接" path="url">
+              <n-input-group>
+                <n-input-group-label>url</n-input-group-label>
+                <n-input v-model:value="form.href" clearable />
+              </n-input-group>
+            </n-form-item>
+            <n-form-item label="动态路由" path="dynamicPath">
+              <n-input v-model:value="form.dynamicPath" />
             </n-form-item>
             <n-form-item label="i18n" path="i18nTitle">
               <n-input v-model:value="form.i18nTitle" />
+            </n-form-item>
+            <n-form-item label="激活组件" path="activeMenu">
+              <n-input v-model:value="form.activeMenu" />
             </n-form-item>
             <n-form-item label="排序" path="sort">
               <n-input-number v-model:value="form.sort" button-placement="both" style="text-align: center" />
@@ -97,7 +109,7 @@
   </div>
 </template>
 <script setup lang="tsx">
-import { h, onMounted, toRefs } from 'vue';
+import { h, onMounted, toRefs, watch } from 'vue';
 import type { DataTableColumn, FormInst, FormRules, TreeOption } from 'naive-ui';
 import { NInput, NTree } from 'naive-ui';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
@@ -142,6 +154,9 @@ const rules: FormRules = {
     required: true
   },
   component: {
+    required: true
+  },
+  href: {
     required: true
   },
   code: formRules.code
@@ -218,6 +233,22 @@ const saveForm = () => {
     }
   });
 };
+
+watch(
+  () => form.value.type,
+  () => {
+    switch (form.value.type) {
+      case 1:
+        form.value.path = '/document/naive';
+        break;
+      case 2:
+        form.value.path = '/document/project-link';
+        break;
+      default:
+        break;
+    }
+  }
+);
 
 onMounted(async () => {
   const { data: service } = await resourceApi.fetchAllService();

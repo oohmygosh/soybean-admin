@@ -3,7 +3,7 @@
     <n-layout-sider content-style="padding: 24px;" :native-scrollbar="false" :width="'17%'">
       <router-tree @tree-click="treeClick" />
     </n-layout-sider>
-    <n-layout-content :style="!resource?.id ? 'margin: auto' : ''">
+    <n-layout-content :style="!resource?.title ? 'margin: auto' : ''">
       <n-empty v-if="!resource?.id" description="请点击左侧菜单" />
       <router-content v-else :data="resource" class="ml h-full" />
     </n-layout-content>
@@ -19,6 +19,10 @@ let resource = $ref({}) as TreeOption & ResourceManager.Resource & { apiList?: A
 
 const treeClick = (node: typeof resource) => {
   resource = node;
+  resource.dynamicPath = resource.dynamicPath || '';
+  resource.i18nTitle = resource.i18nTitle || '';
+  resource.href = resource.href || '';
+  resource.singleLayout = resource.singleLayout || '';
 };
 </script>
 

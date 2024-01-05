@@ -1,5 +1,6 @@
 import type { AxiosRequestConfig } from 'axios';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
+import type { Key } from 'naive-ui/es/cascader/src/interface';
 import { adapter } from '@/utils';
 import { adapterOfFetchPage } from '@/service/api/management.adapter';
 import { getServiceEnvConfig } from '~/.env-config';
@@ -25,7 +26,7 @@ export class BaseApi<M extends BaseEntity> {
    * @param config
    */
   save = <T extends M>(param: T, config?: AxiosRequestConfig) => {
-    return request.post<boolean | number>(
+    return request.post<boolean | number | string>(
       param.id ? `${this.baseUri}/update` : `${this.baseUri}/create`,
       param,
       config
@@ -37,7 +38,7 @@ export class BaseApi<M extends BaseEntity> {
    * @param id
    * @param config
    */
-  delete = (id: number[] | string[], config?: AxiosRequestConfig) => {
+  delete = (id: Key[], config?: AxiosRequestConfig) => {
     return request.post<boolean>(`${this.baseUri}/delete`, id, config);
   };
 

@@ -118,7 +118,7 @@ declare namespace ApiUserManagement {
 declare namespace ApiResourceManager {
   interface SysResource extends BaseEntity {
     // 父ID
-    pid?: number;
+    pid?: string;
     // 标题
     title?: string;
     // 名称
@@ -145,8 +145,12 @@ declare namespace ApiResourceManager {
     hide?: boolean;
     // 父组件名
     parentName?: string;
+    // 链接
+    href?: string;
     // 语言配置
     i18nTitle?: string;
+    // 激活路由
+    activeMenu?: string;
     // 路由的动态路径
     dynamicPath?: string;
     // 作为单级路由的父级路由布局组件
