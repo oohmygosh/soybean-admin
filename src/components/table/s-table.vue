@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full">
+  <div class="flex-col h-full">
     <n-space class="pb-12px" justify="space-between">
       <n-space>
         <slot></slot>
@@ -20,9 +20,11 @@
       ref="dataTableRef"
       :data="$props.data ?? data"
       :loading="loading"
+      flex-height
       :pagination="pagination"
       :row-key="rowKey ?? (row => row.id)"
       :columns="tableColumns"
+      class="flex-1-hidden"
       @update-checked-row-keys="handleChecked"
     />
   </div>
@@ -37,7 +39,7 @@ import useHookTable from '~/src/hooks/business/use-hook-table';
 import type { STableProps } from './src/types/props';
 
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
-const { api, columns } = withDefaults(defineProps<STableProps>(), {
+const { api, columns, immediate } = withDefaults(defineProps<STableProps>(), {
   scrollX: 1800,
   size: 'medium',
   tableLayout: 'auto',
@@ -59,12 +61,14 @@ const { api, columns } = withDefaults(defineProps<STableProps>(), {
   indent: 16,
   flexHeight: false,
   summaryPlacement: 'bottom',
-  paginationBehaviorOnFilter: 'current'
+  paginationBehaviorOnFilter: 'current',
+  immediate: true
 });
 const tableColumns = $ref(columns) as DataTableColumns<any>;
 let apiParams: object = $ref({});
 const { getData, loading, pagination, data, updatePagination } = useHookTable(api, {
   apiParams,
+  immediate,
   columns: () => columns,
   transformer: response => {
     return {
@@ -109,7 +113,7 @@ const handleChecked = (rowKeys: DataTableRowKey[]) => {
   emit('update:columns', tableColumns);
 };
 onMounted(async () => {
-  LoadData();
+  if (immediate) LoadData();
 });
 defineExpose({
   fetchData,

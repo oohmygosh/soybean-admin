@@ -2,7 +2,7 @@ import { nextTick, unref } from 'vue';
 import { defineStore } from 'pinia';
 import { router } from '@/router';
 import { authApi, userApi } from '@/service';
-import { useRouteStore } from '@/store';
+import { useDictStore, useRouteStore } from '@/store';
 import { useRouterPush } from '@/composables';
 import { localStg } from '@/utils';
 import { $t } from '@/locales';
@@ -56,13 +56,14 @@ export const useAuthStore = defineStore('auth-store', {
      */
     async handleActionAfterLogin(backendToken: ApiAuth.Token) {
       const route = useRouteStore();
+      const dict = useDictStore();
       const { toLoginRedirect } = useRouterPush(false);
 
       const loginSuccess = await this.loginByToken(backendToken);
 
       if (loginSuccess) {
         await route.initAuthRoute();
-
+        await dict.initRouteStore();
         // 跳转登录后的地址
         toLoginRedirect();
 

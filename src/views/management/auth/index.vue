@@ -1,94 +1,181 @@
 <template>
-  <n-tree
-    block-line
-    checkable
-    draggable
-    :data="data"
-    :checked-keys="checkedKeys"
-    :expanded-keys="expandedKeys"
-    @drop="handleDrop"
-    @update:checked-keys="handleCheckedKeysChange"
-    @update:expanded-keys="handleExpandedKeysChange"
-  />
+  <div class="overflow-hidden">
+    <n-card title="用户管理" :bordered="false" class="h-full rounded-r-8px shadow-sm">
+      <s-table ref="tableRef" class="flex-col" :columns="columns" :api="userApi.page">
+        <template #default>
+          <n-button strong secondary size="medium" circle type="primary">
+            <template #icon>
+              <icon-ic-round-plus />
+            </template>
+          </n-button>
+          <n-popconfirm @positive-click="handleDeleteTable(tableRef?.getChecked())">
+            <template #trigger>
+              <n-button
+                strong
+                secondary
+                :disabled="(tableRef?.getChecked() ?? []).length <= 0"
+                size="medium"
+                circle
+                type="error"
+              >
+                <template #icon>
+                  <icon-ic-round-delete />
+                </template>
+              </n-button>
+            </template>
+            确定删除吗？
+          </n-popconfirm>
+          <n-button strong secondary size="medium" circle type="success">
+            <template #icon>
+              <ic-twotone-download />
+            </template>
+          </n-button>
+        </template>
+      </s-table>
+    </n-card>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue';
-import type { TreeOption, TreeDropInfo } from 'naive-ui';
-import { repeat } from 'seemly';
+<script setup lang="tsx">
+import type { Ref } from 'vue';
+import { ref } from 'vue';
+import type { DataTableColumns, DataTableRowKey } from 'naive-ui';
+import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
+import { $ref } from 'vue/macros';
+import { userStatusLabels } from '@/constants';
+import { roleApi, userApi } from '@/service';
+import { execApi } from '@/hooks';
+import type { STableElementType } from '~/src/components/table';
 
-function createData(level = 4, baseKey = ''): TreeOption[] | undefined {
-  if (!level) return undefined;
-  return repeat(6 - level, undefined).map((_, index) => {
-    const key = String(baseKey) + level + index;
-    return {
-      label: createLabel(level),
-      key,
-      children: createData(level - 1, key)
-    };
-  });
-}
-
-function createLabel(level: number): string {
-  if (level === 4) return '道生一';
-  if (level === 3) return '一生二';
-  if (level === 2) return '二生三';
-  if (level === 1) return '三生万物';
-  return '';
-}
-
-function findSiblingsAndIndex(node: TreeOption, nodes?: TreeOption[]): [TreeOption[], number] | [null, null] {
-  if (!nodes) return [null, null];
-  for (let i = 0; i < nodes.length; ++i) {
-    const siblingNode = nodes[i];
-    if (siblingNode.key === node.key) return [nodes, i];
-    const [siblings, index] = findSiblingsAndIndex(node, siblingNode.children);
-    if (siblings && index !== null) return [siblings, index];
+const tableRef = $ref<STableElementType>();
+const fetchRoleTree = async () => {
+  const { data } = await roleApi.listTree();
+  if (data) {
+    data.unshift({ id: undefined, label: '所有' });
   }
-  return [null, null];
-}
+};
 
-/**
- * 这个例子的时间复杂度确实可以优化 我实在是懒得改了
- */
-export default defineComponent({
-  setup() {
-    const expandedKeysRef = ref<string[]>([]);
-    const checkedKeysRef = ref<string[]>([]);
-    const dataRef = ref(createData() || []);
+fetchRoleTree();
 
-    return {
-      data: dataRef,
-      expandedKeys: expandedKeysRef,
-      checkedKeys: checkedKeysRef,
-      handleExpandedKeysChange(expandedKeys: string[]) {
-        expandedKeysRef.value = expandedKeys;
-      },
-      handleCheckedKeysChange(checkedKeys: string[]) {
-        checkedKeysRef.value = checkedKeys;
-      },
-      handleDrop({ node, dragNode, dropPosition }: TreeDropInfo) {
-        const [dragNodeSiblings, dragNodeIndex] = findSiblingsAndIndex(dragNode, dataRef.value);
-        if (dragNodeSiblings === null || dragNodeIndex === null) return;
-        dragNodeSiblings.splice(dragNodeIndex, 1);
-        if (dropPosition === 'inside') {
-          if (node.children) {
-            node.children.unshift(dragNode);
-          } else {
-            node.children = [dragNode];
-          }
-        } else if (dropPosition === 'before') {
-          const [nodeSiblings, nodeIndex] = findSiblingsAndIndex(node, dataRef.value);
-          if (nodeSiblings === null || nodeIndex === null) return;
-          nodeSiblings.splice(nodeIndex, 0, dragNode);
-        } else if (dropPosition === 'after') {
-          const [nodeSiblings, nodeIndex] = findSiblingsAndIndex(node, dataRef.value);
-          if (nodeSiblings === null || nodeIndex === null) return;
-          nodeSiblings.splice(nodeIndex + 1, 0, dragNode);
-        }
-        dataRef.value = Array.from(dataRef.value);
+const columns = ref([
+  {
+    type: 'selection',
+    align: 'center'
+  },
+  {
+    key: 'index',
+    title: '序号',
+    align: 'center',
+    width: 100,
+    resizable: true
+  },
+  {
+    key: 'username',
+    title: '账号',
+    align: 'center'
+  },
+  {
+    key: 'userStatus',
+    title: '状态',
+    align: 'center',
+    render: row => {
+      if (row.status !== undefined) {
+        const tagTypes: Record<UserManagement.UserStatusKey, NaiveUI.ThemeColor> = {
+          '1': 'success',
+          '0': 'error',
+          '3': 'warning',
+          '4': 'default'
+        };
+
+        return <NTag type={tagTypes[row.status]}>{userStatusLabels[row.status]}</NTag>;
       }
-    };
+      return <span></span>;
+    }
+  },
+  {
+    key: 'avatar',
+    title: '头像',
+    align: 'center',
+    render: row => {
+      if (row.avatar) {
+        return <n-avatar src={row.avatar} size="small" round />;
+      }
+      const firstName = !row.avatar ? String(row.realName).substring(0, 1) : '';
+      return (
+        <n-avatar src={row.avatar} size="small" round>
+          {firstName}
+        </n-avatar>
+      );
+    }
+  },
+  {
+    key: 'realName',
+    title: '姓名',
+    align: 'center'
+  },
+  {
+    key: 'gender',
+    title: '性别',
+    align: 'center',
+    render: row => {
+      if (row.sex) {
+        return <NTag type={row.sex === '男' ? 'success' : 'warning'}>{row.sex}</NTag>;
+      }
+      return <span></span>;
+    }
+  },
+  {
+    key: 'updateBy',
+    title: '修改人',
+    align: 'center'
+  },
+  {
+    key: 'updateTime',
+    title: '修改时间',
+    align: 'center'
+  },
+  {
+    key: 'createBy',
+    title: '创建人',
+    align: 'center'
+  },
+  {
+    key: 'createTime',
+    title: '创建时间',
+    align: 'center'
+  },
+  {
+    key: 'actions',
+    title: '操作',
+    fixed: 'right',
+    align: 'center',
+    render: row => {
+      return (
+        <NSpace justify={'center'}>
+          <NButton strong secondary size={'small'}>
+            {{ icon: () => <icon-mdi-credit-card-edit-outline /> }}
+          </NButton>
+          <NPopconfirm onPositiveClick={() => handleDeleteTable([row.id as string])}>
+            {{
+              default: () => '确认删除',
+              trigger: () => (
+                <NButton strong secondary type="error" size={'small'}>
+                  {{ icon: () => <icon-ic-round-delete /> }}
+                </NButton>
+              )
+            }}
+          </NPopconfirm>
+        </NSpace>
+      );
+    }
   }
-});
+]) as Ref<DataTableColumns<UserManagement.User>>;
+
+async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
+  if (rowId.length === 0) return;
+  const { error } = await execApi(userApi.delete, { data: rowId, msg: '删除成功!' });
+  if (!error) tableRef?.LoadData();
+}
 </script>
+
+<style scoped></style>

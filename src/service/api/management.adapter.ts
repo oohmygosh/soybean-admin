@@ -24,3 +24,18 @@ export function adapterOfFillKey<T extends TreeOption>(data: T[] | null): T[] {
   data.forEach(item => fillKey(item));
   return data;
 }
+
+export function adapterOfConvertDictToTreeOption<T extends ApiDictManagement.SysDict>(
+  data: T[] | null
+): (TreeOption & T)[] {
+  if (!data) return [];
+  const convert = (param: T) => {
+    const treeOption: TreeOption = {
+      label: param.name,
+      value: param.code,
+      key: param.id
+    };
+    return { ...treeOption, ...param };
+  };
+  return data.map(item => convert(item));
+}

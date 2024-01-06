@@ -1,65 +1,73 @@
 <template>
-  <div class="overflow-y-auto">
+  <div class="overflow-hidden">
     <n-card :bordered="false" class="h-full rounded-r-8px shadow-sm">
-      <n-space vertical size="large">
-        <n-layout has-sider>
-          <n-layout-sider content-style="padding: 24px;" class="rounded-l-8px">
-            <n-space vertical :size="12">
-              <n-input v-model:value="pattern" :placeholder="$t('common.search')" />
-              <n-tree
-                :show-irrelevant-nodes="showIrrelevantNodes"
-                :key-field="'id'"
-                :pattern="pattern"
-                :data="roleTree"
-                block-line
-                :node-props="nodeProps"
-              />
-            </n-space>
-          </n-layout-sider>
-          <n-layout-content>
-            <n-card title="用户管理" :bordered="false" class="h-full rounded-r-8px shadow-sm">
-              <s-table ref="tableRef" :columns="columns" :api="userApi.page">
-                <template #default>
-                  <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
-                    <template #icon>
-                      <icon-ic-round-plus />
-                    </template>
-                  </n-button>
-                  <n-popconfirm @positive-click="handleDeleteTable(tableRef?.getChecked())">
-                    <template #trigger>
-                      <n-button
-                        strong
-                        secondary
-                        :disabled="(tableRef?.getChecked() ?? []).length <= 0"
-                        size="medium"
-                        circle
-                        type="error"
-                      >
-                        <template #icon>
-                          <icon-ic-round-delete />
-                        </template>
-                      </n-button>
-                    </template>
-                    确定删除吗？
-                  </n-popconfirm>
-                  <n-button strong secondary size="medium" circle type="success">
-                    <template #icon>
-                      <icon-uil-export />
-                    </template>
-                  </n-button>
-                </template>
-              </s-table>
-              <table-action-modal
-                v-model:visible="visible"
-                :type="modalType"
-                :edit-data="editData"
-                :role-options="roleTree.slice(1)"
-                @update:action="() => tableRef?.LoadData()"
-              />
-            </n-card>
-          </n-layout-content>
-        </n-layout>
-      </n-space>
+      <n-layout has-sider class="h-full" content-style="height:100%">
+        <n-layout-sider content-style="padding: 24px;" class="rounded-l-8px">
+          <n-space vertical :size="12">
+            <n-input v-model:value="pattern" :placeholder="$t('common.search')" />
+            <n-tree
+              :show-irrelevant-nodes="showIrrelevantNodes"
+              :key-field="'id'"
+              :pattern="pattern"
+              :data="roleTree"
+              block-line
+              :node-props="nodeProps"
+            />
+          </n-space>
+        </n-layout-sider>
+        <n-layout-content content-style="height:100%">
+          <n-card title="用户管理" :bordered="false" class="h-full rounded-r-8px shadow-sm">
+            <s-table ref="tableRef" :columns="columns" :api="userApi.page">
+              <template #default>
+                <n-tooltip trigger="hover">
+                  <template #trigger>
+                    <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
+                      <template #icon>
+                        <icon-ic-round-plus />
+                      </template>
+                    </n-button>
+                  </template>
+                  添加
+                </n-tooltip>
+                <n-popconfirm @positive-click="handleDeleteTable(tableRef?.getChecked())">
+                  <template #trigger>
+                    <n-button
+                      strong
+                      secondary
+                      :disabled="(tableRef?.getChecked() ?? []).length <= 0"
+                      size="medium"
+                      circle
+                      type="error"
+                    >
+                      <template #icon>
+                        <icon-ic-round-delete />
+                      </template>
+                    </n-button>
+                  </template>
+                  确定删除吗？
+                </n-popconfirm>
+                <n-tooltip trigger="hover">
+                  <template #trigger>
+                    <n-button strong secondary size="medium" circle type="success">
+                      <template #icon>
+                        <icon-ic-twotone-download />
+                      </template>
+                    </n-button>
+                  </template>
+                  导出
+                </n-tooltip>
+              </template>
+            </s-table>
+            <table-action-modal
+              v-model:visible="visible"
+              :type="modalType"
+              :edit-data="editData"
+              :role-options="roleTree.slice(1)"
+              @update:action="() => tableRef?.LoadData()"
+            />
+          </n-card>
+        </n-layout-content>
+      </n-layout>
     </n-card>
   </div>
 </template>
@@ -175,16 +183,6 @@ const columns = ref([
     }
   },
   {
-    key: 'updateBy',
-    title: '修改人',
-    align: 'center'
-  },
-  {
-    key: 'updateTime',
-    title: '修改时间',
-    align: 'center'
-  },
-  {
     key: 'createBy',
     title: '创建人',
     align: 'center'
@@ -192,6 +190,16 @@ const columns = ref([
   {
     key: 'createTime',
     title: '创建时间',
+    align: 'center'
+  },
+  {
+    key: 'updateBy',
+    title: '修改人',
+    align: 'center'
+  },
+  {
+    key: 'updateTime',
+    title: '修改时间',
     align: 'center'
   },
   {
@@ -257,5 +265,3 @@ async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
   if (!error) tableRef?.LoadData();
 }
 </script>
-
-<style scoped></style>

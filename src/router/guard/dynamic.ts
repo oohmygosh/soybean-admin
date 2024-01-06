@@ -1,6 +1,6 @@
 import type { NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 import { routeName } from '@/router';
-import { useRouteStore } from '@/store';
+import { useDictStore, useRouteStore } from '@/store';
 import { localStg } from '@/utils';
 
 /**
@@ -12,6 +12,7 @@ export async function createDynamicRouteGuard(
   next: NavigationGuardNext
 ) {
   const route = useRouteStore();
+  const dict = useDictStore();
   const isLogin = Boolean(localStg.get('accessToken'));
 
   // 初始化权限路由
@@ -29,6 +30,7 @@ export async function createDynamicRouteGuard(
     }
 
     await route.initAuthRoute();
+    await dict.initRouteStore();
 
     if (to.name === routeName('not-found')) {
       // 动态路由没有加载导致被not-found路由捕获，等待权限路由加载好了，回到之前的路由

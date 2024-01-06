@@ -115,6 +115,25 @@ declare namespace ApiUserManagement {
   }
 }
 
+declare namespace ApiDictManagement {
+  interface SysDict extends BaseEntity {
+    /* 父ID */
+    pid?: string;
+    /* 名称 */
+    name?: string;
+    /* 编码 */
+    code?: string;
+    /* 内容 */
+    content?: string;
+    /* 状态 0、禁用 1、正常 */
+    status?: number;
+    /* 排序 */
+    sort?: number;
+    /* 备注 */
+    remark?: string;
+  }
+}
+
 declare namespace ApiResourceManager {
   interface SysResource extends BaseEntity {
     // 父ID
