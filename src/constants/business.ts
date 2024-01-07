@@ -16,8 +16,6 @@ export const userRoleLabels: Record<Auth.RoleType, string> = {
 };
 export const userRoleOptions = transformObjectToOption(userRoleLabels);
 
-export const genderOptions = transformObjectToOption(genderLabels);
-
 /** 类型 0，菜单 1，iframe 2，外链 3，按钮 */
 export const componentLabels: Record<string, AuthRoute.RouteComponentType> = {
   basic: 'basic',

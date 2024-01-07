@@ -110,7 +110,6 @@ function createDefaultFormModel(): FormModel {
     id: '',
     pid: '',
     name: '',
-    code: '',
     content: '',
     status: 1,
     sort: 0

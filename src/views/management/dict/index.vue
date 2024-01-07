@@ -67,10 +67,10 @@ import type { DataTableColumns, DataTableRowKey } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
 import { $ref } from 'vue/macros';
-import { userStatusLabels } from '@/constants';
 import { dictApi } from '@/service';
 import { execApi, useBoolean } from '@/hooks';
 import type { STableElementType } from '~/src/components/table';
+import { useDictStore } from '~/src/store';
 import DictTree from './components/dict-tree.vue';
 import type { ModalType } from './components/save-modal.vue';
 import SaveModal from './components/save-modal.vue';
@@ -79,6 +79,7 @@ const { bool: visible, setTrue: openModal } = useBoolean();
 const roleTree: TreeOptions & ApiRoleManager.SysRole[] = $ref([]);
 let pid = $ref<string>();
 const tableRef = $ref<STableElementType>();
+const dictStore = useDictStore();
 const columns = ref([
   {
     type: 'selection',
@@ -107,14 +108,8 @@ const columns = ref([
     align: 'center',
     render: row => {
       if (row.status !== undefined) {
-        const tagTypes: Record<UserManagement.UserStatusKey, NaiveUI.ThemeColor> = {
-          '1': 'success',
-          '0': 'error',
-          '3': 'warning',
-          '4': 'default'
-        };
-
-        return <NTag type={tagTypes[row.status]}>{userStatusLabels[row.status]}</NTag>;
+        const status = dictStore.getDict('COMMON_STATUS').values[row.status];
+        return <NTag type={status.content as NaiveUI.ThemeColor}>{status.name}</NTag>;
       }
       return <span></span>;
     }

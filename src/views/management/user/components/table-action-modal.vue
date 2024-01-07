@@ -27,7 +27,9 @@
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="性别" path="gender">
           <n-radio-group v-model:value="formModel.sex">
-            <n-radio v-for="item in genderOptions" :key="item.value" :value="item.value">{{ item.label }}</n-radio>
+            <n-radio v-for="item in dictStore.getDict('USER_SEX').values" :key="item.code" :value="item.name">
+              {{ item.name }}
+            </n-radio>
           </n-radio-group>
         </n-form-item-grid-item>
         <n-form-item-grid-item :span="12" label="状态" path="status">
@@ -60,10 +62,10 @@ import type { FormInst, FormItemRule } from 'naive-ui';
 import type { TreeSelectRenderTreePart } from 'naive-ui/es/tree-select/src/interface';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
 import { $ref } from 'vue/macros';
-import { genderOptions } from '@/constants';
 import { execApi } from '@/hooks';
 import { createRequiredFormRule, formRules } from '@/utils';
 import { userApi } from '~/src/service';
+import { useDictStore } from '~/src/store';
 
 export interface Props {
   /** 弹窗可见性 */
@@ -82,7 +84,7 @@ export interface Props {
     | null;
   roleOptions: TreeOptions;
 }
-
+const dictStore = useDictStore();
 export type ModalType = NonNullable<Props['type']>;
 
 defineOptions({ name: 'TableActionModal' });

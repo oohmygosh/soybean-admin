@@ -21,7 +21,7 @@ const treeClick = (node: typeof resource) => {
   resource.dynamicPath = resource.dynamicPath || '';
   resource.i18nTitle = resource.i18nTitle || '';
   resource.href = resource.href || '';
-  resource.singleLayout = resource.singleLayout || '';
+  resource.singleLayout = resource.singleLayout || undefined;
 };
 </script>
 

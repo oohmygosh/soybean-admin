@@ -11,7 +11,7 @@ import { useRoute } from 'vue-router';
 const src = ref('/');
 const route = useRoute();
 onMounted(() => {
-  src.value = route.query.url;
+  src.value = route.query.url as string;
 });
 </script>
 

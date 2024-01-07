@@ -142,8 +142,6 @@ declare namespace ApiResourceManager {
     title?: string;
     // 名称
     name?: string;
-    // 类型 0，菜单 1，iframe 2，外链 3，按钮
-    type?: number;
     // 编码
     code?: string;
     // 重定向

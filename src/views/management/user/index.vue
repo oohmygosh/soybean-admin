@@ -137,7 +137,7 @@ const columns = ref([
     align: 'center',
     render: row => {
       if (row.status !== undefined) {
-        const userStatusDict = dictStore.getDict('USER_STATUS');
+        const userStatusDict = dictStore.getDict('COMMON_STATUS');
         const status = userStatusDict.values[row.status];
         return <NTag type={status.content as NaiveUI.ThemeColor}>{status.name}</NTag>;
       }

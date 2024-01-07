@@ -54,10 +54,10 @@ import type { DataTableColumns, DataTableRowKey } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
-import { statusLabels } from '@/constants';
 import { roleApi } from '@/service';
 import { execApi, useBoolean } from '@/hooks';
 import type { STableElementType } from '@/components/table';
+import { useDictStore } from '~/src/store';
 import Permission from './components/permission.vue';
 import type { ModalType } from './components/table-action-modal.vue';
 import TableActionModal from './components/table-action-modal.vue';
@@ -74,7 +74,7 @@ let editData = $ref<RoleManager.Role | null>(null);
 function setModalType(type: ModalType) {
   modalType.value = type;
 }
-
+const dictStore = useDictStore();
 async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
   if (rowId.length === 0) return;
   const { error } = await execApi(roleApi.delete, { data: rowId, msg: '删除成功!' });
@@ -120,11 +120,8 @@ const createColumns = (): DataTableColumns<RoleManager.Role> => {
       key: 'status',
       render: row => {
         if (row.status !== undefined) {
-          const tagTypes: Record<RoleManager.RoleStatusKey, NaiveUI.ThemeColor> = {
-            '1': 'success',
-            '0': 'error'
-          };
-          return <NTag type={tagTypes[row.status]}>{statusLabels[row.status]}</NTag>;
+          const status = dictStore.getDict('COMMON_STATUS').values[row.status];
+          return <NTag type={status.content as NaiveUI.ThemeColor}>{status.name}</NTag>;
         }
         return <span></span>;
       },

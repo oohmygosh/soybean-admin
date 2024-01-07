@@ -57,15 +57,10 @@ declare namespace RoleManager {
 
 declare namespace ResourceManager {
   interface Resource extends ApiResourceManager.SysResource {}
-
-  /**
-   * 类型 0，菜单 1，iframe 2，外链 3，按钮
-   */
-  type MenuTypeKey = NonNullable<Resource['type']>;
 }
 
 declare namespace DictManagement {
   interface Dict extends ApiDictManagement.SysDict {}
 
-  type DictKey = 'USER_STATUS' | 'USER_SEX';
+  type DictKey = 'COMMON_STATUS' | 'USER_STATUS' | 'USER_SEX';
 }
