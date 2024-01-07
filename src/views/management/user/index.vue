@@ -79,19 +79,18 @@ import type { DataTableColumns, DataTableRowKey, TreeOption } from 'naive-ui';
 import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
-import { userStatusLabels } from '@/constants';
 import { roleApi, userApi } from '@/service';
 import { execApi, useBoolean } from '@/hooks';
 import TableActionModal from '@/views/management/user/components/table-action-modal.vue';
 import type { STableElementType } from '~/src/components/table';
+import { useDictStore } from '~/src/store';
 import type { ModalType } from './components/table-action-modal.vue';
 
 const { bool: visible, setTrue: openModal } = useBoolean();
-
 const pattern = $ref('');
 const showIrrelevantNodes = $ref(false);
 let roleTree: TreeOptions & ApiRoleManager.SysRole[] = $ref([]);
-
+const dictStore = useDictStore();
 const tableRef = $ref<STableElementType>();
 const fetchRoleTree = async () => {
   const { data } = await roleApi.listTree();
@@ -138,14 +137,9 @@ const columns = ref([
     align: 'center',
     render: row => {
       if (row.status !== undefined) {
-        const tagTypes: Record<UserManagement.UserStatusKey, NaiveUI.ThemeColor> = {
-          '1': 'success',
-          '0': 'error',
-          '3': 'warning',
-          '4': 'default'
-        };
-
-        return <NTag type={tagTypes[row.status]}>{userStatusLabels[row.status]}</NTag>;
+        const userStatusDict = dictStore.getDict('USER_STATUS');
+        const status = userStatusDict.values[row.status];
+        return <NTag type={status.content as NaiveUI.ThemeColor}>{status.name}</NTag>;
       }
       return <span></span>;
     }
@@ -177,7 +171,8 @@ const columns = ref([
     align: 'center',
     render: row => {
       if (row.sex) {
-        return <NTag type={row.sex === '男' ? 'success' : 'warning'}>{row.sex}</NTag>;
+        const sex = dictStore.getDict('USER_SEX').values[row.sex];
+        return <NTag type={sex.content as NaiveUI.ThemeColor}>{sex.name}</NTag>;
       }
       return <span></span>;
     }

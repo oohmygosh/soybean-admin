@@ -16,7 +16,6 @@ import RouterTree from '@/views/management/route/components/router-tree.vue';
 import RouterContent from '@/views/management/route/components/router-content.vue';
 
 let resource = $ref({}) as TreeOption & ResourceManager.Resource & { apiList?: ApiResourceManager.ResourceApi[] };
-
 const treeClick = (node: typeof resource) => {
   resource = node;
   resource.dynamicPath = resource.dynamicPath || '';

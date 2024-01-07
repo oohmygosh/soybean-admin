@@ -8,10 +8,10 @@
             <n-form-item label="显示名称" path="title">
               <n-input v-model:value="form.title" clearable></n-input>
             </n-form-item>
-            <n-form-item label="类型" path="type">
-              <n-radio-group v-model:value="form.type" :default-value="form.type">
+            <n-form-item label="路由组件" path="component">
+              <n-radio-group v-model:value="form.component" :default-value="form.component">
                 <n-radio-button
-                  v-for="node in radioOptions"
+                  v-for="node in componentOptions"
                   :key="node.value"
                   :value="node.value"
                   :label="node.label"
@@ -32,7 +32,7 @@
                 <n-input v-model:value="form.path" clearable />
               </n-input-group>
             </n-form-item>
-            <n-form-item v-if="form.type === 2 || form.type === 1" label="页面链接" path="url">
+            <n-form-item v-if="form.component === 'iframe'" label="页面链接" path="url">
               <n-input-group>
                 <n-input-group-label>url</n-input-group-label>
                 <n-input v-model:value="form.href" clearable />
@@ -44,23 +44,23 @@
             <n-form-item label="i18n" path="i18nTitle">
               <n-input v-model:value="form.i18nTitle" />
             </n-form-item>
+            <n-form-item v-if="form.pid === '0' && form.component === 'self'" label="页面布局" path="singleLayout">
+              <n-radio-group v-model:value="form.singleLayout" :default-value="form.component">
+                <n-radio-button
+                  v-for="node in ['basic', 'blank']"
+                  :key="node"
+                  :value="node"
+                  :label="node"
+                  default-checked
+                  checked
+                />
+              </n-radio-group>
+            </n-form-item>
             <n-form-item label="激活组件" path="activeMenu">
               <n-input v-model:value="form.activeMenu" />
             </n-form-item>
             <n-form-item label="排序" path="sort">
               <n-input-number v-model:value="form.sort" button-placement="both" style="text-align: center" />
-            </n-form-item>
-            <n-form-item label="路由组件" path="component">
-              <n-radio-group v-model:value="form.component" :default-value="form.component">
-                <n-radio-button
-                  v-for="node in componentOptions"
-                  :key="node.label"
-                  :value="node.label"
-                  :label="node.label"
-                  default-checked
-                  checked
-                />
-              </n-radio-group>
             </n-form-item>
             <n-form-item label="元数据" path="meta">
               <n-checkbox v-model:checked="form.hide" size="small" label="隐藏菜单" />
@@ -109,11 +109,11 @@
   </div>
 </template>
 <script setup lang="tsx">
-import { h, onMounted, toRefs, watch } from 'vue';
+import { h, onMounted, toRefs } from 'vue';
 import type { DataTableColumn, FormInst, FormRules, TreeOption } from 'naive-ui';
 import { NInput, NTree } from 'naive-ui';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
-import { componentLabels, menuTypeLabels } from '@/constants';
+import { componentLabels } from '@/constants';
 import { ServicePrefix } from '~/.env-config';
 import { resourceApi } from '~/src/service';
 import { formRules } from '~/src/utils';
@@ -128,10 +128,6 @@ const apiTree = $ref<InstanceType<typeof NTree>>();
 const apiDocs: (ApiResourceManager.ApiDoc & TreeOption)[] = $ref([]);
 const defaultExpandedKeys: Key[] = [];
 let defaultCheckedKeys: Key[] = $ref([]);
-const radioOptions = Object.entries(menuTypeLabels).map(([key, value]) => ({
-  value: Number(key),
-  label: value
-}));
 const componentOptions = Object.entries(componentLabels).map(([key, value]) => ({
   value: key,
   label: value
@@ -234,14 +230,14 @@ const saveForm = () => {
   });
 };
 
-watch(
-  () => form.value.type,
+/* watch(
+  () => form.value.component,
   () => {
-    switch (form.value.type) {
-      case 1:
+    switch (form.value.component) {
+      case 'self':
         form.value.path = '/document/naive';
         break;
-      case 2:
+      case 'iframe':
         form.value.path = '/document/project-link';
         break;
       default:
@@ -249,7 +245,7 @@ watch(
     }
   }
 );
-
+ */
 onMounted(async () => {
   const { data: service } = await resourceApi.fetchAllService();
   service?.forEach(async item => {

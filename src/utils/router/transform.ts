@@ -40,6 +40,12 @@ export function transformAuthRouteToVueRoute(item: AuthRoute.Route) {
       blank() {
         itemRoute.component = getLayoutComponent('blank');
       },
+      button() {
+        itemRoute.component = getLayoutComponent('blank');
+      },
+      iframe() {
+        itemRoute.component = getLayoutComponent('iframe');
+      },
       multi() {
         // 多级路由一定有子路由
         if (hasChildren(item)) {

@@ -63,3 +63,9 @@ declare namespace ResourceManager {
    */
   type MenuTypeKey = NonNullable<Resource['type']>;
 }
+
+declare namespace DictManagement {
+  interface Dict extends ApiDictManagement.SysDict {}
+
+  type DictKey = 'USER_STATUS' | 'USER_SEX';
+}

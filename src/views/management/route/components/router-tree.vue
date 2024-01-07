@@ -1,26 +1,28 @@
 <template>
   <div style="h-full">
     <n-input v-model:value="pattern" :placeholder="$t('common.search')" />
-    <n-space vertical :size="14">
-      <n-tree
-        ref="routerRef"
-        block-line
-        :data="treeData"
-        :key-field="'id'"
-        :label-field="'title'"
-        checkable
-        draggable
-        :pattern="pattern"
-        expand-on-click
-        selectable
-        cascade
-        :node-props="nodeProps"
-        :render-suffix="renderSuffix"
-        :render-prefix="renderPrefix"
-        @drop="handleDrop"
-        @update:checked-keys="ids => (checkedKeys = ids)"
-      />
-    </n-space>
+    <n-spin :show="show">
+      <n-space vertical :size="14">
+        <n-tree
+          ref="routerRef"
+          block-line
+          :data="treeData"
+          :key-field="'id'"
+          :label-field="'title'"
+          checkable
+          draggable
+          :pattern="pattern"
+          expand-on-click
+          selectable
+          cascade
+          :node-props="nodeProps"
+          :render-suffix="renderSuffix"
+          :render-prefix="renderPrefix"
+          @drop="handleDrop"
+          @update:checked-keys="ids => (checkedKeys = ids)"
+        />
+      </n-space>
+    </n-spin>
     <n-layout-footer bordered position="absolute">
       <n-card :bordered="false" size="small">
         <n-button-group size="medium">
@@ -51,7 +53,9 @@ import { NButton, NTree } from 'naive-ui';
 import type { TreeDropInfo, TreeOption, TreeOptions } from 'naive-ui/es/tree/src/interface';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
 import { resourceApi } from '@/service';
+import { useBoolean } from '~/src/hooks';
 
+const { bool: show, setFalse, setTrue } = useBoolean();
 const pattern = $ref('');
 const checkedKeys: number[] = $ref([]);
 let treeData = $ref([]) as TreeOptions &
@@ -63,30 +67,31 @@ type Emits = {
 const newMenu: (typeof treeData)[0] = {
   title: 'NewMenu',
   name: 'NewMenu',
-  path: '/',
-  type: 0,
   icon: 'local-logo',
+  path: '/blank-layout',
   href: '',
   dynamicPath: '',
   i18nTitle: '',
-  singleLayout: '',
-  component: 'self'
+  component: 'blank'
 };
 const emit = defineEmits<Emits>();
 const nodeProps = ({ option }: { option: TreeOption }) => {
   // noinspection JSUnusedGlobalSymbols
   return {
     async onClick() {
-      const { data } = await resourceApi.fetchApiByResourceId(option.id as string);
-      (option as any).apiList = data;
+      resourceApi.fetchApiByResourceId(option.id as string).then(({ data }) => {
+        (option as any).apiList = data;
+      });
       emit('tree-click', option as (typeof treeData)[0]);
     }
   };
 };
 
 const getData = async () => {
+  setTrue();
   const { data } = await resourceApi.listTree();
   if (data) treeData = data;
+  setFalse();
 };
 
 const renderPrefix = ({ option }: { option: TreeOption }) => {

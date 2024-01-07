@@ -14,6 +14,9 @@
         <n-form-item-grid-item :span="12" label="状态" path="status">
           <n-switch v-model:value="formModel.status" :checked-value="1" :unchecked-value="0" clearable />
         </n-form-item-grid-item>
+        <n-form-item-grid-item :span="12" label="内容" path="content">
+          <n-input v-model:value="formModel.content" placeholder="内容" clearable />
+        </n-form-item-grid-item>
         <n-form-item-grid-item label="备注" path="remark">
           <n-input v-model:value="formModel.remark" type="textarea" placeholder="字典备注" clearable />
         </n-form-item-grid-item>

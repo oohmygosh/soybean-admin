@@ -16,37 +16,14 @@ export const userRoleLabels: Record<Auth.RoleType, string> = {
 };
 export const userRoleOptions = transformObjectToOption(userRoleLabels);
 
-/** 用户性别 */
-export const genderLabels: Record<UserManagement.GenderKey, string> = {
-  女: '女',
-  男: '男'
-};
 export const genderOptions = transformObjectToOption(genderLabels);
 
-/** 用户状态 */
-export const userStatusLabels: Record<UserManagement.UserStatusKey, string> = {
-  0: '禁用',
-  1: '启用'
-};
-/** 状态 */
-export const statusLabels: Record<UserManagement.UserStatusKey, string> = {
-  0: '禁用',
-  1: '启用'
-};
-export const userStatusOptions = transformObjectToOption(userStatusLabels);
-
 /** 类型 0，菜单 1，iframe 2，外链 3，按钮 */
-export const menuTypeLabels: Record<ResourceManager.MenuTypeKey, string> = {
-  0: '菜单',
-  1: 'iframe',
-  2: '外链',
-  3: '按钮'
-};
-
-/** 类型 0，菜单 1，iframe 2，外链 3，按钮 */
-export const componentLabels: Record<string, string> = {
-  0: 'basic',
-  1: 'blank',
-  2: 'multi',
-  3: 'self'
+export const componentLabels: Record<string, AuthRoute.RouteComponentType> = {
+  basic: 'basic',
+  blank: 'blank',
+  multi: 'multi',
+  self: 'self',
+  button: 'button',
+  iframe: 'iframe'
 };

@@ -122,7 +122,7 @@ declare namespace ApiDictManagement {
     /* 名称 */
     name?: string;
     /* 编码 */
-    code?: string;
+    code?: DictManagement.DictKey;
     /* 内容 */
     content?: string;
     /* 状态 0、禁用 1、正常 */
@@ -157,7 +157,7 @@ declare namespace ApiResourceManager {
     // 排序
     sort?: number;
     // 视图
-    component?: string;
+    component?: AuthRoute.RouteComponentType;
     // 颜色
     color?: string;
     // 隐藏菜单
@@ -173,7 +173,7 @@ declare namespace ApiResourceManager {
     // 路由的动态路径
     dynamicPath?: string;
     // 作为单级路由的父级路由布局组件
-    singleLayout?: string;
+    singleLayout?: Extract<AuthRoute.RouteComponentType, 'basic' | 'blank'>;
     // 是否缓存
     keepAlive?: boolean;
     // 是否支持多个tab页签

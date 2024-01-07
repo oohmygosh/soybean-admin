@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth-store', {
       clearAuthStorage();
       this.$reset();
 
-      if (route.meta.requiresAuth) {
+      if (route.meta.requiresAuth ?? true) {
         toLogin();
       }
 

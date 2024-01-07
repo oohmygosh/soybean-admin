@@ -8,11 +8,12 @@ import { $t } from '@/locales';
 export function transformAuthRouteToMenu(routes: AuthRoute.Route[]): App.GlobalMenuOption[] {
   const globalMenu: App.GlobalMenuOption[] = [];
   routes.forEach(route => {
-    const { name, meta, type } = route;
+    const { name, meta, component } = route;
     let { path } = route;
-    switch (type) {
-      case 1:
-        path += path.includes('?') ? `&type=${meta.href}` : `?type=${meta.href}`;
+    switch (component) {
+      case 'iframe':
+        path += path.includes('?') ? `&url=${meta.href}` : `?url=${meta.href}`;
+        route.meta.href = undefined;
         break;
       default:
     }

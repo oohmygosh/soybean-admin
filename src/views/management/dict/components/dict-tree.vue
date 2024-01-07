@@ -2,20 +2,22 @@
   <div style="h-full">
     <n-input v-model:value="pattern" placeholder="请输入字典名或编码" />
     <n-space vertical :size="14">
-      <n-tree
-        ref="routerRef"
-        block-line
-        :data="treeData"
-        :show-irrelevant-nodes="false"
-        draggable
-        :pattern="pattern"
-        cascade
-        :filter="treeFilter"
-        :node-props="nodeProps"
-        :render-suffix="renderSuffix"
-        @drop="handleDrop"
-        @update:checked-keys="ids => (checkedKeys = ids)"
-      />
+      <n-spin :show="show">
+        <n-tree
+          ref="routerRef"
+          block-line
+          :data="treeData"
+          :show-irrelevant-nodes="false"
+          draggable
+          :pattern="pattern"
+          cascade
+          :filter="treeFilter"
+          :node-props="nodeProps"
+          :render-suffix="renderSuffix"
+          @drop="handleDrop"
+          @update:checked-keys="ids => (checkedKeys = ids)"
+        />
+      </n-spin>
     </n-space>
     <n-layout-footer bordered position="absolute">
       <n-button strong secondary type="primary" class="w-full" @click="addRootNode">
@@ -38,6 +40,7 @@ import { useBoolean } from '~/src/hooks';
 import type { ModalType } from './save-modal.vue';
 import SaveModal from './save-modal.vue';
 
+const { bool: show, setTrue: startLoading, setFalse: stopLoading } = useBoolean(true);
 const { bool: visible, setTrue: openModal } = useBoolean();
 let modalType = $ref<ModalType>('add');
 const pattern = $ref('');
@@ -59,8 +62,10 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
 };
 
 const getData = async () => {
+  startLoading();
   const { data } = await dictApi.listParentTree();
   if (data) treeData = data;
+  stopLoading();
 };
 
 const delItems = (keys: Key[]) => {

@@ -68,7 +68,7 @@ import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
 import { $ref } from 'vue/macros';
 import { userStatusLabels } from '@/constants';
-import { dictApi, userApi } from '@/service';
+import { dictApi } from '@/service';
 import { execApi, useBoolean } from '@/hooks';
 import type { STableElementType } from '~/src/components/table';
 import DictTree from './components/dict-tree.vue';
@@ -122,6 +122,11 @@ const columns = ref([
   {
     key: 'sort',
     title: '排序',
+    align: 'center'
+  },
+  {
+    key: 'content',
+    title: '内容',
     align: 'center'
   },
   {
@@ -206,7 +211,7 @@ async function handleEditTable(row: UserManagement.User) {
 
 async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
   if (rowId.length === 0) return;
-  const { error } = await execApi(userApi.delete, { data: rowId, msg: '删除成功!' });
+  const { error } = await execApi(dictApi.delete, { data: rowId, msg: '删除成功!' });
   if (!error) tableRef?.LoadData();
 }
 </script>

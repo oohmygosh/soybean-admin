@@ -1,7 +1,8 @@
 <template>
   <n-dropdown :options="options" @select="handleDropdown">
     <hover-container class="px-12px" :inverted="theme.header.inverted">
-      <icon-local-avatar class="text-32px" />
+      <n-avatar v-if="auth.userInfo.sysUser.avatar" :src="auth.userInfo.sysUser.avatar" size="small" round />
+      <n-avatar v-else size="small" round>{{ String(auth.userInfo.sysUser.realName).substring(0, 1) }}</n-avatar>
       <span class="pl-8px text-16px font-medium">{{ auth.userInfo.sysUser.username }}</span>
     </hover-container>
   </n-dropdown>

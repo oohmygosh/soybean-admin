@@ -27,7 +27,7 @@
           </n-popconfirm>
           <n-button strong secondary size="medium" circle type="success">
             <template #icon>
-              <ic-twotone-download />
+              <icon-ic-twotone-download />
             </template>
           </n-button>
         </template>

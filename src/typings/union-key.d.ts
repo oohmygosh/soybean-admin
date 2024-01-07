@@ -7,7 +7,7 @@ declare namespace UnionKey {
    * - basic 基础布局
    * - blank 空白布局
    */
-  type LayoutComponentType = 'basic' | 'blank';
+  type LayoutComponentType = 'basic' | 'blank' | 'iframe';
 
   /**
    * 登录模块

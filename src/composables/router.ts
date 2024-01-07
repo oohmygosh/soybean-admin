@@ -17,6 +17,7 @@ export function useRouterPush(inSetup = true) {
    */
   function routerPush(to: RouteLocationRaw, newTab = false) {
     if (newTab) {
+      console.log('to', to);
       const routerData = router.resolve(to);
       window.open(routerData.href, '_blank');
       return Promise.resolve();

@@ -8,11 +8,10 @@
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-const src = ref('https://www.naiveui.com/zh-CN/os-theme/docs/introduction');
+const src = ref('/');
 const route = useRoute();
 onMounted(() => {
-  console.log(route.query.url);
-  src.value = route.query.url as string;
+  src.value = route.query.url;
 });
 </script>
 
