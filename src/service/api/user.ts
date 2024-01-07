@@ -1,4 +1,5 @@
 import type { AxiosRequestConfig } from 'axios';
+import type { Key } from 'naive-ui/es/cascader/src/interface';
 import { BaseApi, request } from '@/service/request';
 import { encryptByMD5 } from '@/utils/crypto';
 import { getServiceEnvConfig } from '~/.env-config';
@@ -33,8 +34,11 @@ class SysUserApi extends BaseApi<ApiUserManagement.SysUser> {
     );
   };
 
-  roleIds = (id?: number | string, config?: AxiosRequestConfig<any>) =>
+  roleIds = (id?: Key, config?: AxiosRequestConfig<any>) =>
     request.post<number[]>(`${this.baseUri}/role-ids?id=${id}`, {}, config);
+
+  refreshUserCache = (id?: Key[], config?: AxiosRequestConfig<any>) =>
+    request.post(`${this.baseUri}/refresh-cache`, id, config);
 }
 
 export const userApi = SysUserApi.getInstance();

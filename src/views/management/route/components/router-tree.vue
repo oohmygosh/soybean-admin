@@ -115,7 +115,7 @@ const delMenu = () => {
 const addMenu = async (option: (typeof treeData)[0]) => {
   option.children = option.children || [];
   const menu = { ...newMenu };
-  menu.sort = (option.children[0]?.sort as number) - 1;
+  menu.sort = ((option.children[0]?.sort ?? 0) as number) - 1;
   menu.pid = option.id;
   menu.parentName = option.title;
   const { error, data } = await resourceApi.save(menu);
@@ -194,16 +194,13 @@ const handleDrop = ({ node, dragNode, dropPosition }: TreeDropInfo) => {
 
 const renderSuffix = ({ option }: { option: TreeOption }) => {
   const data = option as (typeof treeData)[0];
-  if (data.component !== 'multi' && data.component !== 'basic') {
-    return <span></span>;
-  }
   return (
     <n-button
       text
       round
       type="info"
       size="small"
-      class="do"
+      class="do pr5"
       onClick={(ev: Event) => {
         ev.stopPropagation();
         // 其他部分添加自己的代码

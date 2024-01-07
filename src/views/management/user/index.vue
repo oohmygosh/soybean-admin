@@ -56,6 +56,7 @@
                   </template>
                   导出
                 </n-tooltip>
+                <n-button strong secondary size="medium" round type="warning" @click="refreshCache">刷新缓存</n-button>
               </template>
             </s-table>
             <table-action-modal
@@ -101,6 +102,11 @@ const fetchRoleTree = async () => {
 };
 
 fetchRoleTree();
+
+const refreshCache = async () => {
+  const { error } = await execApi(userApi.refreshUserCache, { msg: '刷新成功!', data: tableRef?.getChecked() });
+  if (!error) tableRef?.LoadData();
+};
 
 const nodeProps = ({ option }: { option: TreeOption }) => {
   // noinspection JSUnusedGlobalSymbols

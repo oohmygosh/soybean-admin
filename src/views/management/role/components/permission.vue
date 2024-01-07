@@ -103,7 +103,7 @@ const title = computed(() => {
 });
 
 async function handleSubmit() {
-  const keys = treeRef?.getCheckedData().keys;
+  const keys = treeRef?.getCheckedData().keys.concat(treeRef?.getIndeterminateData().keys);
   if (!props.roleId || !keys) return;
   const { error } = await roleApi.resourceSet({
     roleId: props.roleId,

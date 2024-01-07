@@ -44,20 +44,11 @@
             <n-form-item label="i18n" path="i18nTitle">
               <n-input v-model:value="form.i18nTitle" />
             </n-form-item>
-            <n-form-item v-if="form.pid === '0' && form.component === 'self'" label="页面布局" path="singleLayout">
-              <n-radio-group v-model:value="form.singleLayout" :default-value="form.component">
-                <n-radio-button
-                  v-for="node in ['basic', 'blank']"
-                  :key="node"
-                  :value="node"
-                  :label="node"
-                  default-checked
-                  checked
-                />
-              </n-radio-group>
+            <n-form-item label="页面布局" path="singleLayout">
+              <n-select v-model:value="form.singleLayout" :options="singleLayoutOptions" clearable />
             </n-form-item>
             <n-form-item label="激活组件" path="activeMenu">
-              <n-input v-model:value="form.activeMenu" />
+              <n-input v-model:value="form.activeMenu" placeholder="请输入组件名" />
             </n-form-item>
             <n-form-item label="排序" path="sort">
               <n-input-number v-model:value="form.sort" button-placement="both" style="text-align: center" />
@@ -113,6 +104,7 @@ import { h, onMounted, toRefs } from 'vue';
 import type { DataTableColumn, FormInst, FormRules, TreeOption } from 'naive-ui';
 import { NInput, NTree } from 'naive-ui';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
+import type { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 import { componentLabels } from '@/constants';
 import { ServicePrefix } from '~/.env-config';
 import { resourceApi } from '~/src/service';
@@ -132,6 +124,16 @@ const componentOptions = Object.entries(componentLabels).map(([key, value]) => (
   value: key,
   label: value
 }));
+const singleLayoutOptions: SelectMixedOption[] = [
+  {
+    label: 'basic',
+    value: 'basic'
+  },
+  {
+    label: 'blank',
+    value: 'blank'
+  }
+];
 const apiMap: Record<string, Key> = {};
 const rules: FormRules = {
   title: {
