@@ -48,7 +48,7 @@
                 </n-popconfirm>
                 <n-tooltip trigger="hover">
                   <template #trigger>
-                    <n-button strong secondary size="medium" circle type="success">
+                    <n-button strong secondary size="medium" circle type="success" @click="exportCsv">
                       <template #icon>
                         <icon-ic-twotone-download />
                       </template>
@@ -102,6 +102,10 @@ const fetchRoleTree = async () => {
 };
 
 fetchRoleTree();
+
+const exportCsv = () => {
+  tableRef?.downloadCsv('用户数据', false);
+};
 
 const refreshCache = async () => {
   const { error } = await execApi(userApi.refreshUserCache, { msg: '刷新成功!', data: tableRef?.getChecked() });

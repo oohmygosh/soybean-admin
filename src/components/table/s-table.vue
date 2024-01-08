@@ -17,7 +17,7 @@
     </n-space>
     <n-data-table
       v-bind="$props"
-      ref="dataTableRef"
+      ref="tableRef"
       :data="$props.data ?? data"
       :loading="loading"
       flex-height
@@ -32,13 +32,14 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, unref } from 'vue';
-import type { DataTableColumn, DataTableColumns, DataTableRowKey } from 'naive-ui';
+import type { DataTableColumn, DataTableColumns, DataTableInst, DataTableRowKey } from 'naive-ui';
 import { NDataTable } from 'naive-ui';
 import { $ref } from 'vue/macros';
 import useHookTable from '~/src/hooks/business/use-hook-table';
 import type { STableProps } from './src/types/props';
 
 const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
+const tableRef = ref<DataTableInst>();
 const { api, columns, immediate } = withDefaults(defineProps<STableProps>(), {
   scrollX: 1800,
   size: 'medium',
@@ -112,6 +113,9 @@ const handleChecked = (rowKeys: DataTableRowKey[]) => {
   emit('update:checked', rowKeys);
   emit('update:columns', tableColumns);
 };
+const downloadCsv = (fileName?: string, keepOriginalData?: boolean) => {
+  (tableRef.value as any)?.downloadCsv({ fileName, keepOriginalData });
+};
 onMounted(async () => {
   if (immediate) LoadData();
 });
@@ -120,6 +124,7 @@ defineExpose({
   LoadData,
   getChecked,
   updatePagination,
+  downloadCsv,
   setParam
 });
 </script>

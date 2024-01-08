@@ -1,6 +1,6 @@
 <template>
   <n-layout has-sider>
-    <n-layout-sider content-style="padding: 24px;" :native-scrollbar="false" :width="'17%'">
+    <n-layout-sider content-style="padding: 24px;" :native-scrollbar="false">
       <router-tree @tree-click="treeClick" />
     </n-layout-sider>
     <n-layout-content :style="!resource?.title ? 'margin: auto' : ''">

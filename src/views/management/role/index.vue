@@ -25,6 +25,7 @@
             </template>
             确定删除吗？
           </n-popconfirm>
+          {{ tableRef?.getChecked() }}
           <n-button
             strong
             secondary
@@ -78,7 +79,9 @@ const dictStore = useDictStore();
 async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
   if (rowId.length === 0) return;
   const { error } = await execApi(roleApi.delete, { data: rowId, msg: '删除成功!' });
-  if (!error) tableRef?.LoadData();
+  if (!error) {
+    tableRef?.LoadData();
+  }
 }
 
 function handleAddTable() {
