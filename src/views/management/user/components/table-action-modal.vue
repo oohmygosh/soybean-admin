@@ -50,7 +50,7 @@
       </n-grid>
       <n-space class="w-full pt-16px" :size="24" justify="end">
         <n-button class="w-72px" @click="closeModal">取消</n-button>
-        <n-button class="w-72px" type="primary" @click="handleSubmit">确定</n-button>
+        <n-button class="w-72px" :loading="saveLoading" type="primary" @click="handleSubmit">确定</n-button>
       </n-space>
     </n-form>
   </n-modal>
@@ -62,11 +62,12 @@ import type { FormInst, FormItemRule } from 'naive-ui';
 import type { TreeSelectRenderTreePart } from 'naive-ui/es/tree-select/src/interface';
 import type { TreeOptions } from 'naive-ui/es/tree/src/interface';
 import { $ref } from 'vue/macros';
-import { execApi } from '@/hooks';
+import { execApi, useBoolean } from '@/hooks';
 import { createRequiredFormRule, formRules } from '@/utils';
 import { userApi } from '~/src/service';
 import { useDictStore } from '~/src/store';
 
+const { bool: saveLoading, setTrue: startSaveLoading, setFalse: stopSaveLoading } = useBoolean();
 export interface Props {
   /** 弹窗可见性 */
   visible: boolean;
@@ -182,10 +183,12 @@ function handleUpdateFormModelByModalType() {
 }
 
 async function handleSubmit() {
+  startSaveLoading();
   await formRef.value?.validate();
   const { error } = await execApi(userApi.save, { data: { ...formModel }, msg: '执行成功!' });
   if (error) return;
   emit('update:action');
+  stopSaveLoading();
   closeModal();
 }
 

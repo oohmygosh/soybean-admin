@@ -56,7 +56,17 @@
                   </template>
                   导出
                 </n-tooltip>
-                <n-button strong secondary size="medium" round type="warning" @click="refreshCache">刷新缓存</n-button>
+                <n-button
+                  strong
+                  secondary
+                  :loading="refreshLoading"
+                  size="medium"
+                  round
+                  type="warning"
+                  @click="refreshCache"
+                >
+                  刷新缓存
+                </n-button>
               </template>
             </s-table>
             <table-action-modal
@@ -88,6 +98,7 @@ import { useDictStore } from '~/src/store';
 import type { ModalType } from './components/table-action-modal.vue';
 
 const { bool: visible, setTrue: openModal } = useBoolean();
+const { bool: refreshLoading, setTrue: startRefreshLoading, setFalse: stopRefreshLoading } = useBoolean();
 const pattern = $ref('');
 const showIrrelevantNodes = $ref(false);
 let roleTree: TreeOptions & ApiRoleManager.SysRole[] = $ref([]);
@@ -108,8 +119,10 @@ const exportCsv = () => {
 };
 
 const refreshCache = async () => {
+  startRefreshLoading();
   const { error } = await execApi(userApi.refreshUserCache, { msg: '刷新成功!', data: tableRef?.getChecked() });
   if (!error) tableRef?.LoadData();
+  stopRefreshLoading();
 };
 
 const nodeProps = ({ option }: { option: TreeOption }) => {
