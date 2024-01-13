@@ -197,12 +197,39 @@ async function getRequestResponse(params: {
   config?: AxiosRequestConfig;
 }) {
   const { instance, method, url, data, config } = params;
-
+  if (data) {
+    Object.keys(data).forEach(key => {
+      if (data[key] === '') {
+        delete data[key];
+      }
+    });
+  }
   let res: any;
   if (method === 'get' || method === 'delete') {
     res = await instance[method](url, config);
   } else {
-    res = await instance[method](url, data, config);
+    res = await instance[method](url, replaceEmptyStringWithNull(data), config);
   }
   return res;
+}
+
+function replaceEmptyStringWithNull(obj: Record<string, any> | Record<string, any>[]): any {
+  if (Array.isArray(obj)) {
+    // 如果是数组，递归处理数组中的每个元素
+    return obj.map(item => replaceEmptyStringWithNull(item));
+  } else if (typeof obj === 'object' && obj !== null) {
+    // 如果是对象，递归处理对象的每个属性
+    const newObj: Record<string, any> = {};
+    for (const key in obj) {
+      if (Object.hasOwn(obj, key)) {
+        newObj[key] = replaceEmptyStringWithNull(obj[key]);
+      }
+    }
+    return newObj;
+  } else if (typeof obj === 'string' && (obj as string).trim() === '') {
+    // 如果是空字符串，替换为 null
+    return null;
+  }
+  // 其他情况直接返回原值
+  return obj;
 }

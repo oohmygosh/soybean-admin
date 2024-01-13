@@ -8,7 +8,7 @@ declare namespace Auth {
    * - admin: 管理员
    * - user: 用户
    */
-  type RoleType = SuperAdmin | 'admin' | 'user';
+  type RoleType = string | SuperAdmin | 'admin' | 'user';
   type PermissionType = string;
 
   /** 用户信息 */

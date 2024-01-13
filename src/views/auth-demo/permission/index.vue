@@ -24,7 +24,7 @@
       </div>
       <n-space>
         <n-button v-if="hasPermission('super')">super可见</n-button>
-        <n-button v-if="hasPermission('admin')">admin可见</n-button>
+        <n-button v-if="hasPermission('sys:log:getUserLogHistogram')">admin可见</n-button>
         <n-button v-if="hasPermission(['admin', 'user'])">admin和user可见</n-button>
       </n-space>
     </n-card>

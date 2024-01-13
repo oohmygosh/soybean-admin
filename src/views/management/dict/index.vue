@@ -6,7 +6,14 @@
     <n-layout-content>
       <n-card title="字典管理" :bordered="false" class="h-full rounded-r-8px shadow-sm">
         <div class="flex-col h-full">
-          <s-table ref="tableRef" :columns="columns" :api="dictApi.page" :immediate="false">
+          <s-table
+            ref="tableRef"
+            v-model:checked-row-keys="checkedKeys"
+            :param="param"
+            :columns="columns"
+            :api="dictApi.page"
+            :immediate="false"
+          >
             <template #default>
               <n-tooltip trigger="hover">
                 <template #trigger>
@@ -18,16 +25,9 @@
                 </template>
                 添加
               </n-tooltip>
-              <n-popconfirm @positive-click="handleDeleteTable(tableRef?.getChecked())">
+              <n-popconfirm @positive-click="handleDeleteTable(checkedKeys)">
                 <template #trigger>
-                  <n-button
-                    strong
-                    secondary
-                    :disabled="(tableRef?.getChecked() ?? []).length <= 0"
-                    size="medium"
-                    circle
-                    type="error"
-                  >
+                  <n-button strong secondary :disabled="checkedKeys.length <= 0" size="medium" circle type="error">
                     <template #icon>
                       <icon-ic-round-delete />
                     </template>
@@ -76,6 +76,8 @@ import type { ModalType } from './components/save-modal.vue';
 import SaveModal from './components/save-modal.vue';
 
 const { bool: visible, setTrue: openModal } = useBoolean();
+const checkedKeys = $ref([]);
+const param = $ref<Record<string, any>>({});
 const roleTree: TreeOptions & ApiRoleManager.SysRole[] = $ref([]);
 let pid = $ref<string>();
 const tableRef = $ref<STableElementType>();
@@ -191,9 +193,7 @@ function handleAddTable() {
 }
 const treeClick = (node: ApiDictManagement.SysDict) => {
   pid = node.id;
-  tableRef?.setParam({
-    pid: node.id
-  });
+  param.pid = node.id;
   tableRef?.LoadData();
 };
 async function handleEditTable(row: UserManagement.User) {

@@ -1,45 +1,51 @@
 <template>
-  <div class="overflow-y-auto">
+  <div class="overflow-hidden">
     <n-card title="角色管理" :bordered="false" class="h-full rounded-r-8px shadow-sm">
-      <s-table ref="tableRef" :columns="columns" :api="roleApi.page">
-        <template #default>
-          <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
-            <template #icon>
-              <icon-ic-round-plus />
-            </template>
-          </n-button>
-          <n-popconfirm @positive-click="handleDeleteTable(tableRef?.getChecked())">
-            <template #trigger>
-              <n-button
-                strong
-                secondary
-                :disabled="(tableRef?.getChecked() ?? [])?.length <= 0"
-                size="medium"
-                circle
-                type="error"
-              >
-                <template #icon>
-                  <icon-ic-round-delete />
-                </template>
-              </n-button>
-            </template>
-            确定删除吗？
-          </n-popconfirm>
-          {{ tableRef?.getChecked() }}
-          <n-button
-            strong
-            secondary
-            round
-            :disabled="tableRef?.getChecked()?.length !== 1"
-            type="success"
-            @click="handlerPermission"
-          >
-            权限设置
-          </n-button>
-        </template>
-      </s-table>
+      <div class="flex-col h-full">
+        <search-bar v-model="param" :columns="searchColumns" @search="tableRef?.LoadData()" />
+        <s-table
+          ref="tableRef"
+          v-model:checked-row-keys="checkedKeys"
+          :param="param"
+          :columns="columns"
+          :api="roleApi.page"
+        >
+          <template #default>
+            <n-button strong secondary size="medium" circle type="primary" @click="handleAddTable">
+              <template #icon>
+                <icon-ic-round-plus />
+              </template>
+            </n-button>
+            <n-popconfirm @positive-click="handleDeleteTable(checkedKeys)">
+              <template #trigger>
+                <n-button strong secondary :disabled="checkedKeys.length <= 0" size="medium" circle type="error">
+                  <template #icon>
+                    <icon-ic-round-delete />
+                  </template>
+                </n-button>
+              </template>
+              确定删除吗？
+            </n-popconfirm>
+            <n-button
+              strong
+              secondary
+              round
+              :disabled="checkedKeys.length !== 1"
+              type="success"
+              @click="handlerPermission"
+            >
+              权限设置
+            </n-button>
+          </template>
+        </s-table>
+      </div>
     </n-card>
-    <table-action-modal v-model:visible="visible" :type="modalType" :edit-data="editData" />
+    <table-action-modal
+      v-model:visible="visible"
+      :type="modalType"
+      :edit-data="editData"
+      @update:action="tableRef?.LoadData()"
+    />
     <permission
       ref="permissionRef"
       v-model:visible="permissionVisible"
@@ -51,10 +57,11 @@
 
 <script lang="tsx" setup>
 import { ref } from 'vue';
-import type { DataTableColumns, DataTableRowKey } from 'naive-ui';
-import { NButton, NPopconfirm, NSpace, NTag } from 'naive-ui';
-import { $ref } from 'vue/macros';
+import type { DataTableRowKey } from 'naive-ui';
+import { NButton, NPopconfirm, NSelect, NSpace, NTag } from 'naive-ui';
 import type { Key } from 'naive-ui/es/cascader/src/interface';
+import type { TableBaseColumn, TableColumns } from 'naive-ui/es/data-table/src/interface';
+import { $ref } from 'vue/macros';
 import { roleApi } from '@/service';
 import { execApi, useBoolean } from '@/hooks';
 import type { STableElementType } from '@/components/table';
@@ -63,8 +70,10 @@ import Permission from './components/permission.vue';
 import type { ModalType } from './components/table-action-modal.vue';
 import TableActionModal from './components/table-action-modal.vue';
 
+const param = $ref<Record<string, any>>({});
 const tableRef = $ref<STableElementType>();
 const permissionRef = $ref<InstanceType<typeof Permission>>();
+let checkedKeys = $ref([]);
 const { bool: visible, setTrue: openModal } = useBoolean();
 const { bool: permissionVisible, setTrue: openPermissionModal } = useBoolean();
 let curRoleId = $ref() as Key;
@@ -78,6 +87,7 @@ function setModalType(type: ModalType) {
 const dictStore = useDictStore();
 async function handleDeleteTable(rowId: DataTableRowKey[] = []) {
   if (rowId.length === 0) return;
+  checkedKeys = checkedKeys.filter(item => rowId.indexOf(item) < 0);
   const { error } = await execApi(roleApi.delete, { data: rowId, msg: '删除成功!' });
   if (!error) {
     tableRef?.LoadData();
@@ -90,7 +100,7 @@ function handleAddTable() {
 }
 
 const handlerPermission = async () => {
-  curRoleId = tableRef?.getChecked()[0] as number;
+  curRoleId = checkedKeys[0];
   const { data } = await roleApi.fetchRoleIds(curRoleId);
   defaultCheckedKeys = data ?? [];
   openPermissionModal();
@@ -103,7 +113,7 @@ async function handleEditTable(row?: RoleManager.Role) {
   openModal();
 }
 
-const createColumns = (): DataTableColumns<RoleManager.Role> => {
+const createColumns = (): TableColumns<RoleManager.Role> => {
   return [
     {
       type: 'selection'
@@ -194,5 +204,24 @@ const createColumns = (): DataTableColumns<RoleManager.Role> => {
 };
 
 const columns = createColumns();
+const searchColumnKeys = ['name', 'alias', 'status'];
+const searchColumns = (columns as TableBaseColumn<RoleManager.Role>[])
+  .filter(item => searchColumnKeys.includes(String(item?.key)))
+  .map(item => {
+    const sortItem = { ...item };
+    switch (sortItem?.key) {
+      case 'status':
+        sortItem.render = () => (
+          <NSelect
+            class="w-200px"
+            v-model:value={param.status}
+            options={dictStore.getSelect('COMMON_STATUS').options}
+          />
+        );
+        return sortItem;
+      default:
+        return sortItem;
+    }
+  }) as TableBaseColumn<RoleManager.Role>[];
 </script>
 <style scoped></style>

@@ -31,16 +31,16 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, unref } from 'vue';
+import { onMounted, ref, toRef, unref } from 'vue';
 import type { DataTableColumn, DataTableColumns, DataTableInst, DataTableRowKey } from 'naive-ui';
 import { NDataTable } from 'naive-ui';
 import { $ref } from 'vue/macros';
+import type { CsvOptionsType } from 'naive-ui/es/data-table/src/interface';
 import useHookTable from '~/src/hooks/business/use-hook-table';
 import type { STableProps } from './src/types/props';
 
-const checkedRowKeysRef = ref<DataTableRowKey[]>([]);
 const tableRef = ref<DataTableInst>();
-const { api, columns, immediate } = withDefaults(defineProps<STableProps>(), {
+const { api, columns, immediate, param } = withDefaults(defineProps<STableProps>(), {
   scrollX: 1800,
   size: 'medium',
   tableLayout: 'auto',
@@ -63,12 +63,13 @@ const { api, columns, immediate } = withDefaults(defineProps<STableProps>(), {
   flexHeight: false,
   summaryPlacement: 'bottom',
   paginationBehaviorOnFilter: 'current',
+  param: () => ({}),
   immediate: true
 });
 const tableColumns = $ref(columns) as DataTableColumns<any>;
-let apiParams: object = $ref({});
+const paramRef = toRef(param);
 const { getData, loading, pagination, data, updatePagination } = useHookTable(api, {
-  apiParams,
+  apiParams: param,
   immediate,
   columns: () => columns,
   transformer: response => {
@@ -80,7 +81,7 @@ const { getData, loading, pagination, data, updatePagination } = useHookTable(ap
     };
   },
   apiParamsUpdater: pageParam => {
-    pageParam.data = apiParams;
+    pageParam.data = paramRef;
     return pageParam;
   },
   pagination: {
@@ -102,30 +103,23 @@ interface Emits {
 }
 
 const fetchData = () => unref(data);
-const setParam = (obj: typeof apiParams) => {
-  apiParams = obj;
-  updatePagination({ ...pagination });
-};
 const emit = defineEmits<Emits>();
-const getChecked = (): Array<DataTableRowKey> => unref(checkedRowKeysRef) ?? [];
 const handleChecked = (rowKeys: DataTableRowKey[]) => {
-  checkedRowKeysRef.value = rowKeys;
   emit('update:checked', rowKeys);
   emit('update:columns', tableColumns);
 };
-const downloadCsv = (fileName?: string, keepOriginalData?: boolean) => {
-  (tableRef.value as any)?.downloadCsv({ fileName, keepOriginalData });
+const downloadCsv = (options?: CsvOptionsType) => {
+  tableRef.value?.downloadCsv(options);
 };
 onMounted(async () => {
   if (immediate) LoadData();
 });
+
 defineExpose({
   fetchData,
   LoadData,
-  getChecked,
   updatePagination,
-  downloadCsv,
-  setParam
+  downloadCsv
 });
 </script>
 <style scoped></style>

@@ -14,7 +14,6 @@ export function usePermission() {
 
   function hasPermission(permission: Auth.RoleType | Auth.RoleType[]) {
     const { roles, permissions } = auth.userInfo;
-
     let has = roles.includes('super');
     if (!has) {
       if (isArray(permission)) {

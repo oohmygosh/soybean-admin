@@ -144,7 +144,6 @@ export default function useHookTable<TableData, Fn extends ApiFn>(apiFn: Fn, con
 
   async function getData() {
     startLoading();
-
     const { data: apiData, error } = await apiFn(requestParams.value);
 
     if (!error && data) {
