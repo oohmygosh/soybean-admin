@@ -34,7 +34,9 @@ const icons = [
   'ic:baseline-filter-9',
   'ic:baseline-filter-9-plus',
   'streamline-dictionary-language-book',
-  'material-symbols-light:dictionary-outline-sharp'
+  'material-symbols-light:dictionary-outline-sharp',
+  'mdi-application-braces',
+  'clarity:plugin-line'
 ];
 
 export default [

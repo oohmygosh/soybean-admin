@@ -12,7 +12,7 @@
       selectable
       :key-field="'id'"
       label-field="title"
-      :default-checked-keys="defaultCheckedKeys"
+      :default-checked-keys="filterParentNode(defaultCheckedKeys)"
       :render-suffix="renderSuffix"
       style="height: 300px"
     />
@@ -46,22 +46,27 @@ export interface Props {
 }
 const treeRef = $ref<InstanceType<typeof NTree>>();
 const renderSuffix: TreeSelectRenderTreePart = info => <span>{info.option.id}</span>;
-
+const parentNodeKeys: Key[] = [];
 let treeData = $ref() as TreeOptions & ApiResourceManager.SysResource[];
 
 const fetchTreeData = async () => {
   const { data } = await resourceApi.listTree();
   if (data) {
-    const something = (param?: ApiResourceManager.SysResource[]) => {
+    const extractParentKeys = (param?: ApiResourceManager.SysResource[]) => {
       if (param) {
         param.forEach(item => {
-          something(item.children);
+          if (item.children && item.children.length > 0) parentNodeKeys.push(String(item.id));
+          extractParentKeys(item.children);
         });
       }
     };
-    something(data);
+    extractParentKeys(data);
     treeData = data;
   }
+};
+
+const filterParentNode = (keys: Key[]) => {
+  return keys.filter(key => !parentNodeKeys.includes(key));
 };
 
 export type ModalType = NonNullable<Props['type']>;

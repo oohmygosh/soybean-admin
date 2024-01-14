@@ -6,22 +6,26 @@ const serviceEnv: ServiceEnv = {
   dev: {
     url: 'http://127.0.0.1:9999',
     auth: '/auth',
+    gen: '/gem',
     sys: '/res'
   },
   test: {
     url: 'https://mock.apifox.com/m1/',
     auth: '/3537680-0-73c00156',
+    gen: '/3537680-0-73c00156',
     sys: '/3537680-0-a0181096'
   },
   prod: {
     url: 'http://127.0.0.1:9999',
     auth: '/auth',
+    gen: '/gen',
     sys: '/res'
   }
 };
 
 export const ServicePrefix = {
   'maker-service-authorization': '/auth',
+  'maker-service-generator': '/gen',
   'maker-service-resource-biz': '/res'
 };
 

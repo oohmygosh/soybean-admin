@@ -167,7 +167,6 @@ const handleDrop = ({ node, dragNode, dropPosition }: TreeDropInfo) => {
     dragNode.parentName = node.title;
     const sort = (node.children[dragNodeIndex + 1]?.sort ?? 0) as number;
     dragNode.sort = sort - 1;
-    return;
   } else if (dropPosition === 'before') {
     const [nodeSiblings, nodeIndex] = findSiblingsAndIndex(node, treeData);
     if (nodeSiblings === null || nodeIndex === null) return;
@@ -183,7 +182,7 @@ const handleDrop = ({ node, dragNode, dropPosition }: TreeDropInfo) => {
   }
   siblings?.forEach((item, index) => (item.sort = index));
   resourceApi.save(dragNode).then(({ error }) => {
-    if (!error && siblings.length > 0) {
+    if (!error && siblings.length > 0 && dropPosition !== 'inside') {
       resourceApi.sort(siblings).then(({ error: e }) => {
         if (!e) window.$message?.success('保存成功');
         else getData();

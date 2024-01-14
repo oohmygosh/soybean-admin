@@ -13,6 +13,7 @@ interface ServiceEnvConfig {
   /** 服务URI */
   auth: string;
   sys: string;
+  gen: string;
 }
 
 interface ServiceEnvConfigWithProxyPattern extends ServiceEnvConfig {
